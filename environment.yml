@@ -1,0 +1,61 @@
+# This file lists external packages required to run and develop the framewortk.
+#
+# * Only top-level requirements are listed here.
+# * You can use this file to set up a Conda environment:
+#
+#       conda env create -f environment.yml
+#
+# See also: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html
+
+name: MDOAirB
+
+channels:
+ - defaults
+
+# List all explicitly imported/used packages
+# ------------------------------------------
+#
+# Example -- Consider a Python file with following imports:
+#
+#   import package_A
+#   import package_B
+#
+# Assume:
+#
+# ==> 'package_A' depends on 'package_B'
+# ==> 'package_B' depends on a third 'package_C'
+#
+# 'package_A' and 'package_B' should be listed in this file since they
+# are explicitly imported, but we do not list 'package_C'.
+
+dependencies:
+  - python=3.6
+
+  # Required
+  - numpy>=1.9
+  - cpacscreator>=0.1
+  - tigl3>=2.2.3  # Should be included in cpacscreator
+  - tixi3>=2.2.4
+  - matplotlib>=3.0.2
+  - scipy>=1.5.3
+  - scikit-learn>=0.21.3
+  - pandas>=0.25.0
+  - vtk>=8.2.0
+  - xmltodict>=0.12.0
+  - deap>=1.1
+  - pulp>=2.0
+  - bokeh>=2.0.0
+  - numpy-stl>=1.1.0
+  - glpk>=0.4
+  - numba>=0.5
+  - smt>=1.0.0
+  - haversine>=2.3.1
+  - jsonschema>=3.2.0
+  # Testing
+  - flake8
+  - pytest>=5.0.1
+  - pytest-cov
+  - codecov==2.0.15
+
+  # Documentation
+  - sphinx=3.0.3

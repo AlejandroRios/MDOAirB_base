@@ -1,0 +1,105 @@
+{
+   "type": "object",
+    "properties": {
+		"wing_surface": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 72, "maximum": 130},
+				"upper_band": {"type": "integer", "minimum": 72, "maximum": 130}
+			}
+		},
+		"aspect_ratio": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 75, "maximum": 120},
+				"upper_band": {"type": "integer", "minimum": 75, "maximum": 120}
+			}
+		},
+		"taper_ratio": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 25, "maximum": 50},
+				"upper_band": {"type": "integer", "minimum": 25, "maximum": 50}
+			}
+		},
+		"wing_sweep": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 15, "maximum": 30},
+				"upper_band": {"type": "integer", "minimum": 15, "maximum": 30}
+			}
+		},
+		"twist_angle": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": -5, "maximum": -2},
+				"upper_band": {"type": "integer", "minimum": -5, "maximum": -2}
+			}
+		},
+		"kink_position": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 32, "maximum": 45},
+				"upper_band": {"type": "integer", "minimum": 32, "maximum": 45}
+			}
+		},
+		"engine_bypass_ratio": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 45, "maximum": 65},
+				"upper_band": {"type": "integer", "minimum": 45, "maximum": 65}
+			}
+		},
+		"engine_fan_diameter": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 10, "maximum": 25},
+				"upper_band": {"type": "integer", "minimum": 10, "maximum": 25}
+			}
+		},
+		"engine_overall_pressure_ratio": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 27, "maximum": 30},
+				"upper_band": {"type": "integer", "minimum": 27, "maximum": 30}
+			}
+		},
+		"engine _inlet_turbine_temperature": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 1350, "maximum": 1500},
+				"upper_band": {"type": "integer", "minimum": 1350, "maximum": 1500}
+			}
+		},
+		"engine_fan_pressure_ratio": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 14, "maximum": 25},
+				"upper_band": {"type": "integer", "minimum": 14, "maximum": 25}
+			}
+		},
+		"pax_number": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 70, "maximum": 220},
+				"upper_band": {"type": "integer", "minimum": 70, "maximum": 220}
+			}
+		},
+		"number_of_seat_abreast": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 4, "maximum": 6},
+				"upper_band": {"type": "integer", "minimum": 4, "maximum": 6}
+			}
+		},
+		"aircraft_range": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 1000, "maximum": 3500},
+				"upper_band": {"type": "integer", "minimum": 1000, "maximum": 3500}
+			}
+		},
+		"engine_design_point_pressure": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 39000, "maximum": 43000},
+				"upper_band": {"type": "integer", "minimum": 39000, "maximum": 43000}
+			}
+		},
+		"engine_design_point_mach": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 78, "maximum": 82},
+				"upper_band": {"type": "integer", "minimum": 78, "maximum": 82}
+			}
+		},
+		"engine_position": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 1, "maximum": 1},
+				"upper_band": {"type": "integer", "minimum": 1, "maximum": 1}
+			}
+		},
+		"winglet_presence": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 1, "maximum": 1},
+				"upper_band": {"type": "integer", "minimum": 1, "maximum": 1}
+			}
+		},
+		"Slat_presence": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 1, "maximum": 1},
+				"upper_band": {"type": "integer", "minimum": 1, "maximum": 1}
+			}
+		},
+		"horizontal_tail_position": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+				"lower_band": {"type": "integer", "minimum": 1, "maximum": 1},
+				"upper_band": {"type": "integer", "minimum": 1, "maximum": 1}
+			}
+		}
+	}
+}

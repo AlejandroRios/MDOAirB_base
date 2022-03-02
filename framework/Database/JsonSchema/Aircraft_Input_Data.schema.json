@@ -1,0 +1,46 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"$id": "http://airbus.com/schemas/aircraft_input_data.schema.json",
+    "type": "object",
+    "properties": {
+        
+		"aircraft": {"type": "object", "properties": {
+                "passenger_capacity": {"type": "integer", "minimum": 70, "maximum":220},
+                "slat_presencee": {"type": "integer", "minimum": 0, "maximum":1},
+                "winglet_presence": {"type": "integer", "minimum": 0, "maximum":1}
+            }
+        },
+        "engine":{"type": "object", "properties": {
+                "bypass": {"type": "number", "minimum": 45, "maximum":65},
+                "diameter": {"type": "number", "minimum": 10, "maximum":25},
+                "compressor_pressure_ratio": {"type": "number", "minimum": 27, "maximum":30},
+                "turbine_inlet_temperature": {"type": "integer", "minimum": 1350, "maximum":1500},
+                "fan_pressure_ratio": {"type": "number", "minimum": 14, "maximum":25},
+                "design_point_pressure": {"type": "integer", "minimum": 39000, "maximum":43000},
+                "design_point_mach": {"type": "number", "minimum": 78, "maximum":82},
+                "psition": {"type": "integer", "minimum": 0, "maximum":1}
+            }
+        },
+        "fuselage": {"type": "object", "properties": {
+                "seat_abreast_number": {"type": "integer", "minimum": 4, "maximum":6}
+            }
+        },
+        "horizontal_tail": {"type": "object", "properties": {
+                "position": {"type": "integer", "minimum": 0, "maximum":1}
+            }
+        },
+        "performance": {"type": "object", "properties": {
+                "range": {"type": "integer", "minimum": 1000, "maximum":3500}
+            }
+        },
+        "wing": {"type": "object", "properties": {
+                "area": {"type": "integer", "minimum": 70, "maximum":130},
+                "aspect_ratio": {"type": "number", "minimum": 75, "maximum":120},
+                "taper_ratio": {"type": "number", "minimum": 25, "maximum":50},
+                "sweep_c_4": {"type": "integer", "minimum": 15, "maximum":30},
+                "twist": {"type": "integer", "minimum": -5, "maximum":-2},
+                "semi_span_kink": {"type": "number", "minimum": 32, "maximum":45}
+	        }
+        }
+    }
+}

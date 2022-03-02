@@ -1,0 +1,348 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"$id": "http://airbus.com/schemas/mdo_custom_inputs.schema.json",
+    "type": "object",
+    "properties": {
+		"computation_mode": {"type": "integer", "enum": [0,1]},
+		"route_computation_mode": {"type": "integer", "enum": [0,1]},
+		"design_variables": {"type": "object", "properties": {
+				"wing_surface": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 72, "maximum": 130},
+						"upper_band": {"type": "integer", "minimum": 72, "maximum": 130}
+					}
+				},
+				"aspect_ratio": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 75, "maximum": 120},
+						"upper_band": {"type": "integer", "minimum": 75, "maximum": 120}
+					}
+				},
+				"taper_ratio": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 25, "maximum": 50},
+						"upper_band": {"type": "integer", "minimum": 25, "maximum": 50}
+					}
+				},
+				"wing_sweep": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 15, "maximum": 30},
+						"upper_band": {"type": "integer", "minimum": 15, "maximum": 30}
+					}
+				},
+				"twist_angle": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": -5, "maximum": -2},
+						"upper_band": {"type": "integer", "minimum": -5, "maximum": -2}
+					}
+				},
+				"kink_position": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 32, "maximum": 45},
+						"upper_band": {"type": "integer", "minimum": 32, "maximum": 45}
+					}
+				},
+				"engine_bypass_ratio": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 45, "maximum": 65},
+						"upper_band": {"type": "integer", "minimum": 45, "maximum": 65}
+					}
+				},
+				"engine_fan_diameter": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 10, "maximum": 25},
+						"upper_band": {"type": "integer", "minimum": 10, "maximum": 25}
+					}
+				},
+				"engine_overall_pressure_ratio": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 27, "maximum": 30},
+						"upper_band": {"type": "integer", "minimum": 27, "maximum": 30}
+					}
+				},
+				"engine _inlet_turbine_temperature": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 1350, "maximum": 1500},
+						"upper_band": {"type": "integer", "minimum": 1350, "maximum": 1500}
+					}
+				},
+				"engine_fan_pressure_ratio": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 14, "maximum": 25},
+						"upper_band": {"type": "integer", "minimum": 14, "maximum": 25}
+					}
+				},
+				"pax_number": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 70, "maximum": 220},
+						"upper_band": {"type": "integer", "minimum": 70, "maximum": 220}
+					}
+				},
+				"number_of_seat_abreast": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 4, "maximum": 6},
+						"upper_band": {"type": "integer", "minimum": 4, "maximum": 6}
+					}
+				},
+				"aircraft_range": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 1000, "maximum": 3500},
+						"upper_band": {"type": "integer", "minimum": 1000, "maximum": 3500}
+					}
+				},
+				"engine_design_point_pressure": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 39000, "maximum": 43000},
+						"upper_band": {"type": "integer", "minimum": 39000, "maximum": 43000}
+					}
+				},
+				"engine_design_point_mach": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 78, "maximum": 82},
+						"upper_band": {"type": "integer", "minimum": 78, "maximum": 82}
+					}
+				},
+				"engine_position": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 1, "maximum": 1},
+						"upper_band": {"type": "integer", "minimum": 1, "maximum": 1}
+					}
+				},
+				"winglet_presence": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 1, "maximum": 1},
+						"upper_band": {"type": "integer", "minimum": 1, "maximum": 1}
+					}
+				},
+				"Slat_presence": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 1, "maximum": 1},
+						"upper_band": {"type": "integer", "minimum": 1, "maximum": 1}
+					}
+				},
+				"horizontal_tail_position": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 1, "maximum": 1},
+						"upper_band": {"type": "integer", "minimum": 1, "maximum": 1}
+					}
+				}
+			}
+		},
+		"fixed_parameters": {"type": "object", "properties": {
+				"aircraft": {"type": "object", "properties": {
+						"number_of_engines": {"type": "integer", "minimum": 1, "maximum": 4}
+					}
+				},
+				"airport_departure": {"type": "object", "properties": {
+						"elevation": {"type": "integer", "minimum": 0, "maximum": 4},
+						"tora": {"type": "integer", "minimum": 1500, "maximum": 5000},
+						"tref": {"type": "integer", "minimum": -45, "maximum": 35}
+					}
+				},
+				"airport_destination": {"type": "object", "properties": {
+						"elevation": {"type": "integer", "minimum": 1, "maximum": 4},
+						"lda": {"type": "integer", "minimum": 1500, "maximum": 5000},
+						"tref": {"type": "integer", "minimum": -45, "maximum": 35}
+					}
+				},
+				"cabine": {"type": "object", "properties": {
+						"armrest_bottom": {"type": "integer", "minimum": 5, "maximum": 9},
+						"armrest_top": {"type": "integer", "minimum": 20, "maximum": 40},
+						"armrest_width": {"type": "integer", "minimum": 1, "maximum": 3},
+						"backrest_height": {"type": "number", "minimum": 0.4, "maximum": 0.8},
+						"delta_z_symmetry_inferior": {"type": "integer", "minimum": -1, "maximum": 0},
+						"delta_z_symmetry_superior": {"type": "integer", "minimum": 0, "maximum": 2},
+						"floor_thickness": {"type": "number", "minimum": 0.08, "maximum": 0.15},
+						"galley_prof": {"type": "number", "minimum": 0.8, "maximum": 1.4},
+						"pax_distance_head_wall": {"type": "number", "minimum": 0.04, "maximum": 0.08},
+						"pax_distance_shoulder_wall": {"type": "number", "minimum": 0.03, "maximum": 0.05},
+						"pax_eye_height": {"type": "number", "minimum": 0.65, "maximum": 1.09},
+						"pax_midshoulder_height": {"type": "number", "minimum": 0.5, "maximum": 0.9},
+						"pax_shoulder_breadth": {"type": "number", "minimum": 0.39, "maximum": 0.57},
+						"seat_cushion_thickness_YC": {"type": "number", "minimum": 0.1, "maximum": 0.2},
+						"seat_delta_width_floor": {"type": "number", "minimum": 0.018, "maximum": 0.032},
+						"seat_prof": {"type": "number", "minimum": 0.3, "maximum": 0.6},
+						"seat_width": {"type": "number", "minimum": 0.4, "maximum": 1.0},
+						"toillet_prof": {"type": "number", "minimum": 1.1, "maximum": 1.9}
+					}
+				},
+				"fuselage": {"type": "object", "properties": {
+						"aisle_width": {"type": "number", "minimum": 0.3, "maximum": 0.8},
+						"aisles_number": {"type": "integer", "minimum": 1, "maximum": 3},
+						"cabine_height": {"type": "integer", "minimum": 1.8, "maximum": 2.2},
+						"cockpit_length": {"type": "number", "minimum": 2.7, "maximum": 4.7},
+						"container_type": {"type": "string", "enum": ["LD1", "LD11", "LD2", "LD26", "LD29", "LD3", "LD3-45", "LD3-45R", "LD3-45W", "LD39", "LD4", "LD6", "LD8", "LD9"]}
+					}
+				},
+				"horizontal_tail": {"type": "object", "properties": {
+						"thickness_root_chord": {"type": "number", "minimum": 0.0, "maximum": 0.2},
+						"thickness_tip_chord": {"type": "number", "minimum": 0.0, "maximum": 0.2}
+					}
+				},
+				"noise": {"type": "object", "properties": {
+						"aircraft_geometry_altitude_retracted": {"type": "integer", "minimum": 0, "maximum": 8000},
+						"aircraft_geometry_delta_ISA_retracted": {"type": "integer", "minimum": -15, "maximum": 15},
+						"aircraft_geometry_fuselage_length": {"type": "number", "minimum": 16.7, "maximum": 27.9},
+						"aircraft_geometry_fuselage_surface": {"type": "number", "minimum": 15.8, "maximum": 26.4},
+						"aircraft_geometry_main_landing_gear_length": {"type": "number", "minimum": 1.4, "maximum": 2.4},
+						"aircraft_geometry_main_landing_gear_number": {"type": "integer", "minimum": 1, "maximum": 2},
+						"aircraft_geometry_main_landing_gear_position": {"type": "integer", "minimum": 0, "maximum": 1},
+						"aircraft_geometry_main_landing_gear_wheels": {"type": "integer", "minimum": 1, "maximum": 2},
+						"aircraft_geometry_nose_landing_gear_length": {"type": "number", "minimum": 0.9, "maximum": 1.6},
+						"aircraft_geometry_nose_landing_gear_number": {"type": "integer", "minimum": 1, "maximum": 2},
+						"aircraft_geometry_nose_landing_gear_position": {"type": "integer", "minimum": 0, "maximum": 1},
+						"aircraft_geometry_nose_landing_gear_wheels": {"type": "integer", "minimum": 1, "maximum": 2},
+						"aircraft_geometry_slats_position": {"type": "integer", "minimum": 0, "maximum": 1},
+						"aircraft_geometry_slots_number": {"type": "integer", "minimum": 0, "maximum": 2},
+						"aircraft_geometry_wing_flap_type1_position": {"type": "integer", "minimum": 0, "maximum": 2},
+						"aircraft_geometry_wing_flap_type2_position": {"type": "integer", "minimum": 0, "maximum": 2},
+						"aircraft_parameters_CD_3P": {"type": "number", "minimum": 0.06, "maximum": 0.1},
+						"aircraft_parameters_CD_air_LG_down": {"type": "number", "minimum": 0.08, "maximum": 0.14},
+						"aircraft_parameters_CD_air_LG_up": {"type": "number", "minimum": 0.06, "maximum": 0.11},
+						"aircraft_parameters_CL_3P": {"type": "number", "minimum": 0.2, "maximum": 0.4},
+						"aircraft_parameters_CL_air": {"type": "number", "minimum": 1.2, "maximum": 2.1},
+						"engine_parameters_compressor_rotation": {"type": "integer", "minimum": 11212, "maximum": 18688},
+						"engine_parameters_fan_rotation": {"type": "integer", "minimum": 3714, "maximum": 6190},
+						"engine_parameters_throttle_position": {"type": "integer", "minimum": 0, "maximum": 1},
+						"landing_CD_3P": {"type": "number", "minimum": 0.06, "maximum": 0.1},
+						"landing_CL_3P": {"type": "number", "minimum": 0.2, "maximum": 0.4},
+						"landing_gamma": {"type": "integer", "minimum": -4, "maximum": -2},
+						"landing_lateral_distance_mic": {"type": "integer", "minimum": 0, "maximum": 1},
+						"landing_load_factor_flare": {"type": "number", "minimum": 0.8, "maximum": 1.4},
+						"landing_longitudinal_distance_mic": {"type": "integer", "minimum": 1500, "maximum": 2500},
+						"landing_mu_brake": {"type": "number", "minimum": 0.2, "maximum": 0.4},
+						"landing_mu_roll": {"type": "number", "minimum": 0.02, "maximum": 0.04},
+						"landing_transition_time": {"type": "number", "minimum": 0.7, "maximum": 1.3},
+						"relative_humidity": {"type": "integer", "minimum": 52, "maximum": 88},
+						"runaway_parameters_mu_brake": {"type": "number", "minimum": 0.2, "maximum": 0.4},
+						"runaway_parameters_mu_roll": {"type": "number", "minimum": 0.02, "maximum": 0.04},
+						"sideline_lateral_distance_mic": {"type": "integer", "minimum": 337, "maximum": 563},
+						"sideline_longitudinal_distance_mic": {"type": "integer", "minimum": 0, "maximum": 1},
+						"takeoff_k1": {"type": "number", "minimum": 0.8, "maximum": 1.4},
+						"takeoff_k2": {"type": "number", "minimum": 0.9, "maximum": 1.5},
+						"takeoff_lambda": {"type": "integer", "minimum": -2, "maximum": 2},
+						"takeoff_lateral_distance_mic": {"type": "integer", "minimum": 0, "maximum": 1},
+						"takeoff_longitudinal_distance_mic": {"type": "integer", "minimum": 4875, "maximum": 8125},
+						"takeoff_obstacle_altitude": {"type": "integer", "minimum": 26, "maximum": 44},
+						"takeoff_time_1": {"type": "number", "minimum": 2.0, "maximum": 4.0},
+						"takeoff_time_2": {"type": "number", "minimum": 2.0, "maximum": 4.0},
+						"takeoff_time_step": {"type": "number", "minimum": 0.3, "maximum": 0.7},
+						"takeoff_trajectory_max_distance": {"type": "integer", "minimum": 7500, "maximum": 12500}
+					}
+				},
+				"nose_landing_gear": {"type": "object", "properties": {
+						"trunnion_length": {"type": "number", "minimum": 0.9, "maximum": 1.7},
+						"tyre_diameter": {"type": "number", "minimum": 0.6, "maximum": 1.0},
+						"tyre_height": {"type": "number", "minimum": 0.18, "maximum": 0.32}
+					}
+				},
+				"operations": {"type": "object", "properties": {
+						"alternative_airport_distance": {"type": "integer", "minimum": 20, "maximum": 400},
+						"approach_allowance_mass": {"type": "integer", "minimum": 50, "maximum": 1000},
+						"average_arrival_delay": {"type": "integer", "minimum": 0, "maximum": 120},
+						"average_departure_delay": {"type": "integer", "minimum": 0, "maximum": 120},
+						"average_taxi_in_time": {"type": "integer", "minimum": 2, "maximum": 60},
+						"average_taxi_out_time": {"type": "integer", "minimum": 2, "maximum": 60},
+						"average_ticket_price": {"type": "integer", "minimum": 50, "maximum": 2000},
+						"buffet_margin": {"type": "number", "minimum": 1.2, "maximum": 1.44},
+						"climb_V_cas": {"type": "integer", "minimum": 200, "maximum": 400},
+						"contingency_fuel_percent": {"type": "number", "minimum": 0.0, "maximum": 0.15},
+						"cruise_V_cas": {"type": "integer", "minimum": 200, "maximum": 400},
+						"descent_altitude": {"type": "integer", "minimum": 1125, "maximum": 1875},
+						"descent_V_cas": {"type": "integer", "minimum": 200, "maximum": 400},
+						"flight_planning_delta_ISA": {"type": "integer", "minimum": -45, "maximum": 45},
+						"fuel_density": {"type": "number", "minimum": 0.75, "maximum": 0.85},
+						"fuel_price_per_kg": {"type": "number", "minimum": 0.5, "maximum": 2.0},
+						"go_around_allowance": {"type": "integer", "minimum": 50, "maximum": 1000},
+						"holding_time": {"type": "integer", "minimum": 0, "maximum": 45},
+						"landing_time_allowance": {"type": "integer", "minimum": 2, "maximum": 10},
+						"mach_climb": {"type": "number", "minimum": 0.5, "maximum": 1.0},
+						"mach_descent": {"type": "number", "minimum": 0.5, "maximum": 1.0},
+						"mach_maximum_operating": {"type": "number", "minimum": 0.70, "maximum": 0.90},
+						"market_share": {"type": "number", "minimum": 0.01, "maximum": 1.0},
+						"max_ceiling": {"type": "integer", "minimum": 25000, "maximum": 43000},
+						"max_operating_speed": {"type": "integer", "minimum": 250, "maximum": 350},
+						"min_cruise_time": {"type": "integer", "minimum": 1, "maximum": 10},
+						"passenger_mass": {"type": "integer", "minimum": 50, "maximum": 200},
+						"reference_load_factor": {"type": "number", "minimum": 0.01, "maximum": 1.0},
+						"takeoff_allowance": {"type": "integer", "minimum": 50, "maximum": 1000},
+						"takeoff_time_allowance": {"type": "integer", "minimum": 2, "maximum": 10},
+						"taxi_fuel_flow_reference": {"type": "integer", "minimum": 3, "maximum": 7},
+						"time_between_overhaul": {"type": "integer", "minimum": 1875, "maximum": 3125},
+						"turn_around_time": {"type": "integer", "minimum": 30, "maximum": 120}
+					}
+				},
+				"performance": {"type": "object", "properties": {
+						"residual_rate_of_climb": {"type": "integer", "minimum": 100, "maximum": 500}
+					}
+				},
+				"wing": {"type": "object", "properties": {
+						"flap_deflection_approach": {"type": "integer", "minimum": 0, "maximum": 45},
+						"flap_deflection_landing": {"type": "integer", "minimum": 0, "maximum": 45},
+						"flap_deflection_takeoff": {"type": "integer", "minimum": 0, "maximum": 45},
+						"friction_coefficient": {"type": "number", "minimum": 0.002, "maximum": 0.004},
+						"max_2D_lift_coefficient": {"type": "number", "minimum": 1.4, "maximum": 2.4},
+						"ribs_spacing": {"type": "integer", "minimum": 16, "maximum": 28},
+						"trunnion_xposition": {"type": "number", "minimum": 0.5, "maximum": 1.0}
+					}
+				}
+			}
+		},
+		"fixed_aircraft": {"type": "object", "properties": {
+				"aircraft": {"type": "object", "properties": {
+						"passenger_capacity": {"type": "integer", "minimum": 70, "maximum":220},
+						"slat_presencee": {"type": "integer", "minimum": 0, "maximum":1},
+						"winglet_presence": {"type": "integer", "minimum": 0, "maximum":1}
+					}
+				},
+				"engine":{"type": "object", "properties": {
+						"bypass": {"type": "number", "minimum": 45, "maximum":65},
+						"diameter": {"type": "number", "minimum": 10, "maximum":25},
+						"compressor_pressure_ratio": {"type": "number", "minimum": 27, "maximum":30},
+						"turbine_inlet_temperature": {"type": "integer", "minimum": 1350, "maximum":1500},
+						"fan_pressure_ratio": {"type": "number", "minimum": 14, "maximum":25},
+						"design_point_pressure": {"type": "integer", "minimum": 39000, "maximum":43000},
+						"design_point_mach": {"type": "number", "minimum": 78, "maximum":82},
+						"position": {"type": "integer", "minimum": 0, "maximum":1}
+					}
+				},
+				"fuselage": {"type": "object", "properties": {
+						"seat_abreast_number": {"type": "integer", "minimum": 4, "maximum":6}
+					}
+				},
+				"horizontal_tail": {"type": "object", "properties": {
+						"position": {"type": "integer", "minimum": 0, "maximum":1}
+					}
+				},
+				"performance": {"type": "object", "properties": {
+						"range": {"type": "integer", "minimum": 1000, "maximum":3500}
+					}
+				},
+				"wing": {"type": "object", "properties": {
+						"area": {"type": "integer", "minimum": 70, "maximum":130},
+						"aspect_ratio": {"type": "number", "minimum": 75, "maximum":120},
+						"taper_ratio": {"type": "number", "minimum": 25, "maximum":50},
+						"sweep_c_4": {"type": "integer", "minimum": 15, "maximum":30},
+						"twist": {"type": "integer", "minimum": -5, "maximum":-2},
+						"semi_span_kink": {"type": "number", "minimum": 32, "maximum":45}
+					}
+				}
+			}
+		},
+		"demands": {
+			"type": "object",
+			"patternProperties": {
+				"^[A-Z]{3}$": {
+					"type": "object",
+					"patternProperties": {
+						"^[A-Z]{3}$": {
+							"type": "object",
+							"required": ["demand", "takeoff_runway", "landing_runway"],
+							"properties": {
+								"demand": {"type": "integer", "minimum": 1, "maximum":10000},
+								"takeoff_runway": {"type": "string", "pattern": "^[0-9]{1,2}[A-Z]{0,1}$"},
+								"landing_runway": {"type": "string", "pattern": "^[0-9]{1,2}[A-Z]{0,1}$"}
+							}
+						}
+					},
+					"additionalProperties": false,
+					"maxProperties": 9,
+					"minProperties": 4
+				}
+			},
+			"additionalProperties": false,
+			"maxProperties": 10,
+			"minProperties": 5
+		}
+	},
+	"oneOf": [
+		{
+			"required": ["demands"],
+			"not": {"required": ["fixed_aircraft"]}
+		},
+		{
+			"required": ["demands", "fixed_aircraft"],
+			"not": {"required": ["design_variables"]}
+		}
+	]
+}

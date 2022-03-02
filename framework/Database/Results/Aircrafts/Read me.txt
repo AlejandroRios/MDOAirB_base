@@ -1,0 +1,3 @@
+Optimization results are stored in this folder. 
+Save your results into another folder after optimization is finished.
+Clean this folder before push to github repository.

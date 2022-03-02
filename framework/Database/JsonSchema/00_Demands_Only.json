@@ -1,0 +1,474 @@
+{
+	"demands": {
+		"FRA": {
+			"LHR": { 
+				"demand": 4509,
+				"takeoff_runway": "07L",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 2940,
+				"takeoff_runway": "07L",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 2520,
+				"takeoff_runway": "07L",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 3132,
+				"takeoff_runway": "07L",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 2979,
+				"takeoff_runway": "07L",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 1923,
+				"takeoff_runway": "07L",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 2208,
+				"takeoff_runway": "07L",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 3237,
+				"takeoff_runway": "07L",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 1875,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			}
+		},
+		"LHR": {
+			"FRA": {
+				"demand": 4509,
+				"takeoff_runway": "27R",
+				"landing_runway": "07L"
+			},
+			"CDG": {
+				"demand": 3420,
+				"takeoff_runway": "27R",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 4686,
+				"takeoff_runway": "27R",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 3984,
+				"takeoff_runway": "27R",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 2151,
+				"takeoff_runway": "27R",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 2535,
+				"takeoff_runway": "27R",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 5049,
+				"takeoff_runway": "27R",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 2268,
+				"takeoff_runway": "27R",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 3215,
+				"takeoff_runway": "27R",
+				"landing_runway": "14"
+			}
+		},
+		"CDG": {
+			"FRA": {
+				"demand": 2940,
+				"takeoff_runway": "08L",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 3420,
+				"takeoff_runway": "08L",
+				"landing_runway": "27R"
+			},
+			"AMS": {
+				"demand": 3337,
+				"takeoff_runway": "08L",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 2996,
+				"takeoff_runway": "08L",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 3738,
+				"takeoff_runway": "08L",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 3545,
+				"takeoff_runway": "08L",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 2044,
+				"takeoff_runway": "08L",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 2549,
+				"takeoff_runway": "08L",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 1925,
+				"takeoff_runway": "08L",
+				"landing_runway": "14"
+			}
+		},
+		"AMS": {
+			"FRA": {
+				"demand": 2520,
+				"takeoff_runway": "6",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 4686,
+				"takeoff_runway": "6",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 3337,
+				"takeoff_runway": "6",
+				"landing_runway": "08L"
+			},
+			"MAD": {
+				"demand": 3071,
+				"takeoff_runway": "6",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 3744,
+				"takeoff_runway": "6",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 2910,
+				"takeoff_runway": "6",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 3271,
+				"takeoff_runway": "6",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 2550,
+				"takeoff_runway": "6",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 2559,
+				"takeoff_runway": "6",
+				"landing_runway": "14"
+			}
+		},
+		"MAD": {
+			"FRA": {
+				"demand": 3132,
+				"takeoff_runway": "14R",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 3984,
+				"takeoff_runway": "14R",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 2996,
+				"takeoff_runway": "14R",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 3071,
+				"takeoff_runway": "14R",
+				"landing_runway": "6"
+			},
+			"BCN": {
+				"demand": 6969,
+				"takeoff_runway": "14R",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 3402,
+				"takeoff_runway": "14R",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 1501,
+				"takeoff_runway": "14R",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 1498,
+				"takeoff_runway": "14R",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 1832,
+				"takeoff_runway": "14R",
+				"landing_runway": "14"
+			}
+		},
+		"BCN": {
+			"FRA": {
+				"demand": 2979,
+				"takeoff_runway": "07L",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 2151,
+				"takeoff_runway": "07L",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 3738,
+				"takeoff_runway": "07L",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 3744,
+				"takeoff_runway": "07L",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 6969,
+				"takeoff_runway": "07L",
+				"landing_runway": "18L"
+			},
+			"FCO": {
+				"demand": 3836,
+				"takeoff_runway": "07L",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 1637,
+				"takeoff_runway": "07L",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 1751,
+				"takeoff_runway": "07L",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 1713,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			}
+		},
+		"FCO": {
+			"FRA": {
+				"demand": 1923,
+				"takeoff_runway": "16L",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 2535,
+				"takeoff_runway": "16L",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 3545,
+				"takeoff_runway": "16L",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 2910,
+				"takeoff_runway": "16L",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 3402,
+				"takeoff_runway": "16L",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 3836,
+				"takeoff_runway": "16L",
+				"landing_runway": "07R"
+			},
+			"DUB": {
+				"demand": 553,
+				"takeoff_runway": "16L",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 1435,
+				"takeoff_runway": "16L",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 990,
+				"takeoff_runway": "16L",
+				"landing_runway": "14"
+			}
+		},
+		"DUB": {
+			"FRA": {
+				"demand": 2208,
+				"takeoff_runway": "10",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 5049,
+				"takeoff_runway": "10",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 2044,
+				"takeoff_runway": "10",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 3271,
+				"takeoff_runway": "10",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 1501,
+				"takeoff_runway": "10",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 1637,
+				"takeoff_runway": "10",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 553,
+				"takeoff_runway": "10",
+				"landing_runway": "16L"
+			},
+			"VIE": {
+				"demand": 628,
+				"takeoff_runway": "10",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 783,
+				"takeoff_runway": "10",
+				"landing_runway": "14"
+			}
+		},
+		"VIE": {
+			"FRA": {
+				"demand": 3237,
+				"takeoff_runway": "16",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 2268,
+				"takeoff_runway": "16",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 2549,
+				"takeoff_runway": "16",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 2550,
+				"takeoff_runway": "16",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 1498,
+				"takeoff_runway": "16",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 1751,
+				"takeoff_runway": "16",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 1435,
+				"takeoff_runway": "16",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 628,
+				"takeoff_runway": "16",
+				"landing_runway": "10"
+			},
+			"ZRH": {
+				"demand": 2601,
+				"takeoff_runway": "16",
+				"landing_runway": "14"
+			}
+		},
+		"ZRH": {
+			"FRA": {
+				"demand": 1875,
+				"takeoff_runway": "14",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 3215,
+				"takeoff_runway": "14",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 1925,
+				"takeoff_runway": "14",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 2559,
+				"takeoff_runway": "14",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 1832,
+				"takeoff_runway": "14",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 1713,
+				"takeoff_runway": "14",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 990,
+				"takeoff_runway": "14",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 783,
+				"takeoff_runway": "14",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 2601,
+				"takeoff_runway": "14",
+				"landing_runway": "16"
+			}
+		}
+	}
+}
