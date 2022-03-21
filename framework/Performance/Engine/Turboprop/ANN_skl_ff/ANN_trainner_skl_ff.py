@@ -28,7 +28,7 @@ y_test = scaler2.transform(y_test)
 y_train = scaler2.transform(y_train)
 
 
-nn_unit = neural_network.MLPRegressor(hidden_layer_sizes=(90,30), activation='relu', 
+nn_unit = neural_network.MLPRegressor(hidden_layer_sizes=(30,100), activation='relu', 
                                       solver='lbfgs', max_iter=1000, learning_rate = 'adaptive', learning_rate_init = 0.01,random_state=11)
 
 regressormodel=nn_unit.fit(x_train,y_train)

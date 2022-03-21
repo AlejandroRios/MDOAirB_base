@@ -181,7 +181,7 @@ def corrdot(*args, **kwargs):
     corr_text = f"{corr_r:2.2f}".replace("0.", ".")
     ax = plt.gca()
     ax.set_axis_off()
-    marker_size = abs(corr_r) * 10000
+    marker_size = abs(corr_r) * 5000
     ax.scatter([.5], [.5], marker_size, [corr_r], alpha=0.6, cmap="coolwarm",
                vmin=-1, vmax=1, transform=ax.transAxes)
     font_size = abs(corr_r) * 40 + 5

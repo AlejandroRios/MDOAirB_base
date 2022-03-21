@@ -17,7 +17,7 @@ def layer_selection(hidden_1,hidden_2):
     hidden_1 = int(hidden_1)
     hidden_2 = int(hidden_2)
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y2, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x, y2, test_size=0.2, random_state=10)
 
     scaler = StandardScaler()
     scaler.fit(x_train)

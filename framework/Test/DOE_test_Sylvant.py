@@ -608,15 +608,15 @@ def main(argv):
     try:
         computation_mode, route_computation_mode, airports, distances, demands, _, fixed_parameters, fixed_aircraft = read_custom_inputs(
             CUSTOM_INPUTS_SCHEMA, customInputsfile)
-        n_inputs = 16
+        n_inputs = 15
 
         # Lower and upeer bounds of each input variable
         #     0   | 1   | 2   |  3     |   4    |   5      | 6     | 7     |  8     |   9   | 10    | 11    |   12     | 13    | 14          |  15
         #    Areaw| ARw | TRw | Sweepw | Twistw | b/2kinkw | bypass| Ediam | PRcomp |  Tin  | PRfan | PAX   | seat abr | range | design pres | mach
         lb = [72,  75,  25,     15,      -5,       32,       45,    10,
-              27,      1350,   14,     70,     4,        1000,     39000,       78]
+              27,      1350,   14,     70,     4,        1000,   0]
         ub = [130, 120,  50,     30,      -2,       45,       65,    15,
-              30,      1500,   25,     220,    6,        3500,     43000,       82]
+              30,      1500,   25,     220,    6,        3500,     44]
         # Desired number of samples
         n_samples = 2
 
@@ -665,15 +665,10 @@ def main(argv):
             250,  #PAX number
             6,  #seat abreast
             3000,  #range
-            37000,  #design point pressure
-            78,  #design point mach x 10
-            1,
-            1,
-            1,
-            1
+            0
         ]
-        #    0     1    2  3     4      5    6    7  8    9    10  11   12   13   14     15  16 17 18 19
-        x = [130,  91, 38, 29,  -4.5,   33, 80,  20, 25, 1480, 11, 144,  6, 1000, 41000, 78,  1, 1, 1, 1]
+        # #    0     1    2  3     4      5    6    7  8    9    10  11   12   13   14     15  16 17 18 19
+        # x = [130,  91, 38, 29,  -4.5,   33, 80,  20, 25, 1480, 11, 144,  6, 1000, 41000, 78,  1, 1, 1, 1]
 
 
 
@@ -702,8 +697,8 @@ def main(argv):
             }
         }
 
-        WingArea = np.linspace(120, 150, 5)
-        FanDiameter = np.linspace(10, 25, 5)
+        WingArea = np.linspace(70, 150, 5)
+        FanDiameter = np.linspace(10, 35, 5)
         fuel_mass_list = []
         for wa in WingArea:
             for fd in FanDiameter:
