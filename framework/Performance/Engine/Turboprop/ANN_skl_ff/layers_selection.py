@@ -8,16 +8,16 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm, Normalize
 
-x = np.load("X_data2.npy")
-# y1 = np.load("y1_data2.npy")
-y2 = np.load("y2_data2.npy")
+x = np.load("Performance/Engine/Turboprop/X_data2.npy")
+y1 = np.load("Performance/Engine/Turboprop/y1_data2.npy")
+y2 = np.load("Performance/Engine/Turboprop/y2_data2.npy")
 
 def layer_selection(hidden_1,hidden_2):
 
     hidden_1 = int(hidden_1)
     hidden_2 = int(hidden_2)
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y2, test_size=0.2, random_state=10)
+    x_train, x_test, y_train, y_test = train_test_split(x, y2, test_size=0.2, random_state=42)
 
     scaler = StandardScaler()
     scaler.fit(x_train)
@@ -48,7 +48,7 @@ hidden_1_labels = [str(x) for x in hidden_1]
 hidden_2_labels = [str(x) for x in hidden_2]
 
 try:
-    mse_matrix = np.load("mse_data.npy")
+    mse_matrix = np.load("Performance/Engine/Turboprop/ANN_skl_ff/mse_data.npy")
 except:
     mse_matrix = []
 
@@ -58,7 +58,7 @@ except:
             mse_matrix.append(mse)
 
     mse_matrix = np.array(mse_matrix).reshape(10,10)
-    np.save("mse_data.npy", mse_matrix)
+    np.save("Performance/Engine/Turboprop/ANN_skl_ff/mse_data.npy", mse_matrix)
 
 
 plt.rc('font', family='serif')

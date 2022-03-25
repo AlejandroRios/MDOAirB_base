@@ -68,6 +68,8 @@ log = get_logger(__file__.split('.')[0])
 
 def objective_function(x, original_vehicle, computation_mode, route_computation_mode, airports, distances, demands):
 
+    
+
     log.info('==== Start network profit module ====')
     start_time = datetime.now()
 

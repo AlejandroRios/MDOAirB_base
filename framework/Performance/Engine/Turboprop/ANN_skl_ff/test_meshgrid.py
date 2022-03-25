@@ -21,7 +21,7 @@ print(x_1)
 print("y_1 = ")
 print(y_1)
 
-random_data = np.load("mse_data.npy")/100
+random_data = np.load("Performance/Engine/Turboprop/ANN_skl_ff/mse_data.npy")/100
 plt.contourf(x_1, y_1, random_data, cmap='viridis',norm=LogNorm())
 # print(im))
  

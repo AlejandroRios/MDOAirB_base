@@ -1,38 +1,65 @@
 import numpy as np
-import os
 import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
-
-from sklearn.neural_network import MLPClassifier
-from sklearn.neural_network import MLPRegressor
-from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
-from sklearn import metrics
-
-
 import numpy as np
 import matplotlib.pyplot as pl
 from sklearn import neural_network 
-from sklearn import datasets
 from sklearn.metrics import mean_squared_error, explained_variance_score
 from sklearn.model_selection import cross_val_predict
-from sklearn.model_selection import cross_validate
 from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler
+
+from matplotlib.offsetbox import AnchoredText
+
+def poly2latex(poly, variable="x", width=2):
+
+    t = ["{0:0.{width}e}"]
+    t.append(t[-1] + " {variable}")
+    t.append(t[-1] + "^{1}")
+
+    def f():
+        for i, v in enumerate(reversed(poly)):
+            idx = i if i < 2 else 2
+            yield t[idx].format(v, i, variable=variable, width=width)
+
+    return "${}$".format("+".join(f()))
+
+def polyfit(x, y, degree):
+    '''
+    Description: This function calculates parameters from regression
+
+    Inputs: 
+        - x: x data
+        - y; y data
+        - degree: polyinomial degree interval [1-3]
+
+    Outputs:
+        - dictionary containing results (coefficients and R^2 value)
+    '''
+
+    results = {}
+
+    coeffs = np.polyfit(x, y, degree)
+
+     # Polynomial Coefficients
+    results['polynomial'] = coeffs.tolist()
+
+    # r-squared
+    p = np.poly1d(coeffs)
+    # fit values, and mean
+    yhat = p(x) # or [p(z) for z in x]
+    ybar = np.sum(y)/len(y) # or sum(y)/len(y)
+    ssreg = np.sum((yhat-ybar)**2) # or sum([ (yihat - ybar)**2 for yihat in yhat])
+    sstot = np.sum((y - ybar)**2) # or sum([ (yi - ybar)**2 for yi in y])
+    results['R'] = ssreg / sstot
+
+    return results
+
+x = np.load("Performance/Engine/Turboprop/X_data2.npy")
+y1 = np.load("Performance/Engine/Turboprop/y1_data2.npy")
+y2 = np.load("Performance/Engine/Turboprop/y2_data2.npy")
 
 
-
-x = np.load("X_data.npy")
-y1 = np.load("y1_data.npy")
-y2 = np.load("y2_data.npy")
-
-# y1 = np.where(y1<0, 0, y1)
-# y2 = np.where(y2<0, 0, y2)
-
-
-
-# x_train, x_test, y_train, y_test = train_test_split(x, y2, test_size=0.2, random_state=12)
 x_train, x_test, y_train, y_test = train_test_split(x, y1, test_size=0.2, random_state=42)
 
 # scaler = MinMaxScaler()
@@ -48,12 +75,9 @@ x_test = scaler.transform(x_test)
 # y_train = scaler2.transform(y_train)
 # nn_unit = neural_network.MLPRegressor(activation='relu', solver='lbfgs')
 
-nn_unit = neural_network.MLPRegressor(hidden_layer_sizes=(90,90), activation='relu', 
+nn_unit = neural_network.MLPRegressor(hidden_layer_sizes=(90,100), activation='relu', 
                                       solver='lbfgs', max_iter=1000, learning_rate = 'adaptive', learning_rate_init = 0.001,random_state=11)
 
-# 3 20
-# 11 20 38
-# 12 20
 
 regressormodel=nn_unit.fit(x_train,y_train)
 
@@ -69,16 +93,29 @@ rmsecv=np.sqrt(mean_squared_error(y_test,yp_cv))
 
 
 
-# plt.figure(0)
-# plt.xlabel("#E poca")
-# plt.ylabel("Magnitud de perdida")
-# plt.plot(regressormodel.history["loss"])
+y_test = y_test.flatten()
 
+x_new = np.linspace(min(y_test),max(y_test),50)
+p = np.polyfit(yp, y_test, 1)
+y_est = p[0]*x_new + p[1]
+results = polyfit(yp, y_test, 1)
+
+
+plt.rc('font', family='serif')
+plt.rc('xtick', labelsize='x-small')
+plt.rc('ytick', labelsize='x-small')
+
+fig1 = plt.figure(figsize=(10, 9))
+ax1 = fig1.add_subplot(1, 1, 1)
+
+
+anchored_text = AnchoredText('$R^2$: {:.4f} \n'.format(results['R']) +  '$MSE $: {:.2f}'.format(rmse*100) + "%"  , loc=4)
+ax1.add_artist(anchored_text)
 
 from joblib import dump, load
-dump(nn_unit, 'nn_force_PW120.joblib') 
+dump(nn_unit, 'Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib') 
 
-dump(scaler, 'scaler_force_PW120_in.bin', compress=True)
+dump(scaler, 'Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin', compress=True)
 # dump(scaler2, 'scaler_force_PW120_out.bin', compress=True)
 
 print('Method: ReLU')
@@ -86,14 +123,18 @@ print('RMSE on the data: %.4f' %rmse)
 print('RMSE on 10-fold CV: %.4f' %rmsecv)
 
 
-n_fig=0
-plt.figure(n_fig)
-plt.plot(yp, y_test,'ro')
-# plt.plot(y_test,'bo')
-plt.plot(yp_cv, y_test,'bo', alpha=0.25, label='10-folds CV')
-plt.xlabel('predicted')
-plt.title('Method: ReLU')
-plt.ylabel('real')
+
+ax1.plot(yp, y_test,'bo',alpha=0.5)
+ax1.plot(x_new, y_est, 'k-',label='linear regression',linewidth=2)
+
+ax1.set_xlabel('Predicted')
+ax1.set_ylabel('Actual')
+ax1.set_title('Activation function: ReLU')
+
+ax1.set_xlim([0,None])
+ax1.set_ylim([0,None])
+
+plt.title('Activation function: ReLU',fontsize=14)
+plt.ylabel('Actual',fontsize=14)
 plt.grid(True)
 plt.show()
-

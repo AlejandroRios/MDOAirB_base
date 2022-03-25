@@ -7,21 +7,21 @@ from sklearn.preprocessing import StandardScaler
 # from sklearn.preprocessing import inverse_transform
 from sklearn.model_selection import train_test_split
 
-scaler = load('force_in_scaler.bin') 
-scaler2 = load('force_out_scaler.bin')
+scaler = load('Performance/Engine/Turboprop/ANN_skl_force/force_in_scaler.bin') 
+scaler2 = load('Performance/Engine/Turboprop/ANN_skl_force/force_out_scaler.bin')
 
 # load json and create model
-json_file = open('force_ANN.json', 'r')
+json_file = open('Performance/Engine/Turboprop/ANN_skl_force/force_ANN.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
-loaded_model.load_weights("force_ANN.h5")
+loaded_model.load_weights("Performance/Engine/Turboprop/ANN_skl_force/force_ANN.h5")
 print("Loaded model from disk")
  
 
-X_data = np.load('X_data.npy')
-y_data = np.load('y1_data.npy')
+X_data = np.load('Performance/Engine/Turboprop/X_data2.npy')
+y_data = np.load('Performance/Engine/Turboprop/y1_data2.npy')
 x_train, x_test, y_train, y_test = train_test_split(X_data, y_data, test_size=0.1, random_state=42)
 
 scaler = StandardScaler()
@@ -29,25 +29,15 @@ scaler.fit(x_train)
 generated_inputs = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 
-scaler2 = StandardScaler()
-scaler2.fit(y_train)
-y_test = scaler2.transform(y_test)
 
 # evaluate loaded model on test data
-
-
 test = loaded_model.predict(scaler.transform([(25000,0.1,1)]))
 test = scaler2.inverse_transform(test)
 
-print(test)
-
-
-
 
 M0 = np.linspace(0.01,0.7,101)
-altitude = np.linspace(0,35000,11)
-throttle_position = np.linspace(0.1,1,11)
-
+altitude = np.linspace(0,35000,101)
+throttle_position = np.linspace(0.1,1,101)
 
 
 F_vec = []
@@ -73,7 +63,7 @@ F_vec = np.asarray(F_vec)
 y1 = np.asarray(F_vec)
 # y2 = np.asarray(fuel_flow_vec)
 
-x = np.load("X_datat.npy")
+x = np.load("Performance/Engine/Turboprop/ANN_skl_force/X_datat.npy")
 
 # x = np.load("X_datat.npy")
 # y1 = np.load("y1_datat.npy")

@@ -57,6 +57,10 @@ from jsonschema import validate
 log = get_logger(__file__.split('.')[0])
 
 def network_optimization(computation_mode, airports_keys, distances, demands, doc0, vehicle):
+
+
+
+    
     log.info('==== Start network optimization module ====')
     # Definition of cities to be considered as departure_airport, first stop, final airport
     aircraft = vehicle['aircraft']

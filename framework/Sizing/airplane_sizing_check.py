@@ -87,7 +87,7 @@ def airplane_sizing(vehicle,x=None):
     log.info('---- Start aircraft sizing module ----')
 
     if int(x[9]) <= 44:
-        df = pd.read_pickle("engines.pkl")
+        df = pd.read_pickle("Performance/Engine/Deck/engines.pkl")
         index = int(x[9] )
 
         de = df.loc[index, 'De (m)']
@@ -97,6 +97,7 @@ def airplane_sizing(vehicle,x=None):
         tit = df.loc[index, 'TIT (K)']
     
     else:
+        # Here we are going to include the turboprop
         a =1 
 
 
