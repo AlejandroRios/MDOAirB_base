@@ -680,7 +680,7 @@ def aircraft_empty_weight(vehicle, maximum_takeoff_weight, fuel_mass, engine_sta
 # =============================================================================
 # TEST
 # =============================================================================
-vehicle = initialize_aircraft_parameters()
+# vehicle = initialize_aircraft_parameters()
 # maximum_takeoff_weight = 43718
 # mach = 0.8
 # altitude = 41000
