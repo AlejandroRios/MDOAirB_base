@@ -1,10 +1,11 @@
 from framework.CPACS_update.cpacsfunctions import *
 import numpy as np
+import os
 def plot3d_tigl(vehicle):
 
     deg_to_rad =np.pi/180
-
-    MODULE_DIR = 'c:/Users/aarc8/Documents/github\MDOAirB/framework/CPACS_update'
+    path = os.getcwd()
+    MODULE_DIR = path + '/CPACS_update'
     cpacs_path = os.path.join(MODULE_DIR, 'ToolInput', 'Aircraft_In.xml')
     cpacs_out_path = os.path.join(MODULE_DIR, 'ToolOutput', 'Aircraft_Out.xml')
     tixi = open_tixi(cpacs_out_path)

@@ -1,5 +1,5 @@
 {
-	// Use IntelliSense to learn about possible attributes.
+    // Use IntelliSense to learn about possible attributes.
 	// Hover to view descriptions of existing attributes.
 	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
@@ -10,8 +10,8 @@
 			"request": "launch",
 			"program": "${file}",
 			"console": "integratedTerminal",
-			"cwd": "${workspaceFolder}/framework",
-			"args" : ["--file", "Database/JsonSchema/00_Demands_Only.json"]
+			"cwd": "${workspaceFolder}/framework"
+			//"args" : ["--file", "Database/JsonSchema/00_Demands_Only.json"]
 		}
 	]
 }

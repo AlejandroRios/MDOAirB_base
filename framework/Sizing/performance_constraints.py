@@ -142,7 +142,7 @@ def landing_field_length_check(vehicle, airport_destination, landing_runway, max
         else:
             flag = 2
 
-    return weight_landing
+    return weight_landing, landing_field_length_computed
 
 
 def landing_climb_check(vehicle, airport_destination, maximum_takeoff_weight, weight_landing):
@@ -303,7 +303,7 @@ def regulated_landing_weight(vehicle, airport_destination, landing_runway):
 
     maximum_takeoff_weight = aircraft['maximum_takeoff_weight']*GRAVITY
 
-    landing_field_length_weight = landing_field_length_check(
+    landing_field_length_weight, landing_field_length_computed = landing_field_length_check(
         vehicle, airport_destination, landing_runway, maximum_takeoff_weight, weight_landing)
 
     landing_climb = landing_climb_check(
@@ -314,7 +314,7 @@ def regulated_landing_weight(vehicle, airport_destination, landing_runway):
 
     maximum_landing_weight = min(
         landing_field_length_weight, landing_climb, missed_approach)
-    return maximum_landing_weight/GRAVITY  # [Kg]
+    return maximum_landing_weight/GRAVITY, landing_field_length_computed  # [Kg] / m
 # =============================================================================
 # MAIN
 # =============================================================================

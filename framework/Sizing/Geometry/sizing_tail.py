@@ -28,6 +28,7 @@ from framework.Sizing.Geometry.sizing_vertical_tail import sizing_vertical_tail
 from framework.Sizing.Geometry.sizing_horizontal_tail import sizing_horizontal_tail
 from framework.Weights.center_of_gravity_position import center_of_gravity
 from framework.CPACS_update.cpacsfunctions import *
+import os
 # =============================================================================
 # CLASSES
 # =============================================================================
@@ -52,7 +53,8 @@ def sizing_tail(vehicle, mach, altitude):
         - vehicle - dictionary containing aircraft parameters
     """
 
-    MODULE_DIR = 'c:/Users/aarc8/Documents/github\MDOAirB/framework/CPACS_update'
+    path = os.getcwd()
+    MODULE_DIR = path + '/CPACS_update'
     cpacs_path = os.path.join(MODULE_DIR, 'ToolInput', 'Aircraft_In.xml')
     cpacs_out_path = os.path.join(MODULE_DIR, 'ToolOutput', 'Aircraft_Out.xml')
     tixi = open_tixi(cpacs_out_path)

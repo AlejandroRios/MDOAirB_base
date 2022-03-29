@@ -105,8 +105,8 @@ def close_tixi(tixi_handle, cpacs_out_path):
     """
 
     # Check if the directory of 'cpacs_out_path' exist, if not, create it
-    path_split = cpacs_out_path.split('\\')[:-1]
-    dir_path = '\\'.join(str(m) for m in path_split)
+    #path_split = cpacs_out_path.split('\\')[:-1]
+    dir_path = cpacs_out_path #cp'\\'.join(str(m) for m in path_split)
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
         # log.info(str(dir_path) + ' directory has been created.')

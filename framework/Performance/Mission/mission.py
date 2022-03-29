@@ -141,7 +141,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
     captain_salary, first_officer_salary, flight_attendant_salary = crew_salary(aircraft['maximum_takeoff_weight'])
     
     regulated_takeoff_mass = regulated_takeoff_weight(vehicle, airport_departure, takeoff_runway)
-    regulated_landing_mass = regulated_landing_weight(vehicle, airport_destination, landing_runway)
+    regulated_landing_mass, landing_field_length_computed = regulated_landing_weight(vehicle, airport_destination, landing_runway)
 
     max_takeoff_mass = regulated_takeoff_mass
     max_landing_mass = regulated_landing_mass
@@ -459,7 +459,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
     # end_time = datetime.now()
     # log.info('DOC mission execution time: {}'.format(end_time - start_time))
 
-    return float(fuel_mass), float(complete_mission_flight_time),float(DOC),float(mach),float(passenger_capacity), float(SAR)
+    return float(fuel_mass), float(complete_mission_flight_time),float(DOC),float(mach),float(passenger_capacity), float(SAR), float(landing_field_length_computed)
 
 
 # =============================================================================

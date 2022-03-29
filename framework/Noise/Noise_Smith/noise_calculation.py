@@ -68,19 +68,19 @@ def aircraft_noise(takeoff_parameters, landing_parameters,aircraft_parameters,ai
     
     # ---- Takeoff noise ----
     # Takeoff flight path:
-    time_vec,velocity_vec,distance_vec,velocity_horizontal_vec,altitude_vec,velocity_vertical_vec,trajectory_angle_vec,fan_rotation_vec,compressor_rotation_vec = takeoff_profile(takeoff_parameters,landing_parameters,aircraft_parameters,runaway_parameters,engine_parameters,vehicle)
+    # time_vec,velocity_vec,distance_vec,velocity_horizontal_vec,altitude_vec,velocity_vertical_vec,trajectory_angle_vec,fan_rotation_vec,compressor_rotation_vec = takeoff_profile(takeoff_parameters,landing_parameters,aircraft_parameters,runaway_parameters,engine_parameters,vehicle)
     throttle_position = 1
 
     # Noise calculation - EPNdB
-    noise_parameters
-    takeoff_noise = takeoff_EPNdB(time_vec,velocity_vec,distance_vec,velocity_horizontal_vec,altitude_vec,velocity_vertical_vec,trajectory_angle_vec,fan_rotation_vec,compressor_rotation_vec, throttle_position, takeoff_parameters,noise_parameters,aircraft_geometry,engine_parameters,vehicle)
+    # noise_parameters
+    takeoff_noise = 0 #takeoff_EPNdB(time_vec,velocity_vec,distance_vec,velocity_horizontal_vec,altitude_vec,velocity_vertical_vec,trajectory_angle_vec,fan_rotation_vec,compressor_rotation_vec, throttle_position, takeoff_parameters,noise_parameters,aircraft_geometry,engine_parameters,vehicle)
 
     # ---- Sideline noise ----
-    sideline_noise,_ = sideline_EPNdB(time_vec,velocity_vec,distance_vec,velocity_horizontal_vec,altitude_vec,velocity_vertical_vec,trajectory_angle_vec,fan_rotation_vec,compressor_rotation_vec,throttle_position,takeoff_parameters,noise_parameters,aircraft_geometry,engine_parameters,vehicle)
+    sideline_noise = 0 #,_ = sideline_EPNdB(time_vec,velocity_vec,distance_vec,velocity_horizontal_vec,altitude_vec,velocity_vertical_vec,trajectory_angle_vec,fan_rotation_vec,compressor_rotation_vec,throttle_position,takeoff_parameters,noise_parameters,aircraft_geometry,engine_parameters,vehicle)
 
     # ---- Aproach and landing noise ----
-    t, d, h, FN, CD, CL, VT = approach_profile(takeoff_parameters,landing_parameters,aircraft_parameters,vehicle)
-    landing_noise = approach_EPNdB(t,VT,d,h,landing_parameters,noise_parameters,aircraft_geometry,vehicle)
+    #t, d, h, FN, CD, CL, VT = approach_profile(takeoff_parameters,landing_parameters,aircraft_parameters,vehicle)
+    landing_noise = 0 #approach_EPNdB(t,VT,d,h,landing_parameters,noise_parameters,aircraft_geometry,vehicle)
 
     return takeoff_noise, sideline_noise, landing_noise
 

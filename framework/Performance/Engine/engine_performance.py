@@ -237,7 +237,7 @@ def turbofan(altitude, mach, throttle_position, vehicle):
 
         # ----- HIGHT TURBINE -----------------------------------------------------
         T0_5_T0_4 = optimize.fsolve(lambda x: find_turbine_temperature_ratio(
-            x, a4p/a4, turbine_efficiency, -gamma_4/(gamma_4-1)), 0.5)
+            x, a4p/a4, turbine_efficiency, -gamma_4/(gamma_4-1)), 0.5)[0]
         T0_5 = T0_4*T0_5_T0_4
         _, _, _, _, Cp_5, _, gamma_5, _ = FAIR(item=1, f=0, T=T0_5)
         del_t_ht = T0_5 - T0_4
@@ -247,7 +247,7 @@ def turbofan(altitude, mach, throttle_position, vehicle):
 
         # ----- LOWER TURBINE -----------------------------------------------------
         T0_15_T0_5 = optimize.fsolve(lambda x: find_turbine_temperature_ratio(
-            x, a8d/a4p, turbine_efficiency, -gamma_5/(gamma_5-1)), 0.5)
+            x, a8d/a4p, turbine_efficiency, -gamma_5/(gamma_5-1)), 0.5)[0]
         T0_15 = T0_5 * T0_15_T0_5
         _, _, _, _, Cp_15, _, gamma_15, _ = FAIR(item=1, f=0, T=T0_15)
         del_t_lt = T0_15 - T0_5
