@@ -52,7 +52,7 @@ def sizing_tail(vehicle, mach, altitude):
         - vehicle - dictionary containing aircraft parameters
     """
 
-    MODULE_DIR = 'c:/Users/aarc8/Documents/github\MDOAirB/framework/CPACS_update'
+    MODULE_DIR = 'c:/Users/aarc8/Documents/github\MDOAirB_base/framework/CPACS_update'
     cpacs_path = os.path.join(MODULE_DIR, 'ToolInput', 'Aircraft_In.xml')
     cpacs_out_path = os.path.join(MODULE_DIR, 'ToolOutput', 'Aircraft_Out.xml')
     tixi = open_tixi(cpacs_out_path)
