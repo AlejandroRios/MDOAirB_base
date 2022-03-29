@@ -28,6 +28,7 @@ from scipy.integrate import ode
 from scipy.integrate import solve_ivp
 import numpy as np
 import math
+import warnings
 # =============================================================================
 # CLASSES
 # =============================================================================
@@ -106,14 +107,15 @@ def takeoff_integration(
         Tsim = initial_block_time + 200
         stop_condition_ground.terminal = True
         sol = solve_ivp(ground, [initial_block_time, Tsim], [initial_block_distance, initial_block_velocity],
-                events = stop_condition_ground,rtol = 1e-10, method='LSODA',args = (takeoff_parameters,runaway_parameters,landing_parameters,rho_ISA,vehicle,stop_criteria), dense_output=True)
+                events = stop_condition_ground,rtol = 1e-10, method='LSODA',args = (takeoff_parameters,runaway_parameters,landing_parameters,rho_ISA,vehicle,stop_criteria), dense_output=True, min_step = 1e-10)
     
 
     if phase == 'flare':
         Tsim = initial_block_time + 200
         stop_condition_flare.terminal = True
         sol = solve_ivp(flare, [initial_block_time, Tsim], [initial_block_distance, initial_block_velocity, initial_block_altitude, initial_block_vertical_velocity, initial_block_trajectory_angle],
-                events = stop_condition_flare,rtol = 1e-10, method='LSODA',args = (aircraft_parameters,takeoff_parameters,runaway_parameters,landing_parameters,rho_ISA,vehicle,stop_criteria), dense_output=True)
+                events = stop_condition_flare,rtol = 1e-10, method='LSODA',args = (aircraft_parameters,takeoff_parameters,runaway_parameters,landing_parameters,rho_ISA,vehicle,stop_criteria), dense_output=True,min_step = 1e-10)
+    
 
     if phase == 'ground':
 
@@ -325,6 +327,7 @@ def ground(time,state,takeoff_parameters,runaway_parameters,landing_parameters,r
     Outputs:
         - dout
     """
+    warnings.filterwarnings('ignore')
     wing = vehicle['wing']
     engine = vehicle['engine']
 

@@ -608,17 +608,15 @@ def main(argv):
     try:
         computation_mode, route_computation_mode, airports, distances, demands, _, fixed_parameters, fixed_aircraft = read_custom_inputs(
             CUSTOM_INPUTS_SCHEMA, customInputsfile)
-        n_inputs = 16
+        n_inputs = 10
 
         # Lower and upeer bounds of each input variable
-        #     0   | 1   | 2   |  3     |   4    |   5      | 6     | 7     |  8     |   9   | 10    | 11    |   12     | 13    | 14          |  15
-        #    Areaw| ARw | TRw | Sweepw | Twistw | b/2kinkw | bypass| Ediam | PRcomp |  Tin  | PRfan | PAX   | seat abr | range | design pres | mach
-        lb = [72,  75,  25,     15,      -5,       32,       45,    10,
-              27,      1350,   14,     70,     4,        1000,     39000,       78]
-        ub = [130, 120,  50,     30,      -2,       45,       65,    15,
-              30,      1500,   25,     220,    6,        3500,     43000,       82]
+        #     0   | 1   | 2   |  3     |   4    |   5      | 6    | 7        |  8     |   9    |
+        #    Areaw| ARw | TRw | Sweepw | Twistw | b/2kinkw | pax  | seat abr | range  | engine |
+        lb = [72,    75,   25,     0,      -5,       32,     70,       4,       1000,    0]
+        ub = [130,  120,  50,     30,       0 ,       45,     220,       6,       3500,    44]
         # Desired number of samples
-        n_samples = 10
+        n_samples = 100
 
         # Sampling type
         # sampling_type = 'real_random'
@@ -656,44 +654,42 @@ def main(argv):
             # (y1)= objective_function(vehicle,X[ii,:])
             y1 = objective_function(
                 X[ii, :], fixed_parameters, computation_mode, route_computation_mode, airports, distances, demands)
-            y1_samples.append(y1)
+            y1_samples.append(float(y1))
         # y2_samples.append(y2)
-
         # Create a pandas dataframe with all the information
-        df = pd.DataFrame({'x1': X[:, 0],
-                           'x2': X[:, 1],
-                           'x3': X[:, 2],
-                           'x4': X[:, 3],
-                           'x5': X[:, 4],
-                           'x6': X[:, 5],
-                           'x7': X[:, 6],
-                           'x8': X[:, 7],
-                           'x9': X[:, 8],
-                           'x10': X[:, 9],
-                           'x11': X[:, 10],
-                           'x12': X[:, 11],
-                           'x13': X[:, 12],
-                           'x14': X[:, 13],
-                           'x15': X[:, 14],
-                           'x16': X[:, 15],
-                           'y1': y1_samples})
+        df = pd.DataFrame({'Sw': X[:, 0],
+                           'ARw': X[:, 1],
+                           'TRw': X[:, 2],
+                           'Sweepw': X[:, 3],
+                           'Twistw': X[:, 4],
+                           'kinkw': X[:, 5],
+                           'pax': X[:, 6],
+                           'seatabr': X[:, 7],
+                           'range': X[:, 8],
+                           'engine': X[:, 9],
+                           'profit': y1_samples})
         # Plot the correlation matrix
+
+        df.to_pickle('doe.pkl')
         sns.set(style='white', font_scale=1.4)
 
         if plot_type == 0:
-
+        
             # Simple plot
-            fig = sns.pairplot(df, corner=True)
-
+            ax = sns.pairplot(df,corner=True)
+        
         elif plot_type == 1:
-
+        
+        
             # Complete plot
             # based on: https://stackoverflow.com/questions/48139899/correlation-matrix-plot-with-coefficients-on-one-side-scatterplots-on-another
-            fig = sns.PairGrid(df, diag_sharey=False)
-            fig.map_lower(sns.regplot, lowess=True,
-                          line_kws={'color': 'black'})
-            fig.map_diag(sns.histplot)
-            fig.map_upper(corrdot)
+            ax = sns.PairGrid(df, aspect=1.4, diag_sharey=False)
+            ax.map_lower(sns.regplot, lowess=True, line_kws={'color': 'black'})
+            ax.map_diag(sns.histplot)
+            ax.map_upper(corrdot)
+
+        for ax in ax.axes[:,0]:
+            ax.get_yaxis().set_label_coords(-0.22,0.5)
 
         # Plot window
         plt.tight_layout()

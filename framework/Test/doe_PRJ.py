@@ -1,29 +1,7 @@
 '''
-INSTITUTO TECNOLÓGICO DE AERONÁUTICA
-DIVISÃO DE ENGENHARIA AERONÁUTICA
 
-This script generates correlation plots
-
-REQUIRED PACKAGES (if not using Anaconda)
-pip3 install pandas
-pip3 install seaborn
-pip3 install statsmodels
-pip3 install pymoo
-
-Cap. Ney Sêcco 2021
 '''
 
-#IMPORTS
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-import seaborn as sns
-from pymoo.factory import get_sampling
-from pymoo.interface import sample
-from aux_tools import corrdot
-
-
-from framework.Optimization.objective_function import objective_function
 from framework.Database.Aircrafts.baseline_aircraft_parameters import initialize_aircraft_parameters
 vehicle = initialize_aircraft_parameters()
 #=========================================
@@ -40,9 +18,15 @@ n_inputs = 16
 
 # Lower and upeer bounds of each input variable
 #     0   | 1   | 2   |  3     |   4    |   5      | 6     | 7     |  8     |   9   | 10    | 11    |   12     | 13    | 14          |  15
-#    Areaw| ARw | TRw | Sweepw | Twistw | b/2kinkw | bypass| Ediam | PRcomp |  Tin  | PRfan | PAX   | seat abr | range | design pres | mach
-lb = [72,  75 ,  25,     15,      -5,       32,       45,    10,      27,      1350,   14,     70,     4,        1000,     39000,       78]
-ub = [130, 120,  50,     30,      -2,       45,       65,    15,      30,      1500,   25,     220,    6,        3500,     43000,       82]
+
+lb = []
+ub = []
+
+    fan_pressure_ratio = engine['fan_pressure_ratio']
+    compressor_pressure_ratio = engine['compressor_pressure_ratio']
+    bypass_ratio = engine['bypass']
+    fan_diameter = engine['fan_diameter']
+    turbine_inlet_temperature = engine['turbine_inlet_temperature']
 # Desired number of samples
 n_samples = 200
 
