@@ -450,10 +450,6 @@ def airplane_sizing(vehicle,x=None):
     #     aircraft['number_of_engines']*engine['maximum_thrust']*lb_to_kg)*GRAVITY  # Test this
 
 
-
-
-
-
     ToW = (aircraft['number_of_engines']*engine['maximum_thrust'])/(aircraft['maximum_takeoff_weight']*GRAVITY)
     WoS = aircraft['maximum_takeoff_weight']/wing['area']
 
