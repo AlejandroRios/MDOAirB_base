@@ -484,7 +484,9 @@ def airplane_sizing(vehicle,x=None):
 
     k_L = 0.107
 
-    WtoS_landing = (k_L*airport_destination['lda']*aircraft['CL_maximum_landing'])/(aircraft['maximum_landing_weight']/aircraft['maximum_takeoff_weight'])
+    WtoS_landing = (k_L*airport_destination['lda']*aircraft['CL_maximum_landing'])
+    WtoS_takeoff= WtoS_landing/(maximum_landing_weight/maximum_takeoff_weight)
+
 
 
     if  WoS > WtoS_landing:

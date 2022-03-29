@@ -53,7 +53,7 @@ def second_segment_climb(vehicle, airport_departure, weight_takeoff):
     aircraft = vehicle['aircraft']
     wing = vehicle['wing']
 
-    CL_maximum_takeoff = aircraft['CL_maximum_takeoff']
+    CL_maximum_takeoff = aircraft['CL_maximum_takeoff']/(1.2**2)
     wing_surface = wing['area']
     maximum_takeoff_weight = weight_takeoff  # [N]
 
@@ -71,7 +71,7 @@ def second_segment_climb(vehicle, airport_departure, weight_takeoff):
     # CD_takeoff = zero_fidelity_drag_coefficient(aircraft_data, CL_maximum_takeoff, phase)
     # Input for neural network: 0 for CL | 1 for alpha
     switch_neural_network = 0
-    alpha_deg = 1
+    alpha_deg = 0
     CD_wing, _ = aerodynamic_coefficients_ANN(
         vehicle, airfield_elevation*ft_to_m, mach, CL_maximum_takeoff,alpha_deg,switch_neural_network)
 
