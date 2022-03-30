@@ -23,13 +23,15 @@ TODO's:
 #==============================================================================
 #   IMPORTS
 #==============================================================================
-import os
-import sys
+
 
 import tixi3.tixi3wrapper as tixi3wrapper
 import tigl3.tigl3wrapper as tigl3wrapper
-from tixi3.tixi3wrapper import Tixi3Exception
-from tigl3.tigl3wrapper import Tigl3Exception
+# from tixi3.tixi3wrapper import Tixi3Exception
+# from tigl3.tigl3wrapper import Tigl3Exception
+
+import os
+# import sys
 #==============================================================================
 #   CLASSES
 #==============================================================================
