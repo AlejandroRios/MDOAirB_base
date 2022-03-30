@@ -10,7 +10,9 @@
 name: MDOAirB_base
 
 channels:
- - defaults
+  - dlr-sc  # See: https://anaconda.org/DLR-SC/repo
+  - conda-forge
+  - defaults
 
 # List all explicitly imported/used packages
 # ------------------------------------------
@@ -32,31 +34,30 @@ dependencies:
   - python=3.6
 
   # Required
+  - numpy>=1.9
+  - cpacscreator>=0.1
+  - tigl3>=2.2.3  # Should be included in cpacscreator
+  - tixi3>=2.2.4
+  - matplotlib>=3.0.2
+  - scipy>=1.5.3
+  - scikit-learn>=0.21.3
+  - pandas>=0.25.0
+  - vtk>=8.2.0
+  - xmltodict>=0.12.0
+  - deap>=1.1
+  - pulp>=2.0
+  - bokeh>=2.0.0
+  - numpy-stl>=1.1.0
+  - glpk>=0.4
+  - numba>=0.5
+  - smt>=1.0.0
+  - jsonschema>=3.2.0
+  # Testing
+  - flake8
+  - pytest>=5.0.1
+  - pytest-cov
+  - codecov==2.0.15
+  - haversine>=0.4.5
+
   # Documentation
   - sphinx=3.0.3
-  - pip
-  - pip:
-    - smt
-    - pulp
-    - tigl3
-    - tixi3
-    - cpacscreator
-    - deap
-    - numpy-stl
-    - haversine
-    - numpy
-    - matplotlib
-    - scipy
-    - scikit-learn
-    - pandas
-    - vtk
-    #- xmltodict>=0.12.0
-    #- bokeh>=2.0.0
-    - glpk
-    #- numba>=0.5
-    #- jsonschema>=3.2.0
-    # Testing
-    - flake8
-    - pytest
-    - pytest-cov
-    - codecov
