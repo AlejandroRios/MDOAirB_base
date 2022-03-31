@@ -119,7 +119,7 @@ def missed_approach_climb_AEO(vehicle, airport_destination, maximum_takeoff_weig
 
     maximum_landing_weight = weight_landing
 
-    CL_maximum_landing = aircraft['CL_maximum_landing']
+    CL_maximum_landing = aircraft['CL_maximum_landing']/(1.3**2)
     wing_surface = wing['area']
 
     airfield_elevation = airport_destination ['elevation']
