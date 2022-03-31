@@ -1,3 +1,5 @@
 
 *.pyc
 framework/Database/Results/
+framework/framework.log
+framework/CPACS_update/ToolOutput/Aircraft_Out.xml

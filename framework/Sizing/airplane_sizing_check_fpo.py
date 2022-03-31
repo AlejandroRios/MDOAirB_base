@@ -474,7 +474,7 @@ def airplane_sizing(vehicle,x=None):
     # Takeoff field length check
     k_TO = 2.34
 
-    ToW_takeoff = (k_TO/(airport_departure['tora']*aircraft['CL_maximum_takeoff']))*WtoS_landing
+    ToW_takeoff = (k_TO/(airport_departure['tora']*aircraft['CL_maximum_takeoff']))*WoS
 
     if ToW < ToW_takeoff :
         flag_takeoff = 1
