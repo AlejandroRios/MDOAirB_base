@@ -444,7 +444,7 @@ def main(argv):
         6,  #seat abreast - x7
         3000,  #range - x8
  		65,  #BPR*10 - x9 // should be 100
-        15,  #FanDiameter*10 - x10
+        20,  #FanDiameter*10 - x10
         27,  #Compressor pressure ratio - x11
         1450,  #turbine inlet temperature - x12
         15,  #FPR*10 - x13
