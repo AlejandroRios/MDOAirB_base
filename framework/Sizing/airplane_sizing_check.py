@@ -469,10 +469,6 @@ def airplane_sizing(vehicle,x=None):
     #     aircraft['number_of_engines']*engine['maximum_thrust']*lb_to_kg)*GRAVITY  # Test this
 
 
-
-
-
-
     ToW = (aircraft['number_of_engines']*engine['maximum_thrust'])/(aircraft['maximum_takeoff_weight']*GRAVITY)
     WoS = aircraft['maximum_takeoff_weight']/wing['area']
 
@@ -485,7 +481,9 @@ def airplane_sizing(vehicle,x=None):
 
     k_L = 0.107
 
-    WtoS_landing = (k_L*airport_destination['lda']*aircraft['CL_maximum_landing'])/(aircraft['maximum_landing_weight']/aircraft['maximum_takeoff_weight'])
+    WtoS_landing = (k_L*airport_destination['lda']*aircraft['CL_maximum_landing'])
+    WtoS_takeoff= WtoS_landing/(maximum_landing_weight/maximum_takeoff_weight)
+
 
 
     if  WoS > WtoS_landing:
@@ -497,7 +495,7 @@ def airplane_sizing(vehicle,x=None):
     # Takeoff field length check
     k_TO = 2.34
 
-    ToW_takeoff = (k_TO/(airport_departure['tora']*aircraft['CL_maximum_takeoff']))*WtoS_landing
+    ToW_takeoff = (k_TO/(airport_departure['tora']*aircraft['CL_maximum_takeoff']))*WoS
 
     if ToW < ToW_takeoff :
         flag_takeoff = 1
@@ -535,6 +533,7 @@ def airplane_sizing(vehicle,x=None):
         flag_cruise = 1
     else:
         flag_cruise = 0
+
 
 
 
