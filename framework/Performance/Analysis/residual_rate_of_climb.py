@@ -33,6 +33,8 @@ from framework.Aerodynamics.aerodynamic_coefficients_ANN import aerodynamic_coef
 # =============================================================================
 # FUNCTIONS
 # =============================================================================
+ft_to_m = 0.3048
+kt_to_ms = 0.514444
 def residual_rate_of_climb(vehicle, airport_departure, weight_takeoff,engine_cruise_thrust):
     """
     Description:
