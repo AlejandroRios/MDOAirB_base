@@ -1,11 +1,35 @@
-2022-03-30 15:38:26,485 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== Start writing aircraft results ====
-2022-03-30 15:38:26,490 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== End writing aircraft results ====
-2022-03-30 15:38:26,491 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== Start writing klm results ====
-2022-03-30 15:38:26,492 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== End writing klm results ====
-- INFO - Network optimization status: Optimal
-2022-03-30 15:38:26,473 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\network_optimization     - INFO - ==== End network optimization module ====
-}, 'LHR': {'FRA': 3738, 'LHR': 0, 'CDG': 2507, 'AMS': 2608, 'MAD': 6273, 'BCN': 5773, 'FCO': 7024, 'DUB': 2939, 'VIE': 6297, 'ZRH': 4299}, 'CDG': {'FRA': 2928, 'LHR': 2500, 'CDG': 0, 'AMS': 2724, 'MAD': 5470, 'BCN': 4597, 'FCO': 5558, 'DUB': 4315, 'VIE': 5287, 'ZRH': 3028}, 'AMS': {'FRA': 2593, 'LHR': 2632, 'CDG': 2728, 'AMS': 0, 'MAD': 7142, 'BCN': 6268, 'FCO': 6392, 'DUB': 4188, 'VIE': 4986, 'ZRH': 3528}, 'MAD': {'FRA': 6929, 'LHR': 6153, 'CDG': 5387, 'AMS': 7066, 'MAD': 0, 'BCN': 3025, 'FCO': 6506, 'DUB': 7107, 'VIE': 8548, 'ZRH': 6128}, 'BCN': {'FRA': 5556, 'LHR': 5842, 'CDG': 4582, 'AMS': 6157, 'MAD': 3063, 'BCN': 0, 'FCO': 4527, 'DUB': 7320, 'VIE': 6708, 'ZRH': 4576}, 'FCO': {'FRA': 5053, 'LHR': 7163, 'CDG': 5626, 'AMS': 6509, 'MAD': 6640, 'BCN': 4580, 'FCO': 0, 'DUB': 8993, 'VIE': 4250, 'ZRH': 3915}, 'DUB': {'FRA': 5508, 'LHR': 2937, 'CDG': 4288, 'AMS': 4137, 'MAD': 7044, 'BCN': 7180, 'FCO': 8874, 'DUB': 0, 'VIE': 8112, 'ZRH': 6140}, 'VIE': {'FRA': 3616, 'LHR': 6369, 'CDG': 5342, 'AMS': 5058, 'MAD': 8607, 'BCN': 6783, 'FCO': 4288, 'DUB': 8161, 'VIE': 0, 'ZRH': 3545}, 'ZRH': {'FRA': 2213, 'LHR': 4291, 'CDG': 3018, 'AMS': 3521, 'MAD': 6211, 'BCN': 4594, 'FCO': 3893, 'DUB': 6195, 'VIE': 3523, 'ZRH': 0}}
-2022-03-30 15:33:23,392 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_objective     - INFO - ---- Start Network Optimization ----
-2022-03-30 15:38:26,474 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_objective     - INFO - Network profit [$USD]: 393678
-2022-03-30 15:38:26,498 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_objective     - INFO - Network profit excecution time: 0:05:03.109076
-2022-03-30 15:38:26,498 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_objective     - INFO - ==== End network profit module ====
+2022-03-31 16:37:37,601 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- Start aircraft noise mo2022-03-31 16:38:50,657 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Test\DOE_family_aircraft     - INFO - Aircraft did not pass sizing and checks, profit: 0
+2022-03-31 16:38:50,658 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Test\DOE_family_aircraft     - INFO - Network profit excecution time: 0:032022-03-31 16:38:50,764 - 2022-03-31 16:40:43,774 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- Start aircraft noise module ----
+2022-03-31 16:42:09,298 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - Noise check execution time: 0:01:25.523576
+2022-03-31 16:42:09,298 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- End aircraft noise module ----
+2022-03-31 16:42:54,848 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- Start aircraft noise module ----
+2022-03-31 16:43:58,301 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - Noise check execution time: 0:01:03.452870
+2022-03-31 16:43:58,302 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- End aircraft noise module ----
+rk\Sizing\Geometry\wetted_area     - INFO - ---- Start wetted area module ----
+2022-03-31 16:42:12,966 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - Individual wetted area [m2]: 774.0374842557605
+2022-03-31 16:42:12,966 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - ---- End wetted area module ----
+2022-03-31 16:43:58,419 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - ---- Start wetted area module ----
+2022-03-31 16:44:00,998 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - Individual wetted area [m2]: 976.9945344988787
+2022-03-31 16:44:00,999 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - ---- End wetted area module ----
+73142456249813, 35.557724740674885, 191.90578040422315, 4.431151702556925, 2674.398232331454, 0.798057975607819]
+2022-03-31 16:39:26,457 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - ---- Start sizing loop for tail sizing ----
+2022-03-31 16:40:43,192 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - ---- End sizing loop for tail sizing ----
+2022-03-31 16:42:09,299 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - Aircraft flags: [1, 0, 0, 0, 0, 0, 0]
+2022-03-31 16:42:09,299 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - Aircraft status (pass = 0, no pass =1): 1
+2022-03-31 16:42:09,299 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - ---- End aircraft sizing module ----
+2022-03-31 16:42:09,303 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - ---- Start aircraft sizing module ----
+2022-03-31 16:42:09,305 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - Current individual vairables: [96.54772231766668, 112.84057062953053, 46.641915420811, 15.487509870942137, -4.487656948606762, 33.67350287497267, 170.24711986234567, 5.526089535409163, 1725.0582863202671, 18.83620928104488]
+2022-03-31 16:42:13,005 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - ---- Start sizing loop for tail sizing ----
+2022-03-31 16:42:54,371 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - ---- End sizing loop for tail sizing ----
+2022-03-31 16:43:58,302 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - Aircraft flags: [0, 1, 1, 1, 1, 0, 0]
+2022-03-31 16:43:58,302 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - Aircraft status (pass = 0, no pass =1): 1
+2022-03-31 16:43:58,303 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - ---- End aircraft sizing module ----
+2022-03-31 16:43:58,316 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - ---- Start aircraft sizing module ----
+2022-03-31 16:43:58,317 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - Current individual vairables: [128.06260661195574, 102.60523129837523, 37.31827692032138, 23.96148421716093, -0.022434296471280035, 35.4567547841574, 215.30102570976968, 5.747378441080537, 1927.2862137168154, 27.04832577665179]
+2022-03-31 16:44:01,029 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - ---- Start sizing loop for tail sizing ----
+    - INFO - ==== End network profit module ====
+2022-03-31 16:42:09,302 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Test\DOE_family_aircraft     - INFO - ==== Start network profit module ====
+2022-03-31 16:43:58,314 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Test\DOE_family_aircraft     - INFO - Aircraft did not pass sizing and checks, profit: 0
+2022-03-31 16:43:58,315 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Test\DOE_family_aircraft     - INFO - Network profit excecution time: 0:01:49.013354
+2022-03-31 16:43:58,315 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Test\DOE_family_aircraft     - INFO - ==== End network profit module ====
+2022-03-31 16:43:58,315 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Test\DOE_family_aircraft     - INFO - ==== Start network profit module ====

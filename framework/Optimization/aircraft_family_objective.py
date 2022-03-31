@@ -25,30 +25,32 @@ TODO's:
 # IMPORTS
 # =============================================================================
 import copy
-from framework.Performance.Mission.mission import mission
-from framework.Network.network_optimization import network_optimization
-from framework.Economics.revenue import revenue
-from framework.Sizing.airplane_sizing_check import airplane_sizing
-import pandas as pd
-import sys
-import pickle
-import numpy as np
 import csv
+import getopt
+import json
+import os
+import pickle
+import sys
 from datetime import datetime
 from random import randrange
-from framework.utilities.logger import get_logger
-from framework.utilities.output import write_optimal_results, write_kml_results, write_bad_results, write_newtork_results, write_unfeasible_results
 
-import getopt
 import haversine
-import json
 import jsonschema
-import os
-
-from framework.Database.Aircrafts.baseline_aircraft_parameters import initialize_aircraft_parameters
+import numpy as np
+import pandas as pd
+from framework.Database.Aircrafts.baseline_aircraft_parameters import \
+    initialize_aircraft_parameters
 from framework.Database.Airports.airports_database import AIRPORTS_DATABASE
-
-from haversine import haversine, Unit
+from framework.Economics.revenue import revenue
+from framework.Network.family_network_optimization import family_network_optimization
+from framework.Performance.Mission.mission import mission
+from framework.Sizing.airplane_sizing_check import airplane_sizing
+from framework.utilities.logger import get_logger
+from framework.utilities.output import (write_bad_results, write_kml_results,
+                                        write_newtork_results,
+                                        write_optimal_results,
+                                        write_unfeasible_results)
+from haversine import Unit, haversine
 from jsonschema import validate
 
 # =============================================================================
@@ -91,23 +93,19 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
         #     vehicle = pickle.load(f)
 
         with open('Database/Family/40_to_100/all_dictionaries/'+str(x[0])+'.pkl', 'rb') as f:
-            all_info = pickle.load(f)
+            all_info_acft1 = pickle.load(f)
 
-        airports = all_info['airports']
-        distances = all_info['distances']
-        demands = all_info['demands']
-        DOC_ik = all_info['DOC_ik']
-        DOC_nd = all_info['DOC_nd']
-        fuel_mass = all_info['fuel_mass']
-        total_mission_flight_time = all_info['total_mission_flight_time']
-        mach = all_info['mach']
-        passenger_capacity = all_info['passenger_capacity ']
-        SAR = all_info['SAR']
-        vehicle= all_info['vehicle']
-
-
-        
-            
+        airports = all_info_acft1['airports']
+        distances = all_info_acft1['distances']
+        demands = all_info_acft1['demands']
+        DOC_ik = all_info_acft1['DOC_ik']
+        DOC_nd = all_info_acft1['DOC_nd']
+        fuel_mass = all_info_acft1['fuel_mass']
+        total_mission_flight_time = all_info_acft1['total_mission_flight_time']
+        mach = all_info_acft1['mach']
+        passenger_capacity = all_info_acft1['passenger_capacity ']
+        SAR = all_info_acft1['SAR']
+        vehicle= all_info_acft1['vehicle']
 
         status = 0
         results = vehicle['results']
@@ -119,9 +117,7 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
         # If airplane pass checks, status = 0, else status = 1 and profit = 0
         if status == 0:
             log.info('Aircraft passed sizing and checks status: {}'.format(status))
-
             market_share = operations['market_share']
-
             results['nodes_number'] = len(airports)
 
             pax_capacity = aircraft['passenger_capacity']  # Passenger capacity
@@ -129,21 +125,15 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
             log.info('---- Start DOC matrix calculation ----')
             # The DOC is estimated for each city pair and stored in the DOC dictionary
             city_matrix_size = len(airports)*len(airports)
-
-
-
             airports_keys = list(airports.keys())
-
-
-
-
+            
             log.info('Aircraft DOC matrix: {}'.format(DOC_ik))
             # =============================================================================
             log.info('---- Start Network Optimization ----')
             # Network optimization that maximizes the network profit
             try:
-                profit, vehicle, kpi_df1, kpi_df2, airplanes_ik = network_optimization(
-                    computation_mode, list(airports.keys()), distances, demands, DOC_ik, vehicle)
+                profit, vehicle, kpi_df1, kpi_df2, airplanes_ik = family_network_optimization(
+                    computation_mode, list(airports.keys()), all_info_acft1, all_info_acft1, all_info_acft1)
             except:
                 log.error(
                     ">>>>>>>>>> Error at <<<<<<<<<<<< network_optimization", exc_info=True)
