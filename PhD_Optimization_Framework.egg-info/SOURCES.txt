@@ -31,6 +31,7 @@ framework/Economics/direct_operational_cost.py
 framework/Economics/net_present_value.py
 framework/Economics/revenue.py
 framework/Network/__init__.py
+framework/Network/family_network_optimization.py
 framework/Network/network_optimization.py
 framework/Network/plot_network.py
 framework/Noise/__init__.py

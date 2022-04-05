@@ -2,8 +2,8 @@ from framework.CPACS_update.cpacsfunctions import *
 import numpy as np
 
 MODULE_DIR = 'c:/Users/aarc8/Documents/github\MDOAirB_base/framework/CPACS_update'
-cpacs_path = os.path.join(MODULE_DIR, 'ToolInput', 'baseline.xml')
-cpacs_out_path = os.path.join(MODULE_DIR, 'ToolOutput', 'baseline.xml')
+cpacs_path = os.path.join(MODULE_DIR, 'ToolInput', 'Aircraft_In.xml')
+cpacs_out_path = os.path.join(MODULE_DIR, 'ToolOutput', 'Aircraft_Out.xml')
 tixi = open_tixi(cpacs_out_path)
 tigl = open_tigl(tixi)
 

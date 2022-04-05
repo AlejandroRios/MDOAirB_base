@@ -21,40 +21,44 @@ TODO's:
 | Aeronautical Institute of Technology - Airbus Brazil
 
 """
+import copy
+import csv
+import getopt
+import json
+import os
+import pickle
+import sys
+from datetime import datetime
+from multiprocessing import Pool
+from random import randrange
+
+import haversine
+import jsonschema
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from framework.Database.Aircrafts.baseline_aircraft_parameters import \
+    initialize_aircraft_parameters
+from framework.Database.Airports.airports_database import AIRPORTS_DATABASE
+from framework.Economics.revenue import revenue
+from framework.Network.network_optimization import network_optimization
+from framework.Performance.Mission.mission import mission
+from framework.Sizing.airplane_sizing_check import airplane_sizing
+from framework.utilities.logger import get_logger
+from framework.utilities.output import (write_bad_results, write_kml_results,
+                                        write_newtork_results,
+                                        write_optimal_results,
+                                        write_unfeasible_results)
+from haversine import Unit, haversine
+from jsonschema import validate
+from pymoo.factory import get_sampling
+from pymoo.interface import sample
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
 from aux_tools import corrdot
-from pymoo.interface import sample
-from pymoo.factory import get_sampling
-import seaborn as sns
-import matplotlib.pyplot as plt
-import copy
-from framework.Performance.Mission.mission import mission
-from framework.Network.network_optimization import network_optimization
-from framework.Economics.revenue import revenue
-from framework.Sizing.airplane_sizing_check import airplane_sizing
-import pandas as pd
-import sys
-import pickle
-import numpy as np
-import csv
-from datetime import datetime
-from random import randrange
-from framework.utilities.logger import get_logger
-from framework.utilities.output import write_optimal_results, write_kml_results, write_bad_results, write_newtork_results, write_unfeasible_results
-
-import getopt
-import haversine
-import json
-import jsonschema
-import os
-
-from framework.Database.Aircrafts.baseline_aircraft_parameters import initialize_aircraft_parameters
-from framework.Database.Airports.airports_database import AIRPORTS_DATABASE
-
-from haversine import haversine, Unit
-from jsonschema import validate
 
 # =============================================================================
 # CLASSES
@@ -66,7 +70,16 @@ from jsonschema import validate
 log = get_logger(__file__.split('.')[0])
 
 
-def objective_function(x, original_vehicle, computation_mode, route_computation_mode, airports, distances, demands, index):
+def objective_function(args):
+
+    x = args[0]
+    original_vehicle= args[1]
+    computation_mode= args[2]
+    route_computation_mode= args[3]
+    airports= args[4]
+    distances= args[5]
+    demands = args[6]
+    index= args[7]
 
     log.info('==== Start network profit module ====')
     start_time = datetime.now()
@@ -191,11 +204,6 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
 
             log.info('Aircraft DOC matrix: {}'.format(DOC_ik))
             # =============================================================================
-            all_in_one = {'airports': airports, 'distances': distances, 'demands': demands, 'DOC_ik': DOC_ik, 'DOC_nd': DOC_nd,
-                'fuel_mass': fuel_mass, 'total_mission_flight_time': total_mission_flight_time , 'mach': mach, 'passenger_capacity':passenger_capacity, 'SAR':SAR,  'vehicle': vehicle}
-
-            with open('Database/Family/161_to_220/all_dictionaries/'+str(index)+'.pkl', 'wb') as f:
-                pickle.dump(all_in_one, f)
 
             # =============================================================================
             log.info('---- Start Network Optimization ----')
@@ -301,7 +309,7 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
                     ">>>>>>>>>> Error at <<<<<<<<<<<< writting dataframes", exc_info=True)
 
             try:
-                write_optimal_results(list(airports.keys(
+                write_optimal_results(args,list(airports.keys(
                 )), distances, demands, profit, DOC_ik, vehicle, kpi_df2, airplanes_ik)
             except:
                 log.error(
@@ -318,6 +326,13 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
             except:
                 log.error(
                     ">>>>>>>>>> Error at <<<<<<<<<<<< write_newtork_results", exc_info=True)
+
+            print("Save dictionary results:")
+            all_in_one = {'airports': airports, 'distances': distances, 'demands': demands, 'DOC_ik': DOC_ik, 'DOC_nd': DOC_nd,
+                'fuel_mass': fuel_mass, 'total_mission_flight_time': total_mission_flight_time , 'mach': mach, 'passenger_capacity':passenger_capacity, 'SAR':SAR,  'vehicle': vehicle}
+
+            with open('Database/Family/161_to_220/all_dictionaries/'+str(index)+'.pkl', 'wb') as f:
+                pickle.dump(all_in_one, f)
 
         else:
             profit = 0
@@ -342,6 +357,7 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
 
     else:
         print("Final individual results is:", profit)
+
     finally:
         print("Executing finally clause")
     end_time = datetime.now()
@@ -544,8 +560,21 @@ def main(argv):
         # Lower and upeer bounds of each input variable
         #     0   | 1   | 2   |  3     |   4    |   5      | 6    | 7        |  8     |   9    |
         #    Areaw| ARw | TRw | Sweepw | Twistw | b/2kinkw | pax  | seat abr | range  | engine |
-        lb = [72,    75,   25,     0,      -5,       32,     161,       4,       1000,    0]
-        ub = [130,  120,  50,     30,       0 ,       45,     220,       6,       3500,    44]
+        # lb = [72,    75,   25,     0,      -5,       32,     40,       4,       1000,    0]
+        # ub = [130,  120,  50,     30,       0 ,       45,     100,       6,       3500,    44]
+
+        # lb = [40,    70,   20,     0,      -5,        30,     40,        3,       950,     0]
+        # ub = [100,  120,   50,     25,       0 ,       45,     100,       6,       1955,    44]
+
+        # lb = [70,    70,   20,     15,      -5,        30,     101,       4,       1300,     0]
+        # ub = [130,  120,   50,     25,       0 ,       45,     160,       6,       3200,    44]
+
+        lb = [90,    70,   20,     20,      -5,        30,     161,       4,       1500,     0]
+        ub = [290,  120,   50,     35,       0 ,       45,     220,       6,       3200,    44]
+
+
+
+
         # Desired number of samples
         n_samples = 100
 
@@ -580,15 +609,28 @@ def main(argv):
         y1_samples = []
         # y2_samples = []
         index = 0
+
+        input_array = []
         for ii in range(n_samples):
 
             # Evaluate sample
             # (y1)= objective_function(vehicle,X[ii,:])
-            y1 = objective_function(
-                X[ii, :], fixed_parameters, computation_mode, route_computation_mode, airports, distances, demands,index)
-            y1_samples.append(float(y1))
+            # y1 = objective_function(
+            #     X[ii, :], fixed_parameters, computation_mode, route_computation_mode, airports, distances, demands,index)
+            # y1_samples.append(float(y1))
+
+            input_array.append([X[ii, :], fixed_parameters, computation_mode, route_computation_mode, airports, distances, demands,index])
 
             index = index+1
+
+
+        # input_array = zip(X[ii, :], fixed_parameters, computation_mode, route_computation_mode, airports, distances, demands,range(n_samples ))
+
+        with Pool(10) as p:
+            y1 = p.map(objective_function,input_array)
+            y1_samples = float(y1)
+
+
         # y2_samples.append(y2)
         # Create a pandas dataframe with all the information
         df = pd.DataFrame({'Sw': X[:, 0],

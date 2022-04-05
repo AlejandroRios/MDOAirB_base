@@ -25,27 +25,26 @@ TODO's:
 # IMPORTS
 # =============================================================================
 import copy
-from collections import defaultdict
-import numpy as np
-from pulp import *
-import pandas as pd
 import csv
-import sys 
+import getopt
+import json
+import os
 import pickle
+import sys
+from collections import defaultdict
+
+import haversine
+import jsonschema
+import numpy as np
+import pandas as pd
+from framework.Database.Aircrafts.baseline_aircraft_parameters import \
+    initialize_aircraft_parameters
+from framework.Database.Airports.airports_database import AIRPORTS_DATABASE
 from framework.Economics.revenue import revenue
 from framework.utilities.logger import get_logger
-
-import getopt
-import haversine
-import json
-import jsonschema
-import os
-
-from framework.Database.Aircrafts.baseline_aircraft_parameters import initialize_aircraft_parameters
-from framework.Database.Airports.airports_database import AIRPORTS_DATABASE
-
-from haversine import haversine, Unit
+from haversine import Unit, haversine
 from jsonschema import validate
+from pulp import *
 
 # =============================================================================
 # CLASSES
@@ -150,36 +149,62 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
     _, _, _, docs_list2, _, _ = dict_to_list(computation_mode, airports_keys, acft2)
     _, _, _, docs_list3, _, _ = dict_to_list(computation_mode, airports_keys, acft3)
 
-    vehicle1= acft1['vehicle']
+    vehicle01= acft1['vehicle']
+    vehicle02= acft2['vehicle']
+    vehicle03= acft3['vehicle']
+
+    print(docs_list1)
+    print(docs_list2)
+    print(docs_list3)
+
+
     demands = acft1['demands']
-    doc0 = acft1['DOC_ik']
+    doc0_01 = acft1['DOC_ik']
+    doc0_02 = acft2['DOC_ik']
+    doc0_03 = acft3['DOC_ik']
     distances= acft1['distances']
     
-    
     # Definition of cities to be considered as departure_airport, first stop, final airport
-    aircraft = vehicle1['aircraft']
-    operations = vehicle1['operations']
-    results = vehicle1['results']
+    aircraft01 = vehicle01['aircraft']
+    aircraft02 = vehicle02['aircraft']
+    aircraft03 = vehicle03['aircraft']
+
+    operations01 = vehicle01['operations']
+    operations02 = vehicle02['operations']
+    operations03 = vehicle03['operations']
+
+    results01 = vehicle01['results']
+    results02 = vehicle02['results']
+    results03 = vehicle03['results']
     # doc0 = np.load('Database/DOC/DOC.npy',allow_pickle=True)
     # doc0 = doc0.tolist() 
 
-    pax_capacity = aircraft['passenger_capacity']  # Passenger capacity
+    pax_capacity01 = np.floor(aircraft01['passenger_capacity'])  # Passenger capacity
+    pax_capacity02 = np.floor(aircraft02['passenger_capacity'])  # Passenger capacity
+    pax_capacity03 = np.floor(aircraft03['passenger_capacity'])  # Passenger capacity
 
     # Define minimization problem
     # prob = LpProblem("Network", LpMaximize)
     prob = LpProblem("Network", LpMinimize)
 
-    pax_number = int(operations['reference_load_factor']*pax_capacity)
-    average_ticket_price = operations['average_ticket_price']
+    pax_number01 = int(operations01['reference_load_factor']*pax_capacity01)
+    pax_number02 = int(operations02['reference_load_factor']*pax_capacity02)
+    pax_number03 = int(operations03['reference_load_factor']*pax_capacity03)
+
+    average_ticket_price01 = operations01['average_ticket_price']
+    average_ticket_price02 = operations02['average_ticket_price']
+    average_ticket_price03 = operations03['average_ticket_price']
+
 
 
 
     arcs = list(range(len(froms_list)))
-    planes = {'P1': {'w': pax_number}}
+    planes = {'P1': {'w': pax_number01}, 'P2': {'w': pax_number02} ,'P3': {'w': pax_number03}}
 
-    avg_capacity1 = pax_number
-    avg_capacity2 = pax_number
-    avg_capacity3 = pax_number
+    avg_capacity1 = pax_number01
+    avg_capacity2 = pax_number02
+    avg_capacity3 = pax_number03
+
     avg_vel = 400
     avg_vel = [avg_vel]*len(froms_list)
     avg_grnd_time = 0.5
@@ -259,8 +284,8 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
         # Solve linear programming problem (Network optimization)
         # =============================================================================
         log.info('==== Start PuLP optimization ====')
-        prob.solve(GLPK(timeLimit=60*5, msg = 0))
-        # prob.solve(COIN_CMD(timeLimit=60*2, msg = 0))
+        # prob.solve(GLPK(timeLimit=60*5, msg = 0))
+        prob.solve(PULP_CBC_CMD(timeLimit=60*6, msg = 0))
 
         log.info('==== Start PuLP optimization ====')
         print('Problem solution:',value(prob.objective))
@@ -277,13 +302,18 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
             exit('Could not complete network optimization')
 
 
-        list_airplanes = []
+        list_aircrafts1 = []
+        list_aircrafts2 = []
+        list_aircrafts3 = []
         list_of_pax = []
         for v in prob.variables():
             variable_name = v.name
-            if variable_name.find('aircrafts01') != -1:
-                list_airplanes.append(v.varValue)
-                # print(v.name, "=", v.varValue)
+            if variable_name.find('aircrafts1') != -1:
+                list_aircrafts1.append(v.varValue)
+            if variable_name.find('aircrafts2') != -1:
+                list_aircrafts2.append(v.varValue)
+            if variable_name.find('aircrafts3') != -1:
+                list_aircrafts3.append(v.varValue)
             if variable_name.find('flow') != -1:
                 # print(v.name, "=", v.varValue)
                 list_of_pax.append(v.varValue)
@@ -300,26 +330,26 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
                     fraction[i][j] = list_of_pax[idx]
                     idx = idx+1
 
-        list_size = len(airports_keys)**2 - len(airports_keys)
-        fraction = np.zeros((len(airports_keys),len(airports_keys)))
-        idx = 0
-        while idx<list_size/2:
-            for i in range(len(airports_keys)):
-                for j in range(len(airports_keys)):
-                    if j>i:
-                        fraction[i][j] = list_of_pax[idx]
-                        idx = idx+1
-        while idx<list_size:
-            for i in range(len(airports_keys)):
-                for j in range(len(airports_keys)):
-                    if j<i:
-                        fraction[i][j] = list_of_pax[idx]
-                        idx = idx+1
+        # list_size = len(airports_keys)**2 - len(airports_keys)
+        # fraction = np.zeros((len(airports_keys),len(airports_keys)))
+        # idx = 0
+        # while idx<list_size/2:
+        #     for i in range(len(airports_keys)):
+        #         for j in range(len(airports_keys)):
+        #             if j>i:
+        #                 fraction[i][j] = list_of_pax[idx]
+        #                 idx = idx+1
+        # while idx<list_size:
+        #     for i in range(len(airports_keys)):
+        #         for j in range(len(airports_keys)):
+        #             if j<i:
+        #                 fraction[i][j] = list_of_pax[idx]
+        #                 idx = idx+1
 
     else:
-        aircrafts01 = [demand_list[i]/pax_number for i in range(len(arcs))]
+        aircrafts01 = [demand_list[i]/pax_number01 for i in range(len(arcs))]
         # aircrafts = pax_number
-        list_of_pax = [aircrafts01[i]*pax_number for i in range(len(arcs))]
+        list_of_pax = [aircrafts01[i]*pax_number01 for i in range(len(arcs))]
 
         n = len(airports_keys)
 
@@ -327,127 +357,125 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
 
     print('Flow matrix:',fraction)
 
-    # Post processing
-    min_capacity = 0.5
 
-    fraction = fraction/planes['P1']['w']
+    list_size = len(airports_keys)**2 - len(airports_keys)
+    aircrafts1= np.zeros((len(airports_keys),len(airports_keys)))
+    aircrafts2 =  np.zeros((len(airports_keys),len(airports_keys)))
+    aircrafts3 = np.zeros((len(airports_keys),len(airports_keys)))
+    idx = 0
+    while idx<list_size/2:
+        for i in range(len(airports_keys)):
+            for j in range(len(airports_keys)):
+                if j>i:
+                    aircrafts1[i][j] = list_aircrafts1[idx]
+                    aircrafts2[i][j] = list_aircrafts2[idx]
+                    aircrafts3[i][j] = list_aircrafts3[idx]
+                    idx = idx+1
+    while idx<list_size:
+        for i in range(len(airports_keys)):
+            for j in range(len(airports_keys)):
+                if j<i:
+                    aircrafts1[i][j] = list_aircrafts1[idx]
+                    aircrafts2[i][j] = list_aircrafts2[idx]
+                    aircrafts3[i][j] = list_aircrafts3[idx]
+                    idx = idx+1
 
-    fraction_1 = np.floor(fraction)
-    fraction_2 = fraction-fraction_1
-
-    fraction_1_list = []
-    if (computation_mode == 0):
-        for i in range(len(airports_keys)):
-            for j in range(len(airports_keys)):
-                if i != j and i < j:
-                    fraction_1_list.append(fraction_1[i][j])
-        for i in range(len(airports_keys)):
-            for j in range(len(airports_keys)):
-                if i != j and i > j:
-                    fraction_1_list.append(fraction_1[i][j])
-    else:
-        for i in range(len(airports_keys)):
-            for j in range(len(airports_keys)):
-                if i != j:
-                    fraction_1_list.append(fraction_1[i][j])
-
-    fraction_2_list = []
-    if (computation_mode == 0):
-        for i in range(len(airports_keys)):
-            for j in range(len(airports_keys)):
-                if i != j and i < j:
-                    fraction_2_list.append(fraction_2[i][j])
-        for i in range(len(airports_keys)):
-            for j in range(len(airports_keys)):
-                if i != j and i > j:
-                    fraction_2_list.append(fraction_2[i][j])
-    else:
-        for i in range(len(airports_keys)):
-            for j in range(len(airports_keys)):
-                if i != j:
-                    fraction_2_list.append(fraction_2[i][j])
 
     revenue_1_list = []
-    for i in range(len(fraction_1_list)):
-        if (list_of_pax[i] <= 0 or fraction_1_list[i] <= 0):
+    for i in range(len(list_of_pax)):
+        if (list_of_pax[i] <= 0):
             revenue_1_list.append(0)
         else:
-            revenue_1_list.append(demand_list[i]*distances_list[i]*(list_of_pax[i]*fraction_1_list[i]*average_ticket_price)/(list_of_pax[i]*fraction_1_list[i]*distances_list[i]))
+            revenue_1_list.append(list_of_pax[i]*distances_list[i]*((list_of_pax[i]*average_ticket_price01)/(list_of_pax[i]*distances_list[i])))
+            # revenue_1_list.append(1.1*list_of_pax[i]*average_ticket_price01)
             
 
     revenue_1_list = [0 if x != x else x for x in revenue_1_list]
 
-    revenue_2_list = []
-    for i in range(len(fraction_2_list)):
-        if (list_of_pax[i] <= 0 or fraction_2_list[i] <= 0):
-            revenue_2_list.append(0)
+    revenue_tot= sum(revenue_1_list)
+
+    revenue_mat = np.zeros((len(airports_keys),len(airports_keys)))
+
+    print(doc0_01)
+
+    print(doc0_02)
+
+    print(doc0_03)
+    doc_1_list = []
+    for i in range(len(list_of_pax)):
+        if (list_of_pax[i] <= 0):
+            doc_1_list.append(0)
         else:
-            revenue_2_list.append(demand_list[i]*distances_list[i]*(list_of_pax[i]*fraction_2_list[i]*average_ticket_price)/(list_of_pax[i]*fraction_2_list[i]*distances_list[i]))
-    revenue_2_list = [0 if x != x else x for x in revenue_2_list]
+            doc_1_list.append(docs_list1[i]*list_aircrafts1[i] + docs_list2[i]*list_aircrafts2[i] +docs_list3[i]*list_aircrafts3[i])
+        # revenue_1_list.append(1.1*list_of_pax[i]*average_ticket_price01)
 
-    revenue_tot2 = [x + y for x, y in zip(revenue_1_list,revenue_2_list)]
-    revenue_tot2 = sum(revenue_tot2)
+    doc_tot= sum(doc_1_list)
 
-    revenue_1 = (fraction_1*pax_number)*average_ticket_price
-    revenue_2 = np.zeros((len(airports_keys),len(airports_keys)))
-    for i in range(len(airports_keys)):
-        for j in range(len(airports_keys)):
-            if fraction_2[i][j] > min_capacity:
-                revenue_2[i][j] = fraction_2[i][j]*pax_number*average_ticket_price
-            else:
-                revenue_2[i][j] = 0
-                
-
-    revenue_mat = revenue_1+revenue_2
-    revenue_tot = np.sum(revenue_mat)
+    profit = np.int(1.0*revenue_tot - 1.0*doc_tot)
+    results01['profit'] = np.round(profit)
+    results01['total_cost'] = np.round(doc_tot)
 
     idx = 0
+    while idx<list_size/2:
+        for i in range(len(airports_keys)):
+            for j in range(len(airports_keys)):
+                if j>i:
+                    revenue_mat[i][j] = revenue_1_list[idx]
+                    idx = idx+1
+    while idx<list_size:
+        for i in range(len(airports_keys)):
+            for j in range(len(airports_keys)):
+                if j<i:
+                    revenue_mat[i][j] = revenue_1_list[idx]
+                    idx = idx+1
+
+
     list_of_airplanes_processed = np.zeros((len(airports_keys),len(airports_keys)))
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
-            if fraction_2[i][j] > min_capacity:
-                fracction_aux = 1
-            else:
-                fracction_aux = 0
-            list_of_airplanes_processed[i][j]= fraction_1[i][j]+fracction_aux
+            list_of_airplanes_processed[i][j]= aircrafts1[i][j] +aircrafts2[i][j] + aircrafts3[i][j]
 
     print('Aircraft matrix:',list_of_airplanes_processed)
 
-    DOCmat =  np.zeros((len(airports_keys),len(airports_keys)))
+    print('Aircraft matrix:',aircrafts1)
+
+    DOCmat1 =  np.zeros((len(airports_keys),len(airports_keys)))
+    DOCmat2 =  np.zeros((len(airports_keys),len(airports_keys)))
+    DOCmat3 =  np.zeros((len(airports_keys),len(airports_keys)))
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
             if i != j:
-                DOCmat[i][j] = np.round(doc0[airports_keys[i]][airports_keys[j]])
+                DOCmat1[i][j] = np.round(doc0_01[airports_keys[i]][airports_keys[j]])
+                DOCmat2[i][j] = np.round(doc0_02[airports_keys[i]][airports_keys[j]])
+                DOCmat3[i][j] = np.round(doc0_03[airports_keys[i]][airports_keys[j]])
             else:
-                DOCmat[i][j] = 0
+                DOCmat1[i][j] = 0
+                DOCmat2[i][j] = 0
+                DOCmat3[i][j] = 0
 
 
-    DOC_proccessed = np.zeros((len(airports_keys),len(airports_keys)))
+    DOC_proccessed1 = np.zeros((len(airports_keys),len(airports_keys)))
+    DOC_proccessed2 = np.zeros((len(airports_keys),len(airports_keys)))
+    DOC_proccessed3 = np.zeros((len(airports_keys),len(airports_keys)))
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
-            DOC_proccessed[i][j] = DOCmat[i][j]*list_of_airplanes_processed[i][j]
+            DOC_proccessed1[i][j] = DOCmat1[i][j]*aircrafts1[i][j]
+            DOC_proccessed2[i][j] = DOCmat2[i][j]*aircrafts2[i][j]
+            DOC_proccessed3[i][j] = DOCmat3[i][j]*aircrafts3[i][j]
 
-    list_pax_processed = np.zeros((len(airports_keys),len(airports_keys)))
-    for i in range(len(airports_keys)):
-        for j in range(len(airports_keys)):
-            if fraction_2[i][j] > min_capacity:
-                fracction_aux = fraction_2[i][j] 
-            else:
-                fracction_aux = 0
 
-            list_pax_processed[i][j] = fraction_1[i][j]*planes['P1']['w'] + fracction_aux*planes['P1']['w']
 
-    results['aircrafts_used']= np.sum(list_of_airplanes_processed)
-    results['covered_demand'] = np.sum(list_pax_processed)
-    results['total_revenue'] = revenue_tot
+    results01['aircrafts_used']= np.sum(aircrafts1)
+    results01['covered_demand'] = np.sum(list_of_pax)
+    results01['total_revenue'] = revenue_tot
     airplanes_ik = {}
     n = 0
     for i in range(len(airports_keys)):
         for k in range(len(airports_keys)):
             # print(list_airplanes[n])
-            airplanes_ik[(airports_keys[i],airports_keys[k])] = list_of_airplanes_processed[i][k]
+            airplanes_ik[(airports_keys[i],airports_keys[k])] = aircrafts1[i][k] + aircrafts2[i][k] +aircrafts3[i][k] 
 
-    list_airplanes_db = pd.DataFrame(list_of_airplanes_processed)
+    list_airplanes_db = pd.DataFrame(aircrafts1)
     list_airplanes_db.to_csv('Database/Network/frequencies.csv')
     
     airplanes_flatt = flatten_dict(airplanes_ik)
@@ -464,19 +492,19 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
 
     # list_of_pax_db.to_csv('Database/Network/pax.csv')
 
-    DOC_tot = np.sum(DOC_proccessed)
+    DOC_tot = np.sum(DOC_proccessed1+DOC_proccessed2+DOC_proccessed3)
 
     
-    profit = np.int(1.0*revenue_tot - 1.2*DOC_tot)
+    profit = np.int(1.0*revenue_tot - 1.0*DOC_tot)
 
-    results['profit'] = np.round(profit)
-    results['total_cost'] = np.round(DOC_tot)
+    results01['profit'] = np.round(profit)
+    results01['total_cost'] = np.round(DOC_tot)
 
     print('margin',profit/revenue_tot)
     print('profit',profit)
 
 
-    pax_number_flatt = list_pax_processed.flatten()
+    pax_number_flatt = aircrafts1.flatten()
     
     pax_number_df = pd.DataFrame({'pax_number':pax_number_flatt})
     kpi_df1 = pd.DataFrame()
@@ -509,7 +537,7 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
     # doc_flatt = flatten_dict(DOC)
     demand_flatt = flatten_dict(demands)
     revenue_flatt = revenue_mat.flatten()
-    doc_flatt = DOC_proccessed.flatten()
+    doc_flatt = DOC_proccessed1.flatten()
 
     doc_df = pd.DataFrame({'doc':doc_flatt})
     revenue_df = pd.DataFrame({'revenue':revenue_flatt})
@@ -548,7 +576,7 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
                 if X[i,j] == 1:
                     DON[i] = DON[i]+1
     
-    results['avg_degree_nodes'] = np.mean(DON)
+    results01['avg_degree_nodes'] = np.mean(DON)
 
     R = 500
     C = np.zeros(n)
@@ -566,16 +594,16 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
         else:
             C[i] = 0
 
-    results['average_clustering'] = np.mean(C)
+    results01['average_clustering'] = np.mean(C)
 
 
     LF = np.ones((n,n))
     FREQ = X
 
-    results['number_of_frequencies'] = np.sum(list_of_airplanes_processed)
+    results01['number_of_frequencies'] = np.sum(list_of_airplanes_processed)
 
     log.info('==== End network optimization module ====')
-    return profit, vehicle1, kpi_df1, kpi_df2, airplanes_ik
+    return profit, vehicle01, kpi_df1, kpi_df2, airplanes_ik
 
 # =============================================================================
 # MAIN

@@ -92,8 +92,14 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
         # with open('Database/Family/40_to_100/vehicle/'+str(x[0])+'.pkl', 'rb') as f:
         #     vehicle = pickle.load(f)
 
-        with open('Database/Family/40_to_100/all_dictionaries/'+str(x[0])+'.pkl', 'rb') as f:
+        with open('Database/Family/40_to_100/all_dictionaries/'+str(9)+'.pkl', 'rb') as f:
             all_info_acft1 = pickle.load(f)
+        
+        with open('Database/Family/40_to_100/all_dictionaries/'+str(9)+'.pkl', 'rb') as f:
+            all_info_acft2 = pickle.load(f)
+
+        with open('Database/Family/40_to_100/all_dictionaries/'+str(9)+'.pkl', 'rb') as f:
+            all_info_acft3 = pickle.load(f)
 
         airports = all_info_acft1['airports']
         distances = all_info_acft1['distances']
@@ -103,7 +109,7 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
         fuel_mass = all_info_acft1['fuel_mass']
         total_mission_flight_time = all_info_acft1['total_mission_flight_time']
         mach = all_info_acft1['mach']
-        passenger_capacity = all_info_acft1['passenger_capacity ']
+        passenger_capacity = all_info_acft1['passenger_capacity']
         SAR = all_info_acft1['SAR']
         vehicle= all_info_acft1['vehicle']
 
@@ -133,7 +139,7 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
             # Network optimization that maximizes the network profit
             try:
                 profit, vehicle, kpi_df1, kpi_df2, airplanes_ik = family_network_optimization(
-                    computation_mode, list(airports.keys()), all_info_acft1, all_info_acft1, all_info_acft1)
+                    computation_mode, list(airports.keys()), all_info_acft1, all_info_acft2, all_info_acft3)
             except:
                 log.error(
                     ">>>>>>>>>> Error at <<<<<<<<<<<< network_optimization", exc_info=True)
@@ -232,7 +238,7 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
                     ">>>>>>>>>> Error at <<<<<<<<<<<< writting dataframes", exc_info=True)
 
             try:
-                write_optimal_results(list(airports.keys(
+                write_optimal_results(x, list(airports.keys(
                 )), distances, demands, profit, DOC_ik, vehicle, kpi_df2, airplanes_ik)
             except:
                 log.error(

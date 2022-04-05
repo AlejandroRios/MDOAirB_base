@@ -35,10 +35,16 @@ dependencies:
 
   # Required
   - numpy>=1.9
-  - cpacscreator>=0.1
-  - tigl3>=2.2.3  # Should be included in cpacscreator
-  - tixi3>=2.2.4
+  # - cpacscreator>=0.1
+  - tigl3  # Should be included in cpacscreator
+  - tixi3
+  - pythonocc-core
+  - opencascade
+  - oce
+  - cpacs2to3 
   - matplotlib>=3.0.2
+  - pymoo
+  - seaborn
   - scipy>=1.5.3
   - scikit-learn>=0.21.3
   - pandas>=0.25.0

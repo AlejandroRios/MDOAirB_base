@@ -36,7 +36,7 @@ from framework.utilities.logger import get_logger
 # =============================================================================
 log = get_logger(__file__.split('.')[0])
 
-def write_optimal_results(airports_keys, distances, demands, profit, DOC_ik, vehicle, kpi_df2, airplanes_ik):
+def write_optimal_results(individual, airports_keys, distances, demands, profit, DOC_ik, vehicle, kpi_df2, airplanes_ik):
     """
     Description:
         - This function create a txt file containing principal results
@@ -104,6 +104,10 @@ def write_optimal_results(airports_keys, distances, demands, profit, DOC_ik, veh
         output.write(
             '======== Aircraft and network optimization results ========')
         output.write('\n\n')
+
+        output.write('Individual variables: ')
+        output.write('\n')
+        output.write(str(individual) + "\n")
 
         # ===============================================================================
         output.write('\n ----- Aircraft parameters ----- \n')
