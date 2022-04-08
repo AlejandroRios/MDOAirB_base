@@ -30,6 +30,13 @@ fuel_flow_vec_model = []
 
 altitude_vec = []
 
+F_ANN = nn_unit.predict(scaler.transform([(0, 0.1, 1)]))
+F_vec_ANN.append(float(F_ANN))
+
+
+F_model, fuel_flow = PW120model(i,j,1)
+F_vec_model.append(float(F_model))
+
 
 for i in altitude:
     for j in M0:

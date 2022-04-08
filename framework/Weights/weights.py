@@ -374,9 +374,13 @@ def engine_mass_bento(engine_static_thrust, vehicle):
     e = -0.2920
     f = -0.1250
 
-    weight_kg = C+B*((BPR/BPR0))*((OPR/OPR0))*((THR/T0))*((DIA/D0))*((LEN/L0))*((FLO/FL0)) + \
-        A*((BPR/BPR0)**a)*((OPR/OPR0)**b)*((THR/T0)**c) * \
-        ((DIA/D0)**d)*((LEN/L0)**e)*((FLO/FL0)**f)
+    if engine['type'] == 1:
+        weight_kg = C+B*((BPR/BPR0))*((OPR/OPR0))*((THR/T0))*((DIA/D0))*((LEN/L0))*((FLO/FL0)) + \
+            A*((BPR/BPR0)**a)*((OPR/OPR0)**b)*((THR/T0)**c) * \
+            ((DIA/D0)**d)*((LEN/L0)**e)*((FLO/FL0)**f)
+    else:
+        weight_kg = 483
+
 
     return weight_kg
 

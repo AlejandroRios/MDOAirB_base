@@ -27,6 +27,7 @@ import numpy as np
 from framework.Attributes.Atmosphere.atmosphere_ISA_deviation import atmosphere_ISA_deviation
 from framework.Performance.Engine.engine_performance import turbofan
 from framework.Noise.Noise_Smith.takeoff_integration import takeoff_integration
+from joblib import dump, load
 # =============================================================================
 # CLASSES
 # =============================================================================
@@ -84,6 +85,14 @@ def takeoff_profile(takeoff_parameters,landing_parameters,aircraft_parameters,ru
     aircraft = vehicle['aircraft']
     wing = vehicle['wing']
     engine = vehicle['engine']
+
+    if engine['type'] == 1:
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')
+
     _, _, _, _, _, rho_ISA, _, a = atmosphere_ISA_deviation(0, 0)
 
     # Initial calculations:
@@ -96,7 +105,14 @@ def takeoff_profile(takeoff_parameters,landing_parameters,aircraft_parameters,ru
     # thrust_vector,_ = zip(aircraft['number_of_engines']*turbofan(0, mach_vector[i], 1, vehicle) for i in mach_vector)
     thrust_vector = []
     for i in mach_vector:
-        thrust,_ , vehicle= turbofan(0, i, 1, vehicle)
+        if engine['type'] == 0:
+            thrust,_ , vehicle= turbofan(0, i, 1, vehicle)
+        else:
+            thrust = nn_unit_F.predict(scaler_F.transform([(0, i, 1)]))
+            fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(0, i, 1)]))
+
+        
+
         thrust = aircraft['number_of_engines']*thrust
         thrust_vector.append(thrust)
     

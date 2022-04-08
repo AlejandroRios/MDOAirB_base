@@ -18,17 +18,22 @@ TODO's:
 | Aeronautical Institute of Technology - Airbus Brazil
 
 """
+import math
+import warnings
+
+import numpy as np
 # =============================================================================
 # IMPORTS
 # =============================================================================
-from framework.Attributes.Atmosphere.atmosphere_ISA_deviation import atmosphere_ISA_deviation
+from framework.Attributes.Atmosphere.atmosphere_ISA_deviation import \
+    atmosphere_ISA_deviation
 from framework.Performance.Engine.engine_performance import turbofan
+from framework.Performance.Analysis.climb_to_altitude import rate_of_climb_calculation
+from framework.Attributes.Airspeed.airspeed import V_cas_to_mach, mach_to_V_cas, crossover_altitude
 
-from scipy.integrate import ode
-from scipy.integrate import solve_ivp
-import numpy as np
-import math
-import warnings
+from joblib import dump, load
+from scipy.integrate import ode, solve_ivp
+
 # =============================================================================
 # CLASSES
 # =============================================================================
@@ -39,6 +44,9 @@ import warnings
 global GRAVITY
 GRAVITY = 9.81
 kt_to_ms = 0.514444
+
+
+
 def takeoff_integration(
     initial_block_altitude,
     initial_block_distance,
@@ -101,7 +109,16 @@ def takeoff_integration(
         - fan_rotation_vec - vector containing the fan rotation [rpm]
         - compressor_rotation_vec - vector containing the compressor rotation speed [rpm]
     """
+
     aircraft = vehicle['aircraft']
+    engine = vehicle['engine']
+
+    if engine['type'] == 1:
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')
 
     if phase == 'ground':
         Tsim = initial_block_time + 200
@@ -135,11 +152,17 @@ def takeoff_integration(
         for i in range(N):
             _, _, _, _, _, rho_ISA, _, a = atmosphere_ISA_deviation(0, 0)
             mach_aux = velocity_vec[i]/a*kt_to_ms
-            thrust_force, fuel_flow, vehicle = turbofan(
-                0, mach_aux, 1, vehicle)
-            engine = vehicle['engine']
-            fan_rotation[i] = engine['fan_rotation']
-            compressor_rotation[i] = engine['compressor_rotation']
+
+            if engine['type'] == 0:
+                thrust_force, fuel_flow, vehicle = turbofan(
+                    0, mach_aux, 1, vehicle)
+
+                engine = vehicle['engine']
+                fan_rotation[i] = engine['fan_rotation']
+                compressor_rotation[i] = engine['compressor_rotation']
+            else:
+                thrust_force = nn_unit_F.predict(scaler_F.transform([(0, mach_aux, 1)]))
+                fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(0, mach_aux, 1)]))
 
         fan_rotation_vec = fan_rotation
         compressor_rotation_vec = compressor_rotation
@@ -172,15 +195,20 @@ def takeoff_integration(
         for i in range(N):
             _, _, _, _, _, rho_ISA, _, a = atmosphere_ISA_deviation(0, 0)
             mach_aux = velocity_vec[i]/a*kt_to_ms
-            thrust_force, fuel_flow, vehicle = turbofan(
-                0, mach_aux, 1, vehicle)
-            engine = vehicle['engine']
-            fan_rotation[i] = engine['fan_rotation']
-            compressor_rotation[i] = engine['compressor_rotation']
+
+            if engine['type'] == 0:
+                thrust_force, fuel_flow, vehicle = turbofan(
+                    0, mach_aux, 1, vehicle)
+
+                engine = vehicle['engine']
+                fan_rotation[i] = engine['fan_rotation']
+                compressor_rotation[i] = engine['compressor_rotation']
+            else:
+                thrust_force = nn_unit_F.predict(scaler_F.transform([(0, mach_aux, 1)]))
+                fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(0, mach_aux, 1)]))
 
         fan_rotation_vec = fan_rotation
         compressor_rotation_vec = compressor_rotation
-
 
 
         final_block_time = time_vec[-1]
@@ -205,8 +233,13 @@ def takeoff_integration(
         _, _, _, _, _, rho_ISA, _, a = atmosphere_ISA_deviation(initial_block_altitude, 0)
         mach =V_35/(a*kt_to_ms)
 
-        thrust_force, fuel_flow, vehicle = turbofan(
-            initial_block_altitude, mach, 1, vehicle)
+        if engine['type'] == 0:
+            thrust_force, fuel_flow, vehicle = turbofan(
+                initial_block_altitude, mach, 1, vehicle)
+        else:
+            thrust_force = nn_unit_F.predict(scaler_F.transform([(initial_block_altitude, mach, 1)]))
+            fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(initial_block_altitude, mach, 1)]))
+
         
         engine = vehicle['engine']
 
@@ -244,8 +277,14 @@ def takeoff_integration(
             _, _, _, _, _, _, _, a = atmosphere_ISA_deviation(altitude, 0)
 
             mach = velocity_vec[-1]/(a*kt_to_ms)
-            thrust_force, fuel_flow, vehicle = turbofan(
-            altitude, mach, 1, vehicle)
+
+
+            if engine['type'] == 0:
+                thrust_force, fuel_flow, vehicle = turbofan(
+                altitude, mach, 1, vehicle)
+            else:
+                thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, 1)]))
+                fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, 1)]))
 
             engine = vehicle['engine']
 
@@ -373,6 +412,14 @@ def flare(time,state,aircraft_parameters,takeoff_parameters,runaway_parameters,l
     """
     aircraft = vehicle['aircraft']
     wing = vehicle['wing']
+    engine = vehicle['engine']
+
+    if engine['type'] == 1:
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')
 
     distance = state[0]
     velocity_horizontal = state[1]
@@ -387,8 +434,13 @@ def flare(time,state,aircraft_parameters,takeoff_parameters,runaway_parameters,l
 
     mach = V_resultant/(a*kt_to_ms)
     throttle_position = 1.0
-    thrust_force, fuel_flow, vehicle = turbofan(
+
+    if engine['type'] == 0:
+        thrust_force, fuel_flow, vehicle = turbofan(
         altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+    else:
+        thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+        fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
     
     total_thrust_force = thrust_force*aircraft['number_of_engines']
 
@@ -427,6 +479,14 @@ def climb(time, state, climb_V_cas, mach_climb, delta_ISA, final_block_altitude,
         - dout
     """
     aircraft = vehicle['aircraft']
+    engine = vehicle['engine']
+
+    if engine['type'] == 1:
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')
 
     distance = state[0]
     altitude = state[1]
@@ -444,8 +504,13 @@ def climb(time, state, climb_V_cas, mach_climb, delta_ISA, final_block_altitude,
     else:
         mach = mach_climb
 
-    thrust_force, fuel_flow , vehicle = turbofan(
-        altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+    if engine['type'] == 0:
+        thrust_force, fuel_flow , vehicle = turbofan(
+            altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+    else:
+        thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+        fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
+    
     thrust_to_weight = aircraft['number_of_engines'] * \
         thrust_force/(mass*GRAVITY)
     rate_of_climb, V_tas, climb_path_angle = rate_of_climb_calculation(

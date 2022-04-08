@@ -326,12 +326,12 @@
 						}
 					},
 					"additionalProperties": false,
-					"maxProperties": 9,
+					"maxProperties": 14,
 					"minProperties": 4
 				}
 			},
 			"additionalProperties": false,
-			"maxProperties": 10,
+			"maxProperties": 15,
 			"minProperties": 5
 		}
 	},

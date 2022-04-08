@@ -29,7 +29,7 @@ from framework.Performance.Engine.engine_performance import turbofan
 
 from framework.Performance.Analysis.climb_to_altitude import rate_of_climb_calculation
 from framework.Performance.Analysis.buffet_altitude_constraint import buffet_altitude
-
+from joblib import dump, load
 # =============================================================================
 # CLASSES
 # =============================================================================
@@ -60,6 +60,14 @@ def maximum_altitude(vehicle, initial_altitude, limit_altitude, mass,
     """
     aircraft = vehicle['aircraft']
     performance = vehicle['performance']
+    engine = vehicle['engine']
+
+    if engine['type'] == 1:
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')  
 
     transition_altitude = crossover_altitude(
         mach_climb, climb_V_cas, delta_ISA)
@@ -82,8 +90,14 @@ def maximum_altitude(vehicle, initial_altitude, limit_altitude, mass,
     while (rate_of_climb > residual_rate_of_climb and altitude < final_altitude):
 
         mach = V_cas_to_mach(V_cas, altitude, delta_ISA)
-        thrust_force, fuel_flow , vehicle = turbofan(
-            altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+
+        if engine['type'] == 0:
+            thrust_force, fuel_flow , vehicle = turbofan(
+                altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+        else:
+            thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+            fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
+
         thrust_to_weight = aircraft['number_of_engines'] * \
             thrust_force/(mass*GRAVITY)
 
@@ -108,8 +122,14 @@ def maximum_altitude(vehicle, initial_altitude, limit_altitude, mass,
     while (rate_of_climb > residual_rate_of_climb and altitude <= final_altitude):
 
         mach = V_cas_to_mach(V_cas, altitude, delta_ISA)
-        thrust_force, fuel_flow , vehicle = turbofan(
-            altitude, mach, throttle_position, vehicle)
+
+        if engine['type'] == 0:
+            thrust_force, fuel_flow , vehicle = turbofan(
+                altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+        else:
+            thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+            fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
+
         thrust_to_weight = aircraft['number_of_engines'] * \
             thrust_force/(mass*GRAVITY)
 
@@ -134,8 +154,14 @@ def maximum_altitude(vehicle, initial_altitude, limit_altitude, mass,
     while (rate_of_climb > residual_rate_of_climb and altitude <= final_altitude):
 
         V_cas = mach_to_V_cas(mach, altitude, delta_ISA)
-        thrust_force, fuel_flow , vehicle = turbofan(
-            altitude, mach, throttle_position, vehicle)
+
+        if engine['type'] == 0:
+            thrust_force, fuel_flow , vehicle = turbofan(
+                altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+        else:
+            thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+            fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
+
         thrust_to_weight = aircraft['number_of_engines'] * \
             thrust_force/(mass*GRAVITY)
 
@@ -178,6 +204,14 @@ def optimum_altitude(vehicle, initial_altitude, limit_altitude, mass,
     """
     aircraft = vehicle['aircraft']
     performance = vehicle['performance']
+    engine = vehicle['engine']
+
+    if engine['type'] == 1:
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')   
 
     transition_altitude = crossover_altitude(
         mach_climb, climb_V_cas, delta_ISA)
@@ -204,8 +238,14 @@ def optimum_altitude(vehicle, initial_altitude, limit_altitude, mass,
         # print(rate_of_climb)
         # print(altitude)
         mach = V_cas_to_mach(V_cas, altitude, delta_ISA)
-        thrust_force, fuel_flow , vehicle = turbofan(
-            altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+
+        if engine['type'] == 0:
+            thrust_force, fuel_flow , vehicle = turbofan(
+                altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+        else:
+            thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+            fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
+
         thrust_to_weight = aircraft['number_of_engines'] * \
             thrust_force/(mass*GRAVITY)
 
@@ -236,8 +276,14 @@ def optimum_altitude(vehicle, initial_altitude, limit_altitude, mass,
         # print(rate_of_climb)
         # print(altitude)
         mach = V_cas_to_mach(V_cas, altitude, delta_ISA)
-        thrust_force, fuel_flow , vehicle = turbofan(
-            altitude, mach, throttle_position, vehicle)
+    
+        if engine['type'] == 0:
+            thrust_force, fuel_flow , vehicle = turbofan(
+                altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+        else:
+            thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+            fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
+
         thrust_to_weight = aircraft['number_of_engines'] * \
             thrust_force/(mass*GRAVITY)
 
@@ -269,8 +315,14 @@ def optimum_altitude(vehicle, initial_altitude, limit_altitude, mass,
         # print(altitude)
 
         V_cas = mach_to_V_cas(mach, altitude, delta_ISA)
-        thrust_force, fuel_flow , vehicle = turbofan(
-            altitude, mach, throttle_position, vehicle)
+
+        if engine['type'] == 0:
+            thrust_force, fuel_flow , vehicle = turbofan(
+                altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+        else:
+            thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+            fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
+
         thrust_to_weight = aircraft['number_of_engines'] * \
             thrust_force/(mass*GRAVITY)
 

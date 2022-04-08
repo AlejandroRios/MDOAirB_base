@@ -26,6 +26,7 @@ import json
 import jsonschema
 import linecache
 
+
 import numpy as np
 import os
 import random
@@ -290,33 +291,83 @@ from scipy._lib._util import check_random_state, MapWrapper
 import matplotlib.pyplot as plt
 import scipy.optimize
 
-# DO LIKE THIS
+import numpy as np
+import matplotlib.pyplot as plt
+
+from pymoo.algorithms.moo.nsga2 import NSGA2
+from pymoo.factory import get_problem
+from pymoo.optimize import minimize
+from pymoo.visualization.scatter import Scatter
+
+from pymoo.core.problem import starmap_parallelized_eval
+
+from pymoo.problems.functional import FunctionalProblem
+
+
+
+
 
 if __name__ == "__main__":
 
-    progress = []
-    progress_val = []
+    # # DO LIKE THIS
+    # class MyProblem(Problem):
 
-    def cb(x, convergence):
-        progress.append(x)
-        progress_val.append(obj_function(x))	
+    #     def __init__(self):
+    #         super().__init__(n_var=10,
+    #                         n_obj=1,
+    #                         n_constr=0,
+    #                         xl=np.array([90,    70,   20,     20,      -5,        30,     161,       4,       1500,     0]),
+    #                         xu=np.array([290,  120,   50,     35,       0 ,       45,     220,       6,       3200,    44]))
 
-    # Lower and upeer bounds of each input variable
-    #            0   |      1   |     2   |   3     |    4    |   5      |    11    |   12    |     13    |  14      |
-    #           Areaw|      ARw |     TRw |  Sweepw |  Twistw | b/2kinkw |    PAX   | seat abr|     range | engine   |    
-    bounds = [(72,130), (75, 120), (25, 50), (15, 30), (-5, -2), (32, 45), (161, 220), (4, 6), (1500,3200), (0,44)]
 
-    result = scipy.optimize.differential_evolution(obj_function, bounds, maxiter = 100, disp=True, polish=False,callback=cb,  updating='deferred', workers=8)
-    print(result)
+    #     def _evaluate(self, x, out, *args, **kwargs):
+    #         out["F"] = obj_function(x)
 
-    progress = np.array(progress)
-    progress_val = np.array(progress_val)
+    n_proccess = 10
+    pool = multiprocessing.Pool(n_proccess)
+    # problem = MyProblem(runner=pool.starmap, func_eval=starmap_parallelized_eval)
+    n_var = 10
+    problem = FunctionalProblem(n_var,
+                            obj_function,
+                            xl=np.array([40,    70,   20,     0,      -5,        30,     40,        3,       950,     0]),
+                            xu=np.array([290,  120,   50,     35,       0 ,       45,     220,       6,       3200,    44]),
+                            runner=pool.starmap, func_eval=starmap_parallelized_eval)
+
+    algorithm = NSGA2(pop_size=10)
+
+    res = minimize(problem,algorithm,('n_gen', 5), verbose=True)
+
+    plot = Scatter()
+    plot.add(problem.pareto_front(use_cache=True, flatten=True), plot_type="line", color="black", alpha=0.7)
+
+    plot.add(res.F, facecolor="none", edgecolor="red")
+    plot.show()
+
+
+
+    # progress = []
+    # progress_val = []
+
+    # def cb(x, convergence):
+    #     progress.append(x)
+    #     progress_val.append(obj_function(x))	
+
+    # # Lower and upeer bounds of each input variable
+    # #            0   |      1   |     2   |   3     |    4    |   5      |  6     |   7     |   8     |         9   |   10    |    11    |   12    |     13    |  14      |
+    # #           Areaw|      ARw |     TRw |  Sweepw |  Twistw | b/2kinkw |  bypass|   Ediam |  PRcomp |        Tin  |   PRfan |    PAX   | seat abr|     range | engine   |    
+    # bounds = [(72,130), (75, 120), (25, 50), (15, 30), (-5, -2), (32, 45), (45, 65), (10, 15), (27, 30), (1350, 1500), (14, 25), (70, 220), (4, 6), (1000,3500),    (0,44)]
+
+    # result = scipy.optimize.differential_evolution(obj_function, bounds, maxiter = 100, disp=True, polish=False,callback=cb ,init =init_Population,  updating='deferred', workers=8)
+    # print(result)
+
+    # progress = np.array(progress)
+    # progress_val = np.array(progress_val)
     
 
-    fig, ax = plt.subplots()
-    ax.plot(progress_val)
+    # fig, ax = plt.subplots()
+    # ax.plot(progress_val)
 
-    ax.grid(True, linestyle='-.')
-    ax.tick_params(labelcolor='r', labelsize='medium', width=3)
+    # ax.grid(True, linestyle='-.')
+    # ax.tick_params(labelcolor='r', labelsize='medium', width=3)
 
-    plt.show()
+    # plt.show()

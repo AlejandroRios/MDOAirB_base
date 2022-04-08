@@ -35,7 +35,7 @@ import numpy as np
 # from scipy.integrate import ode
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
-
+from joblib import dump, load
 from framework.Attributes.Airspeed.airspeed import V_cas_to_mach, mach_to_V_cas, crossover_altitude
 from framework.Attributes.Atmosphere.atmosphere_ISA_deviation import atmosphere_ISA_deviation
 from framework.Performance.Analysis.climb_acceleration import acceleration_to_250
@@ -144,6 +144,15 @@ def climb(time, state, climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria
 
     aircraft = vehicle['aircraft']
 
+    engine = vehicle['engine']
+
+    if engine['type'] == 1:
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')
+
     distance = state[0]
     altitude = state[1]
     mass = state[2]
@@ -157,9 +166,14 @@ def climb(time, state, climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria
         mach = V_cas_to_mach(climb_V_cas, altitude, delta_ISA)
     else:
         mach = mach_climb
-
-    thrust_force, fuel_flow, vehicle = turbofan(
-        altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+    
+    if engine['type'] == 0:
+        thrust_force, fuel_flow, vehicle = turbofan(
+            altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+    else:
+        thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+        fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
+    
     thrust_to_weight = aircraft['number_of_engines'] * \
         thrust_force/(mass*GRAVITY)
     rate_of_climb, V_tas, climb_path_angle = rate_of_climb_calculation(

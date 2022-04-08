@@ -61,7 +61,7 @@ from jsonschema import validate
 log = get_logger(__file__.split('.')[0])
 
 
-def objective_function(x, original_vehicle, computation_mode, route_computation_mode, airports, distances, demands):
+def objective_function0(x, original_vehicle, computation_mode, route_computation_mode, airports, distances, demands):
 
     log.info('==== Start network profit module ====')
     start_time = datetime.now()
@@ -289,7 +289,7 @@ def objective_function(x, original_vehicle, computation_mode, route_computation_
                     ">>>>>>>>>> Error at <<<<<<<<<<<< writting dataframes", exc_info=True)
 
             try:
-                write_optimal_results(list(airports.keys(
+                write_optimal_results(x,list(airports.keys(
                 )), distances, demands, profit, DOC_ik, vehicle, kpi_df2, airplanes_ik)
             except:
                 log.error(
@@ -432,6 +432,10 @@ def check_runways(demands, airports):
                 raise CustomInputsError(
                     f'Take-of runway {takeoff_runway} do not exit for airport {departure} in MDO database')
             landing_runway = demands[departure][arrival]["landing_runway"]
+            print(departure)
+            print(takeoff_runway)
+            print(arrival)
+            print(landing_runway)
             if landing_runway not in airports[arrival]["runways"]:
                 raise CustomInputsError(
                     f'Landing runway {landing_runway} do not exit for airport {arrival} in MDO database')
@@ -588,8 +592,10 @@ def readArgv(argv):
             customInputsfile = arg
     return customInputsfile
 
+def objective_function(vehicle,x=None):
 
-def main(argv):
+    argv = ['--file', 'Database/JsonSchema/00_Demands_Only.json']
+
     fixed_parameters = {}
     fixed_aircraft = {}
     customInputsfile = readArgv(argv)
@@ -613,15 +619,58 @@ def main(argv):
     #     5.55661531e+00,  1.27054142e+03,  4.10000000e+04,  7.80000000e+01,
     #                1,            1,             1,            1]
     #    0      1   2   3     4     5    6   7  8     9   10   11  12  13    14    15  16 17 18 19
-    x = [130,  91, 38, 29,  -4.5,   33, 62, 17, 30,
-         1480, 18, 144, 6, 3000, 0]
-    # x = [130, 100, 30, 25, -2.25, 38.5, 60, 20, 27, 1350, 15, 250, 6, 3000, 37000, 78, 1, 1, 1, 1] # Sylvain
+    # x = [130,  91, 38, 29,  -4.5,   33, 62, 17, 30,
+    #      1480, 18, 144, 6, 3000, 0]
+    # # x = [130, 100, 30, 25, -2.25, 38.5, 60, 20, 27, 1350, 15, 250, 6, 3000, 37000, 78, 1, 1, 1, 1] # Sylvain
+
+    # distances = {'FRA': {'FRA': 0, 'LHR': 355, 'CDG': 243, 'AMS': 198, 'MAD': 768, 'BCN': 591, 'FCO': 517, 'DUB': 589, 'VIE': 336, 'ZRH': 154}, 'LHR': {'FRA': 355, 'LHR': 0, 'CDG': 188, 'AMS': 200, 'MAD': 672, 'BCN': 620, 'FCO': 781, 'DUB': 243, 'VIE': 690, 'ZRH': 427}, 'CDG': {'FRA': 243, 'LHR': 188, 'CDG': 0, 'AMS': 215, 'MAD': 574, 'BCN': 463, 'FCO': 595, 'DUB': 425, 'VIE': 561, 'ZRH': 258}, 'AMS': {'FRA': 198, 'LHR': 200, 'CDG': 215, 'AMS': 0, 'MAD': 788, 'BCN': 670, 'FCO': 700, 'DUB': 406, 'VIE': 519, 'ZRH': 326}, 'MAD': {'FRA': 768, 'LHR': 672, 'CDG': 574, 'AMS': 788, 'MAD': 0, 'BCN': 261, 'FCO': 720, 'DUB': 784, 'VIE': 977, 'ZRH': 670}, 'BCN': {
+    #     'FRA': 591, 'LHR': 620, 'CDG': 463, 'AMS': 670, 'MAD': 261, 'BCN': 0, 'FCO': 459, 'DUB': 802, 'VIE': 741, 'ZRH': 463}, 'FCO': {'FRA': 517, 'LHR': 781, 'CDG': 595, 'AMS': 700, 'MAD': 720, 'BCN': 459, 'FCO': 0, 'DUB': 1020, 'VIE': 421, 'ZRH': 375}, 'DUB': {'FRA': 589, 'LHR': 243, 'CDG': 425, 'AMS': 406, 'MAD': 784, 'BCN': 802, 'FCO': 1020, 'DUB': 0, 'VIE': 922, 'ZRH': 670}, 'VIE': {'FRA': 336, 'LHR': 690, 'CDG': 561, 'AMS': 519, 'MAD': 977, 'BCN': 741, 'FCO': 421, 'DUB': 922, 'VIE': 0, 'ZRH': 327}, 'ZRH': {'FRA': 154, 'LHR': 427, 'CDG': 258, 'AMS': 326, 'MAD': 670, 'BCN': 463, 'FCO': 375, 'DUB': 670, 'VIE': 327, 'ZRH': 0}}
+
+    if not fixed_aircraft:
+        objective_function0(x, fixed_parameters, computation_mode,
+                           route_computation_mode, airports, distances, demands)
+
+    return 0
+
+
+def main(argv):
+
+    fixed_parameters = {}
+    fixed_aircraft = {}
+    customInputsfile = readArgv(argv)
+    if not customInputsfile or not os.path.isfile(customInputsfile):
+        print(f"Custom file {customInputsfile} does not exist")
+        sys.exit(1)
+
+    try:
+        computation_mode, route_computation_mode, airports, distances, demands, _, fixed_parameters, fixed_aircraft = read_custom_inputs(
+            CUSTOM_INPUTS_SCHEMA, customInputsfile)
+    except Exception as err:
+        print(
+            f"Exception ocurred while playing custom inputs file {customInputsfile}")
+        print(f"Error: {err}")
+        sys.exit(1)
+
+    # x = [121, 114, 27, 25, -4.0, 35, 50, 14, 29, 1430, 23, 142, 6, 1171, 41000, 78, 1, 1, 1, 1]
+    # x = [1.04013290e+02,  8.71272735e+01,  3.42639119e+01,  2.12550036e+01,
+    #    -3.42824373e+00,  4.12149389e+01,  4.98606638e+01,  1.47169661e+01,
+    #     2.87241618e+01,  1.36584947e+03,  2.09763441e+01,  1.61607474e+02,
+    #     5.55661531e+00,  1.27054142e+03,  4.10000000e+04,  7.80000000e+01,
+    #                1,            1,             1,            1]
+    #    0      1   2   3     4     5    6   7  8     9   10   11  12  13    14    15  16 17 18 19
+
+        #     0   | 1   | 2   |  3     |   4    |   5      | 6    | 7        |  8     |   9    |
+        #    Areaw| ARw | TRw | Sweepw | Twistw | b/2kinkw | pax  | seat abr | range  | engine |
+    # x = [90,    70,   20,     20,      -5,        30,     161,       4,       1500,     45]
+
+    x = [90,    110,   27,     15,      -4,        40,     40,       3,       2000,     45]
+    # x = [130, 100, 30, 25, -2.25, 38.5, 250, 6, 3000,44] # Sylvain
 
     distances = {'FRA': {'FRA': 0, 'LHR': 355, 'CDG': 243, 'AMS': 198, 'MAD': 768, 'BCN': 591, 'FCO': 517, 'DUB': 589, 'VIE': 336, 'ZRH': 154}, 'LHR': {'FRA': 355, 'LHR': 0, 'CDG': 188, 'AMS': 200, 'MAD': 672, 'BCN': 620, 'FCO': 781, 'DUB': 243, 'VIE': 690, 'ZRH': 427}, 'CDG': {'FRA': 243, 'LHR': 188, 'CDG': 0, 'AMS': 215, 'MAD': 574, 'BCN': 463, 'FCO': 595, 'DUB': 425, 'VIE': 561, 'ZRH': 258}, 'AMS': {'FRA': 198, 'LHR': 200, 'CDG': 215, 'AMS': 0, 'MAD': 788, 'BCN': 670, 'FCO': 700, 'DUB': 406, 'VIE': 519, 'ZRH': 326}, 'MAD': {'FRA': 768, 'LHR': 672, 'CDG': 574, 'AMS': 788, 'MAD': 0, 'BCN': 261, 'FCO': 720, 'DUB': 784, 'VIE': 977, 'ZRH': 670}, 'BCN': {
         'FRA': 591, 'LHR': 620, 'CDG': 463, 'AMS': 670, 'MAD': 261, 'BCN': 0, 'FCO': 459, 'DUB': 802, 'VIE': 741, 'ZRH': 463}, 'FCO': {'FRA': 517, 'LHR': 781, 'CDG': 595, 'AMS': 700, 'MAD': 720, 'BCN': 459, 'FCO': 0, 'DUB': 1020, 'VIE': 421, 'ZRH': 375}, 'DUB': {'FRA': 589, 'LHR': 243, 'CDG': 425, 'AMS': 406, 'MAD': 784, 'BCN': 802, 'FCO': 1020, 'DUB': 0, 'VIE': 922, 'ZRH': 670}, 'VIE': {'FRA': 336, 'LHR': 690, 'CDG': 561, 'AMS': 519, 'MAD': 977, 'BCN': 741, 'FCO': 421, 'DUB': 922, 'VIE': 0, 'ZRH': 327}, 'ZRH': {'FRA': 154, 'LHR': 427, 'CDG': 258, 'AMS': 326, 'MAD': 670, 'BCN': 463, 'FCO': 375, 'DUB': 670, 'VIE': 327, 'ZRH': 0}}
 
     if not fixed_aircraft:
-        objective_function(x, fixed_parameters, computation_mode,
+        objective_function0(x, fixed_parameters, computation_mode,
                            route_computation_mode, airports, distances, demands)
 
 

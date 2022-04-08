@@ -30,7 +30,7 @@ F_vec_model = []
 fuel_flow_vec_model = []
 
 altitude_vec = []
-
+FC_ANN = nn_unit.predict(scaler.transform([(0, 0.1, 1)]))
 
 for i in altitude:
     for j in M0:

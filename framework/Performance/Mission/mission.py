@@ -45,8 +45,6 @@ from framework.Performance.Analysis.mission_altitude import (maximum_altitude,
 from framework.Sizing.performance_constraints import (regulated_landing_weight,
                                                       regulated_takeoff_weight)
 
-from framework.Performance.Engine.engine_performance import turbofan
-
 from framework.Weights.weights import aircraft_empty_weight
 from framework.Performance.Mission.reserve_fuel import reserve_fuel
 from framework.utilities.logger import get_logger

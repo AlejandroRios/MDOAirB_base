@@ -290,3 +290,8 @@ def PW120model(altitude, mach, throttle_position):
 
     return F , fuel_flow
 
+
+
+# Test
+T,FC = PW120model(0, 0.1, 1)
+print(T,FC)

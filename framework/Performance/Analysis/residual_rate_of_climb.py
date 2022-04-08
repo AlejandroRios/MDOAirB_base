@@ -95,6 +95,55 @@ def residual_rate_of_climb(vehicle, airport_departure, weight_takeoff,engine_cru
     thrust_to_weight_residual = 1/((engine_cruise_thrust/thrust_takeoff)*L_to_D)
 
     return thrust_to_weight_residual
+
+def residual_rate_of_climb2(vehicle, airport_departure, weight_takeoff,engine_TO_thrust):
+    """
+    Description:
+        - This function calculates the residual rate of climb
+    Inputs:
+        - vehicle - dictionary containing aircraft parameters
+        - airport_departure
+        - weight_takeoff - takeoff weight [N]
+        - engine_cruise_thrust - [N]
+    Outputs:
+        - thrust_to_weight_residual
+    """
+
+    aircraft = vehicle['aircraft']
+    wing = vehicle['wing']
+    engine = vehicle['engine']
+    
+    V_Vmd = np.sqrt(np.sqrt(3))
+    CL_CLmd = 1/(V_Vmd**2)
+
+    M_cruise = 0.85
+    f_taper = 0.005*(1 + 1.5*(wing['taper_ratio']- 0.6)**2)
+    e = 1/(1 + 0.12*M_cruise**6)/(1 + (0.142 + wing['aspect_ratio']*(10*wing['mean_thickness'])**0.33*f_taper)/np.cos(wing['sweep_c_4']*np.pi/180)**2 + 0.1*(3*aircraft['number_of_engines'] + 1)/(4 + wing['aspect_ratio'])**0.8)
+
+    # CD_takeoff = zero_fidelity_drag_coefficient(aircraft_data, CL_maximum_takeoff, phase)
+    # Input for neural network: 0 for CL | 1 for alpha
+    switch_neural_network = 0
+    alpha_deg = 1
+    CD_wing, CL_wing = aerodynamic_coefficients_ANN(
+        vehicle, 30000*ft_to_m, M_cruise , 0, alpha_deg,switch_neural_network)
+
+    CL_md = np.sqrt(CD_wing*np.pi*wing['aspect_ratio']*e)
+
+    CL = CL_CLmd/CL_md
+
+    k_E = 15.8
+
+    Swet_Sw = 6.1
+    Emax =  k_E *np.sqrt(wing['aspect_ratio']/Swet_Sw)
+    E = Emax *2/(1/CL_CLmd+CL_CLmd)
+
+    Tcr_Tto = weight_takeoff/(engine_TO_thrust*E)
+
+    thrust_to_weight_residual = 1/(Tcr_Tto*E)    
+
+
+    return thrust_to_weight_residual
+    
 # =============================================================================
 # MAIN
 # =============================================================================

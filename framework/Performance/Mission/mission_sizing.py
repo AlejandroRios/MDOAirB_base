@@ -100,6 +100,13 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
     operations = vehicle['operations']
     performance = vehicle['performance']
 
+    if engine['type'] == 1:
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')   
+
     passenger_capacity_initial = aircraft['passenger_capacity']
     engines_number = aircraft['number_of_engines']
     max_engine_thrust = engine['maximum_thrust']
@@ -228,6 +235,8 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
             even_flight_level, key=lambda x: abs(x-flight_level)
         )
         final_altitude = flight_level*100
+
+    operations['cruise_altitude'] = final_altitude
     
     # start_time = datetime.now()
     # Initial climb fuel estimation
@@ -575,8 +584,12 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
     total_mission_distance_complete = total_mission_distance
 
 
-    engine_static_thrust, fuel_flow , vehicle = turbofan(
+    if engine['type'] == 0:
+        engine_static_thrust, fuel_flow , vehicle = turbofan(
         0, 0, 1, vehicle)
+    else:
+        engine_static_thrust = nn_unit_F.predict(scaler_F.transform([(0, 0, 1)]))
+        fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(0, 0, 1)]))
 
     MTOW_error = 1E06
     MTOW_calculated = max_takeoff_mass

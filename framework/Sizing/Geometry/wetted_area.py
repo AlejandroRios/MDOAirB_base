@@ -32,7 +32,7 @@ from framework.Sizing.Geometry.wetted_area_wing import *
 from framework.Sizing.Geometry.sizing_horizontal_tail import *
 from framework.Performance.Engine.engine_performance import turbofan
 from framework.utilities.logger import get_logger
-
+from joblib import dump, load
 # from framework.CPACS_update.cpacsfunctions import *
 # import cpacsfunctions as cpsf
 # =============================================================================
@@ -87,8 +87,19 @@ def wetted_area(vehicle):
     fileToRead2 = 'pkink'
     fileToRead3 = 'ptip'
 
-    engine_thrust, _ , vehicle = turbofan(
+    if engine['type'] == 1:
+            scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+            nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+            scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+            nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')
+
+    if engine['type'] == 0:
+        engine_thrust, _ , vehicle = turbofan(
         0, 0, 1, vehicle)  # force [N], fuel flow [kg/hr]
+
+    else:
+        engine_thrust = nn_unit_F.predict(scaler_F.transform([(0, 0, 1)]))
 
     engine_thrust_lbf= engine_thrust*N_to_lbf
 

@@ -45,7 +45,33 @@
 				"demand": 1875,
 				"takeoff_runway": "07L",
 				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
 			}
+
 		},
 		"LHR": {
 			"FRA": {
@@ -90,6 +116,31 @@
 			},
 			"ZRH": {
 				"demand": 3215,
+				"takeoff_runway": "27R",
+				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "27R",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "27R",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "27R",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "27R",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
 				"takeoff_runway": "27R",
 				"landing_runway": "14"
 			}
@@ -139,6 +190,31 @@
 				"demand": 1925,
 				"takeoff_runway": "08L",
 				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "08L",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "08L",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "08L",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "08L",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
+				"takeoff_runway":"08L",
+				"landing_runway": "14"
 			}
 		},
 		"AMS": {
@@ -184,6 +260,31 @@
 			},
 			"ZRH": {
 				"demand": 2559,
+				"takeoff_runway": "6",
+				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway":  "6",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "6",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "6",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway":  "6",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
 				"takeoff_runway": "6",
 				"landing_runway": "14"
 			}
@@ -233,6 +334,31 @@
 				"demand": 1832,
 				"takeoff_runway": "14R",
 				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "14R",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "14R",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway":"14R",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "14R",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
+				"takeoff_runway": "14R",
+				"landing_runway": "14"
 			}
 		},
 		"BCN": {
@@ -278,6 +404,31 @@
 			},
 			"ZRH": {
 				"demand": 1713,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
 				"takeoff_runway": "07L",
 				"landing_runway": "14"
 			}
@@ -327,6 +478,31 @@
 				"demand": 990,
 				"takeoff_runway": "16L",
 				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "16L",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "16L",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "16L",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "16L",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
 			}
 		},
 		"DUB": {
@@ -372,6 +548,31 @@
 			},
 			"ZRH": {
 				"demand": 783,
+				"takeoff_runway": "10",
+				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "10",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "10",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "10",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "10",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
 				"takeoff_runway": "10",
 				"landing_runway": "14"
 			}
@@ -421,6 +622,31 @@
 				"demand": 2601,
 				"takeoff_runway": "16",
 				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
 			}
 		},
 		"ZRH": {
@@ -468,6 +694,391 @@
 				"demand": 2601,
 				"takeoff_runway": "14",
 				"landing_runway": "16"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			}
+		},
+		"ARN": {
+			"FRA": {
+				"demand": 1875,
+				"takeoff_runway": "14",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 3215,
+				"takeoff_runway": "14",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 1925,
+				"takeoff_runway": "14",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 2559,
+				"takeoff_runway": "14",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 1832,
+				"takeoff_runway": "14",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 1713,
+				"takeoff_runway": "14",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 990,
+				"takeoff_runway": "14",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 783,
+				"takeoff_runway": "14",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 2601,
+				"takeoff_runway": "14",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 2004,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1052,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			}
+		},
+		"DME": {
+			"FRA": {
+				"demand": 1875,
+				"takeoff_runway": "14",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 3215,
+				"takeoff_runway": "14",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 1925,
+				"takeoff_runway": "14",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 2559,
+				"takeoff_runway": "14",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 1832,
+				"takeoff_runway": "14",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 1713,
+				"takeoff_runway": "14",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 990,
+				"takeoff_runway": "14",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 783,
+				"takeoff_runway": "14",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 2601,
+				"takeoff_runway": "14",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 1052,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
+				"takeoff_runway": "14",
+				"landing_runway": "14"
+			}
+		},
+		"HEL": {
+			"FRA": {
+				"demand": 1875,
+				"takeoff_runway": "14",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 3215,
+				"takeoff_runway": "14",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 1925,
+				"takeoff_runway": "14",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 2559,
+				"takeoff_runway": "14",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 1832,
+				"takeoff_runway": "14",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 1713,
+				"takeoff_runway": "14",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 990,
+				"takeoff_runway": "14",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 783,
+				"takeoff_runway": "14",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 2601,
+				"takeoff_runway": "14",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 1052,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1519,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 2565,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			}
+		},
+		"IST": {
+			"FRA": {
+				"demand": 1875,
+				"takeoff_runway": "14",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 3215,
+				"takeoff_runway": "14",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 1925,
+				"takeoff_runway": "14",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 2559,
+				"takeoff_runway": "14",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 1832,
+				"takeoff_runway": "14",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 1713,
+				"takeoff_runway": "14",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 990,
+				"takeoff_runway": "14",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 783,
+				"takeoff_runway": "14",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 2601,
+				"takeoff_runway": "14",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 1052,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 2565,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 1519,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"KBP": {
+				"demand": 1249,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			}
+		},
+		"KBP": {
+			"FRA": {
+				"demand": 1875,
+				"takeoff_runway": "14",
+				"landing_runway": "07L"
+			},
+			"LHR": {
+				"demand": 3215,
+				"takeoff_runway": "14",
+				"landing_runway": "27R"
+			},
+			"CDG": {
+				"demand": 1925,
+				"takeoff_runway": "14",
+				"landing_runway": "08L"
+			},
+			"AMS": {
+				"demand": 2559,
+				"takeoff_runway": "14",
+				"landing_runway": "6"
+			},
+			"MAD": {
+				"demand": 1832,
+				"takeoff_runway": "14",
+				"landing_runway": "18L"
+			},
+			"BCN": {
+				"demand": 1713,
+				"takeoff_runway": "14",
+				"landing_runway": "07R"
+			},
+			"FCO": {
+				"demand": 990,
+				"takeoff_runway": "14",
+				"landing_runway": "16L"
+			},
+			"DUB": {
+				"demand": 783,
+				"takeoff_runway": "14",
+				"landing_runway": "10"
+			},
+			"VIE": {
+				"demand": 2601,
+				"takeoff_runway": "14",
+				"landing_runway": "16"
+			},
+			"ZRH": {
+				"demand": 1052,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"ARN": {
+				"demand": 2004,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"DME": {
+				"demand": 1519,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"HEL": {
+				"demand": 2565,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
+			},
+			"IST": {
+				"demand": 1249,
+				"takeoff_runway": "07L",
+				"landing_runway": "14"
 			}
 		}
 	}

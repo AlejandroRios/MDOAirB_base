@@ -28,6 +28,7 @@ import numpy as np
 # from scipy.optimize import minimize
 from scipy import optimize
 from scipy.optimize import root
+from joblib import dump, load
 from framework.Performance.Engine.engine_performance import turbofan
 from framework.Attributes.Atmosphere.atmosphere_ISA_deviation import atmosphere_ISA_deviation
 from framework.Attributes.Airspeed.airspeed import V_cas_to_mach, mach_to_V_cas, mach_to_V_tas, crossover_altitude
@@ -152,7 +153,18 @@ def specific_fuel_consumption(vehicle, mach, altitude, delta_ISA, mass):
 
     aircraft = vehicle['aircraft']
     wing = vehicle['wing']
+    engine = vehicle['engine']
+
+    if engine['type'] == 1:
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')   
+
+
     wing_surface = wing['area']
+
 
     V_tas = mach_to_V_tas(mach, altitude, delta_ISA)
     _, _, _, _, _, rho_ISA, _, _ = atmosphere_ISA_deviation(altitude, delta_ISA)
@@ -180,8 +192,13 @@ def specific_fuel_consumption(vehicle, mach, altitude, delta_ISA, mass):
     L_over_D = CL_required/CD
     throttle_position = 0.6
 
-    thrust_force, fuel_flow , vehicle = turbofan(
-        altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+
+    if engine['type'] == 0:
+        thrust_force, fuel_flow , vehicle = turbofan(
+            altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+    else:
+        thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+        fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
 
     FnR = mass*GRAVITY/L_over_D
 
@@ -190,8 +207,15 @@ def specific_fuel_consumption(vehicle, mach, altitude, delta_ISA, mass):
     total_thrust_force = 0
 
     while (total_thrust_force < FnR and throttle_position <= 1):
-        thrust_force, fuel_flow , vehicle = turbofan(
-            altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+        if engine['type'] == 0:
+            thrust_force, fuel_flow , vehicle = turbofan(
+                altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+        else:
+            thrust_force = nn_unit_F.predict(scaler_F.transform([(altitude, mach, throttle_position)]))
+            fuel_flow = nn_unit_FC.predict(scaler_FC.transform([(altitude, mach, throttle_position)]))
+
+
+        
         TSFC = (fuel_flow*GRAVITY)/thrust_force
         total_thrust_force = aircraft['number_of_engines'] * thrust_force
         throttle_position = throttle_position+step_throttle

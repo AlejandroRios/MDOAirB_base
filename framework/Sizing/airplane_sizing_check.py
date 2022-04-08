@@ -22,32 +22,41 @@ TODO's:
 | Aeronautical Institute of Technology - Airbus Brazil
 
 """
+from datetime import datetime
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
 import numpy as np
 import pandas as pd
-from framework.Sizing.Geometry.wing_structural_layout_fuel_storage import wing_structural_layout
-from framework.Sizing.Geometry.fuselage_sizing import fuselage_cross_section
-from framework.Sizing.Geometry.wetted_area import wetted_area
-from framework.Sizing.Geometry.fuel_capacity_zero_fidelity import zero_fidelity_fuel_capacity
-from framework.Aerodynamics.aerodynamic_coefficients_ANN import aerodynamic_coefficients_ANN
-from framework.Aerodynamics.drag_coefficient_flap import drag_coefficient_flap
-from framework.Aerodynamics.drag_coefficient_landing_gear import drag_coefficient_landing_gear
+from framework.Aerodynamics.aerodynamic_coefficients_ANN import \
+    aerodynamic_coefficients_ANN
 from framework.Aerodynamics.airfoil_parameters import airfoil_parameters
-from framework.Performance.Mission.mission_sizing import mission_sizing
-from framework.Performance.Engine.engine_performance import turbofan
-from framework.Performance.Analysis.second_segment_climb import second_segment_climb
-from framework.Performance.Analysis.missed_approach_climb import missed_approach_climb_AEO, missed_approach_climb_OEI
-from framework.Performance.Analysis.residual_rate_of_climb import residual_rate_of_climb
-from framework.Sizing.Geometry.sizing_landing_gear import sizing_landing_gear
-from framework.Sizing.performance_constraints import *
+from framework.Aerodynamics.drag_coefficient_flap import drag_coefficient_flap
+from framework.Aerodynamics.drag_coefficient_landing_gear import \
+    drag_coefficient_landing_gear
 from framework.Noise.Noise_Smith.noise_calculation import noise_calculation
+from framework.Performance.Analysis.missed_approach_climb import (
+    missed_approach_climb_AEO, missed_approach_climb_OEI)
+from framework.Performance.Analysis.residual_rate_of_climb import \
+    (residual_rate_of_climb,residual_rate_of_climb2)
+from framework.Performance.Analysis.second_segment_climb import \
+    second_segment_climb
+from framework.Performance.Engine.engine_performance import turbofan
+from framework.Performance.Mission.mission_sizing import mission_sizing
+from framework.Sizing.Geometry.fuel_capacity_zero_fidelity import \
+    zero_fidelity_fuel_capacity
+from framework.Sizing.Geometry.fuselage_sizing import fuselage_cross_section
+from framework.Sizing.Geometry.sizing_landing_gear import sizing_landing_gear
+from framework.Sizing.Geometry.wetted_area import wetted_area
+from framework.Sizing.Geometry.wing_structural_layout_fuel_storage import \
+    wing_structural_layout
+from framework.Sizing.performance_constraints import *
+from framework.utilities.logger import get_logger
 from framework.utilities.plot_simple_aircraft import plot3d
 from framework.utilities.plot_tigl_aircraft import plot3d_tigl
-from framework.utilities.logger import get_logger
+from joblib import dump, load
 
-from datetime import datetime
 # =============================================================================
 # CLASSES
 # =============================================================================
@@ -86,23 +95,6 @@ def airplane_sizing(vehicle,x=None):
     """
     log.info('---- Start aircraft sizing module ----')
 
-    if int(x[9]) <= 44:
-        df = pd.read_pickle("Performance/Engine/Deck/engines.pkl")
-        index = int(x[9] )
-
-        de = df.loc[index, 'De (m)']
-        bpr = df.loc[index, 'BPR']
-        fpr = df.loc[index, 'FPR']
-        opr = df.loc[index, 'OPR']
-        tit = df.loc[index, 'TIT (K)']
-    
-    else:
-        # Here we are going to include the turboprop
-        a =1 
-
-
-
-
     if not isinstance(x, list):
         x = x.tolist()
 
@@ -124,6 +116,27 @@ def airplane_sizing(vehicle,x=None):
 
     friction_coefficient = wing['friction_coefficient']
 
+    if int(x[9]) <= 44:
+        df = pd.read_pickle("Performance/Engine/Deck/engines.pkl")
+        index = int(x[9] )
+
+        de = df.loc[index, 'De (m)']
+        bpr = df.loc[index, 'BPR']
+        fpr = df.loc[index, 'FPR']
+        opr = df.loc[index, 'OPR']
+        tit = df.loc[index, 'TIT (K)']
+        engine['type'] = 0
+    
+    else:
+        engine['type'] = 1
+        # Here we are going to include the turboprop
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib') 
+
+
     # Upload dictionary variables with optimization variables input vector x
     if x != None:
         log.info('Current individual vairables: {}'.format(x))
@@ -143,11 +156,13 @@ def airplane_sizing(vehicle,x=None):
         # horizontal_tail['position'] = x[19]
         horizontal_tail['position'] = 1
 
-        engine['bypass'] = bpr
-        engine['diameter'] = de
-        engine['compressor_pressure_ratio'] = opr
-        engine['turbine_inlet_temperature'] = tit
-        engine['fan_pressure_ratio'] = fpr
+        if engine['type'] == 0:
+
+            engine['bypass'] = bpr
+            engine['diameter'] = de
+            engine['compressor_pressure_ratio'] = opr
+            engine['turbine_inlet_temperature'] = tit
+            engine['fan_pressure_ratio'] = fpr
 
         # engine['position'] = x[16]
         engine['position'] = 1
@@ -168,11 +183,13 @@ def airplane_sizing(vehicle,x=None):
         # horizontal_tail['position'] =horizontal_tail['position']
         horizontal_tail['position'] = 1
 
-        engine['bypass'] = engine['bypass']/10
-        engine['diameter'] = engine['diameter']/10
-        engine['compressor_pressure_ratio'] = engine['compressor_pressure_ratio']
-        engine['turbine_inlet_temperature'] = engine['turbine_inlet_temperature'] 
-        engine['fan_pressure_ratio'] = engine['fan_pressure_ratio']/10
+        if engine['type'] == 0:
+
+            engine['bypass'] = engine['bypass']/10
+            engine['diameter'] = engine['diameter']/10
+            engine['compressor_pressure_ratio'] = engine['compressor_pressure_ratio']
+            engine['turbine_inlet_temperature'] = engine['turbine_inlet_temperature'] 
+            engine['fan_pressure_ratio'] = engine['fan_pressure_ratio']/10
 
         engine['position'] = engine['position']
 
@@ -180,7 +197,8 @@ def airplane_sizing(vehicle,x=None):
 
 
     operations['mach_cruise'] = operations['mach_maximum_operating'] - 0.02
-    engine['fan_diameter'] = engine['diameter']*0.98  # [m]
+    if engine['type'] == 0:
+        engine['fan_diameter'] = engine['diameter']*0.98  # [m]
 
 
 
@@ -315,8 +333,14 @@ def airplane_sizing(vehicle,x=None):
         (fuselage['tail_length']+fuselage['cockpit_length'])
 
     # engine['diameter'] = engine['fan_diameter']*1.1
-    engine['maximum_thrust'], _ , vehicle = turbofan(
-        0, 0.01, 1, vehicle)
+
+    if engine['type'] == 0:
+        engine['maximum_thrust'], FC , vehicle = turbofan(
+            0, 0.01, 1, vehicle)
+    else:
+        engine['maximum_thrust'] = nn_unit_F.predict(scaler_F.transform([(0, 0.01, 1)]))
+        FC_ANN = nn_unit_FC.predict(scaler_FC.transform([(0, 0.01, 1)]))
+
     
     engine_static_trhust = engine['maximum_thrust']*0.95
 
@@ -325,9 +349,13 @@ def airplane_sizing(vehicle,x=None):
 
     aircraft['maximum_engine_thrust'] = aircraft['number_of_engines'] * \
         0.95 * engine['maximum_thrust'] * (1**0.8)  # Rolls-Royce Tay 650 Thrust[N]
-    aircraft['average_thrust'] = 0.75*aircraft['maximum_engine_thrust'] * \
-        ((5 + engine['bypass']) /
-            (4 + engine['bypass']))  # [N]  
+
+    if engine['type'] == 0:
+        aircraft['average_thrust'] = 0.75*aircraft['maximum_engine_thrust'] * \
+            ((5 + engine['bypass']) /
+                (4 + engine['bypass']))  # [N]
+    else:
+        aircraft['average_thrust'] = 0.75*aircraft['maximum_engine_thrust'] 
 
     # Estimation of wings CDO and induced drag factor k
     CL_1 = 0.4
@@ -524,10 +552,22 @@ def airplane_sizing(vehicle,x=None):
     
     # Cruise check
 
-    engine_cruise_thrust, _ , vehicle = turbofan(
-        ceiling,operations['mach_cruise'], 0.98, vehicle)
+    if engine['type'] == 0:
+        engine_TO_thrust, _ , vehicle = turbofan(
+            0,0.0, 0.98, vehicle)
+    else:
+        engine_TO_thrust = nn_unit_F.predict(scaler_F.transform([(0,0.0, 0.98)]))
+
+    if engine['type'] == 0:
+        engine_cruise_thrust, _ , vehicle = turbofan(
+            operations['cruise_altitude'] ,operations['mach_cruise'], 0.98, vehicle)
+    else:
+        engine_cruise_thrust = nn_unit_F.predict(scaler_F.transform([(operations['cruise_altitude'] ,operations['mach_cruise'], 0.98)]))
+
 
     ToW_cruise = residual_rate_of_climb(vehicle, airport_departure, aircraft['maximum_takeoff_weight']*GRAVITY,engine_cruise_thrust)
+
+    # ToW_cruise2 = residual_rate_of_climb2(vehicle, airport_departure, aircraft['maximum_takeoff_weight']*GRAVITY,engine_TO_thrust)
 
     if ToW < ToW_cruise:
         flag_cruise = 1

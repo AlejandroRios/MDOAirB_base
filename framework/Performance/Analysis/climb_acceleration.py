@@ -27,6 +27,7 @@ from framework.Performance.Analysis.descent_to_altitude import acceleration_fact
 from framework.Performance.Engine.engine_performance import turbofan
 
 import numpy as np
+from joblib import dump, load
 # =============================================================================
 # CLASSES
 # =============================================================================
@@ -59,6 +60,15 @@ def acceleration_to_250(rate_of_climb, climb_V_cas, delta_ISA, vehicle):
         - delta_fuel - decrease in fuel [kg]
     '''
     aircraft = vehicle['aircraft']
+    engine = vehicle['engine']
+
+    if engine['type'] == 1:
+        scaler_F = load('Performance/Engine/Turboprop/ANN_skl_force/scaler_force_PW120_in.bin') 
+        nn_unit_F = load('Performance/Engine/Turboprop/ANN_skl_force/nn_force_PW120.joblib')
+
+        scaler_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/scaler_ff_PW120_in.bin') 
+        nn_unit_FC = load('Performance/Engine/Turboprop/ANN_skl_ff/nn_ff_PW120.joblib')
+
 
     delta_altitude_initial = 1000
     delta_altitude_final = 0
@@ -81,12 +91,17 @@ def acceleration_to_250(rate_of_climb, climb_V_cas, delta_ISA, vehicle):
             10000+delta_altitude_initial, delta_ISA, mach_1)
         acceleration_factor_V_CAS_2, _ = acceleration_factor_calculation(
             10000+delta_altitude_initial, delta_ISA, mach_2)
+        
+        if engine['type'] == 0:
+            # force [N], fuel flow [kg/hr]
+            _, fuel_flow_1 , vehicle = turbofan(10000, mach_1, 0.95, vehicle)
+            # force [N], fuel flow [kg/hr]
+            _, fuel_flow_2 , vehicle = turbofan(
+                10000+delta_altitude_initial, mach_2, 0.95, vehicle)
+        else:
+            fuel_flow_1 = nn_unit_FC.predict(scaler_FC.transform([(10000, mach_1, 0.95)]))
+            fuel_flow_2 = nn_unit_FC.predict(scaler_FC.transform([(10000+delta_altitude_initial, mach_2, 0.95,)]))
 
-        # force [N], fuel flow [kg/hr]
-        _, fuel_flow_1 , vehicle = turbofan(10000, mach_1, 0.95, vehicle)
-        # force [N], fuel flow [kg/hr]
-        _, fuel_flow_2 , vehicle = turbofan(
-            10000+delta_altitude_initial, mach_2, 0.95, vehicle)
 
         a_1 = GRAVITY*(rate_of_climb*(1+acceleration_factor_V_CAS_1))/V_1  # [m/s2]
         a_2 = GRAVITY*(rate_of_climb*(1+acceleration_factor_V_CAS_2))/V_2  # [m/s2]

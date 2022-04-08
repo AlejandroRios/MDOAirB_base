@@ -160,5 +160,80 @@ AIRPORTS_DATABASE = {
 				"lda": 3151
 			}
 		}
+	},
+	"ARN": {
+		"latitude": 47.4647,
+		"longitude": 8.5492,
+		"elevation": 1416,
+		"dmg": 1,
+		"tref": 17.3,
+		"runways": {
+			"14": {
+				"tora": 3151,
+				"toda": 3151,
+				"asda": 3300,
+				"lda": 3151
+			}
+		}
+	},
+	"DME": {
+		"latitude": 47.4647,
+		"longitude": 8.5492,
+		"elevation": 1416,
+		"dmg": 1,
+		"tref": 17.3,
+		"runways": {
+			"14": {
+				"tora": 3151,
+				"toda": 3151,
+				"asda": 3300,
+				"lda": 3151
+			}
+		}
+	},
+	"HEL": {
+		"latitude": 47.4647,
+		"longitude": 8.5492,
+		"elevation": 1416,
+		"dmg": 1,
+		"tref": 17.3,
+		"runways": {
+			"14": {
+				"tora": 3151,
+				"toda": 3151,
+				"asda": 3300,
+				"lda": 3151
+			}
+		}
+	},
+	"IST": {
+		"latitude": 47.4647,
+		"longitude": 8.5492,
+		"elevation": 1416,
+		"dmg": 1,
+		"tref": 17.3,
+		"runways": {
+			"14": {
+				"tora": 3151,
+				"toda": 3151,
+				"asda": 3300,
+				"lda": 3151
+			}
+		}
+	},
+	"KBP": {
+		"latitude": 47.4647,
+		"longitude": 8.5492,
+		"elevation": 1416,
+		"dmg": 1,
+		"tref": 17.3,
+		"runways": {
+			"14": {
+				"tora": 3151,
+				"toda": 3151,
+				"asda": 3300,
+				"lda": 3151
+			}
+		}
 	}
 }
