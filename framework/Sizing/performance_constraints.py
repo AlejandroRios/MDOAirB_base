@@ -69,7 +69,7 @@ def takeoff_field_length_check(vehicle, airport_departure, takeoff_runway, weigh
             weight_takeoff = weight_takeoff - (10*GRAVITY)
         else:
             flag = 1
-    return weight_takeoff
+    return weight_takeoff, takeoff_field_length_computed
 
 
 def second_segment_climb_check(vehicle, airport_departure, weight_takeoff):
@@ -276,14 +276,14 @@ def regulated_takeoff_weight(vehicle, airport_departure, takeoff_runway):
     second_segment_climb_weight,gamma_2 = second_segment_climb_check(
         vehicle, airport_departure, weight_takeoff)
 
-    takeoff_field_length_weight = takeoff_field_length_check(
+    takeoff_field_length_weight, takeoff_field_length_computed = takeoff_field_length_check(
         vehicle, airport_departure, takeoff_runway, weight_takeoff,gamma_2)
 
 
 
     maximum_takeoff_weight = min(
         takeoff_field_length_weight, second_segment_climb_weight)
-    return maximum_takeoff_weight/GRAVITY  # [Kg]
+    return maximum_takeoff_weight/GRAVITY, takeoff_field_length_computed  # [Kg]
 
 
 def regulated_landing_weight(vehicle, airport_destination, landing_runway):

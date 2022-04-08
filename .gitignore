@@ -3,3 +3,7 @@
 framework/Database/Results/
 framework/framework.log
 framework/CPACS_update/ToolOutput/Aircraft_Out.xml
+framework/CPACS_update/ToolOutput/Aircraft_Out.xml
+framework/framework.log
+framework/Results/analysis_single_input_1.csv
+framework/Results/analysis_single_output_1.csv

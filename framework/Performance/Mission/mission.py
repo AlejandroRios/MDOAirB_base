@@ -140,7 +140,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
     delta_ISA = operations['flight_planning_delta_ISA']
     captain_salary, first_officer_salary, flight_attendant_salary = crew_salary(aircraft['maximum_takeoff_weight'])
     
-    regulated_takeoff_mass = regulated_takeoff_weight(vehicle, airport_departure, takeoff_runway)
+    regulated_takeoff_mass, takeoff_field_length_computed = regulated_takeoff_weight(vehicle, airport_departure, takeoff_runway)
     regulated_landing_mass, landing_field_length_computed = regulated_landing_weight(vehicle, airport_destination, landing_runway)
 
     max_takeoff_mass = regulated_takeoff_mass
@@ -454,12 +454,15 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
 
     complete_mission_flight_time = total_mission_flight_time + operations['average_departure_delay'] + operations['average_arrival_delay'] + operations['turn_around_time'] 
 
+    _, _, _, _, _, rho_ISA, _, _ = atmosphere_ISA_deviation(0, delta_ISA)
+    # Approach speed
+    app_speed = 1.23*math.sqrt(2*aircraft['maximum_landing_weight']*GRAVITY/(wing['area']*rho_ISA*aircraft['CL_maximum_landing']))
 
     # log.info('---- End DOC mission function ----')
     # end_time = datetime.now()
     # log.info('DOC mission execution time: {}'.format(end_time - start_time))
 
-    return float(fuel_mass), float(complete_mission_flight_time),float(DOC),float(mach),float(passenger_capacity), float(SAR), float(landing_field_length_computed)
+    return float(fuel_mass), float(complete_mission_flight_time),float(DOC),float(mach),float(passenger_capacity), float(SAR), float(landing_field_length_computed), float(takeoff_field_length_computed), float(app_speed)
 
 
 # =============================================================================
