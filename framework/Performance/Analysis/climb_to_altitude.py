@@ -106,7 +106,7 @@ def rate_of_climb_calculation(thrust_to_weight, h, delta_ISA, mach, mass, vehicl
         climb_path_angle = np.arcsin(
             (thrust_to_weight - 1/(L_to_D))/(1 + acceleration_factor))
     rate_of_climb = knots_to_feet_minute * V_tas * np.sin(climb_path_angle)
-    return rate_of_climb, V_tas, climb_path_angle
+    return rate_of_climb, V_tas, climb_path_angle, CL, CD, L_to_D
 
 
 def acceleration_factor_calculation(h, delta_ISA, mach):

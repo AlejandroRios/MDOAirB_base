@@ -70,7 +70,7 @@ for j in mach:
     
     for i in throttle:
         engine_thrust, ff , vehicle = turbofan(altitude, j, i, vehicle)
-        sfc = ff/engine_thrust*10 #kg/(h*daN)
+        sfc = ff/(engine_thrust/10) #kg/(h*daN)
         #sfc_vec.append(ff/engine_thrust)
         sfc_vec.append(sfc)
         throttle_vec.append(i)

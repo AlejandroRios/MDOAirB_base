@@ -366,7 +366,7 @@ def main(argv):
                 27,  # Compressor pressure ratio - x11
                 1350,  # turbine inlet temperature - x12
                 15,  # FPR - x13
-                38000,  # design point pressure - x14
+                37000,  # design point pressure - x14
                 78  # design point mach x 10 - x15
             ]
             X.append(x)
@@ -376,7 +376,7 @@ def main(argv):
                 airports, distances, demands)
             Y.append(list(y1))
             print("==============================================")
-            print("Results = ", y1)
+            print("Results = ", y1[0:8])
             print("==============================================")
 
     # Create a pandas dataframe with all the information
@@ -398,7 +398,7 @@ def main(argv):
                              'x13': X[:,13],
                              'x14': X[:,14],
                              'x15': X[:,15]})
-    df_output = pd.DataFrame({'MOTW': Y[:,0],
+    df_output = pd.DataFrame({'MTOW': Y[:,0],
                               'DOC': Y[:,1],
                               'fuel_mass': Y[:,2],
                               'total_mission_flight_time': Y[:,3],
@@ -409,13 +409,17 @@ def main(argv):
                               'takeoff_field_length_computed': Y[:,8],
                               'app_speed': Y[:,9],
                               'status': Y[:,10],
-                              'design_status': Y[:,11]
+                              'design_status': Y[:,11],
+                              'distance': Y[:,12], 
+                              'altitude': Y[:,13], 
+                              'mass': Y[:, 14],
+                              'time': Y[:,15]
                               })
 
     df_input.to_csv(
-        "Results/analysis_input_bprlow.csv", index=False)
+        "Results/analysis_input_bprhigh2.csv", index=False)
     df_output.to_csv(
-        "Results/analysis_output_bprlow.csv", index=False)
+        "Results/analysis_output_bprhigh2.csv", index=False)
 
     df_input.to_csv("Results/analysis_input"+datetime.now().strftime("%d_%m_%Y-%H_%M_%S")+".csv", index=False)
     df_output.to_csv(

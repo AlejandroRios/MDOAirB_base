@@ -370,12 +370,12 @@ def main(argv):
     Y = np.array(Y)
     df_input = pd.DataFrame([X], columns = ['WingArea','x1','x2','x3', 'x4','x5','x6','x7','x8','x9','FanDiameter','x11','x12','x13','x14','x15'])
     df_output = pd.DataFrame([Y], columns=['MTOW', 'DOC', 'fuel_mass', 'total_mission_flight_time', 'mach', 'passenger_capacity',
-                             'SAR', 'landing_field_length_computed', 'takeoff_field_length_computed', 'app_speed', 'status', 'design_status'])
+                             'SAR', 'landing_field_length_computed', 'takeoff_field_length_computed', 'app_speed', 'status', 'design_status', 'distance', 'altitude', 'mass', 'time', 'sfc', 'thrust', 'mach', 'CL', 'CD', 'LoD'])
 
     df_input.to_csv(
-        "Results/analysis_single_input_1.csv", index=False)
+        "Results/analysis_single_input_1-new.csv", index=False)
     df_output.to_csv(
-        "Results/analysis_single_output_1.csv", index=False)
+        "Results/analysis_single_output_1-new.csv", index=False)
 
 
 

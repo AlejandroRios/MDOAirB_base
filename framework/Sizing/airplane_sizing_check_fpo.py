@@ -422,6 +422,7 @@ def airplane_sizing(vehicle,x=None):
         status = 1
     else:
         aircraft['zCG'] = -0.80
+        flag_requirements = 0
 
     # try:
         vehicle = sizing_landing_gear(vehicle)
@@ -570,7 +571,7 @@ def objective_function_FPO(x, original_vehicle, mission_range,
 
     DOC_ik = 0
     status = 0
-    flags = np.zeros(8)
+    flags = 2*np.ones(8)
     # =============================================================================
     # Airplane sizing and
     try:
@@ -591,6 +592,16 @@ def objective_function_FPO(x, original_vehicle, mission_range,
     takeoff_field_length_computed = 0
     app_speed = 0
     aircraft = vehicle['aircraft']
+    distance = 0 
+    altitude = 0 
+    mass = 0 
+    time = 0
+    sfc = 0
+    thrust = 0
+    machv = 0
+    CL = 0
+    CD = 0
+    LoD = 0
 
     # =============================================================================
     # If airplane pass checks, status = 0, else status = 1 and profit = 0
@@ -636,7 +647,7 @@ def objective_function_FPO(x, original_vehicle, mission_range,
                 # Calculate DOC and mission parameters for origin-destination airports pair:
                 mission_range = distances[airports_keys[0]][airports_keys[1]]
                 print('Mission range = ', mission_range)
-                fuel_mass, total_mission_flight_time, DOC, mach, passenger_capacity, SAR, landing_field_length_computed, takeoff_field_length_computed, app_speed = mission(
+                fuel_mass, total_mission_flight_time, DOC, mach, passenger_capacity, SAR, landing_field_length_computed, takeoff_field_length_computed, app_speed, distance, altitude, mass, time, sfc, thrust, machv, CL, CD, LoD = mission(
                     vehicle, airport_departure, takeoff_runway,
                     airport_destination, landing_runway, mission_range)
                 DOC_nd = DOC
@@ -654,7 +665,7 @@ def objective_function_FPO(x, original_vehicle, mission_range,
                       exc_info=True)
         # =============================================================================
 
-    return aircraft['maximum_takeoff_weight'], DOC_ik, fuel_mass, total_mission_flight_time, mach, passenger_capacity, SAR, landing_field_length_computed, takeoff_field_length_computed, app_speed, status, flags[0]
+    return aircraft['maximum_takeoff_weight'], DOC_ik, fuel_mass, total_mission_flight_time, mach, passenger_capacity, SAR, landing_field_length_computed, takeoff_field_length_computed, app_speed, status, flags[0], distance, altitude, mass, time, sfc, thrust, machv, CL, CD, LoD 
 # =============================================================================
 # TEST
 # =============================================================================
