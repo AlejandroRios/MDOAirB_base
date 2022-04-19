@@ -232,7 +232,7 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
     # start_time = datetime.now()
     # Initial climb fuel estimation
     initial_altitude = initial_altitude + 1500
-    _, _, total_burned_fuel0, _ = climb_integration(
+    _, _, total_burned_fuel0, _, _, _, _, _, _, _, _, _, _, _ = climb_integration(
         max_takeoff_mass,
         mach_climb,
         climb_V_cas,
@@ -262,7 +262,7 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
     
     # start_time = datetime.now()
     # Recalculate climb with new mach
-    final_distance, total_climb_time, total_burned_fuel, final_altitude = climb_integration(
+    final_distance, total_climb_time, total_burned_fuel, final_altitude, _, _, _, _, _, _, _, _, _, _ = climb_integration(
         max_takeoff_mass,
         mach_climb,
         climb_V_cas,
@@ -332,7 +332,7 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
         final_cruise_altitude = altitude
         
         # start_time = datetime.now()
-        final_distance, total_descent_time, total_burned_fuel, final_altitude = descent_integration(
+        final_distance, total_descent_time, total_burned_fuel, final_altitude, _, _, _, _, _, _, _, _, _, _ = descent_integration(
             final_cruise_mass,
             mach_descent,
             descent_V_cas,
@@ -443,7 +443,7 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
 
     # Initial climb fuel estimation
     # initial_altitude = initial_altitude
-    _, _, total_burned_fuel0, _ = climb_integration(
+    _, _, total_burned_fuel0, _, _, _, _, _, _, _, _, _, _, _ = climb_integration(
         max_alternative_mass,
         mach_climb,
         climb_V_cas,
@@ -465,7 +465,7 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
     mach_descent = operations['mach_cruise']
 
     # Recalculate climb with new mach
-    final_distance, total_climb_time, total_burned_fuel, final_altitude = climb_integration(
+    final_distance, total_climb_time, total_burned_fuel, final_altitude, _, _, _, _, _, _, _, _, _, _ = climb_integration(
         max_alternative_mass,
         mach_climb,
         climb_V_cas,

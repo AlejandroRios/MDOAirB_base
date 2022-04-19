@@ -140,7 +140,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
     delta_ISA = operations['flight_planning_delta_ISA']
     captain_salary, first_officer_salary, flight_attendant_salary = crew_salary(aircraft['maximum_takeoff_weight'])
     
-    regulated_takeoff_mass = regulated_takeoff_weight(vehicle, airport_departure, takeoff_runway)
+    regulated_takeoff_mass, takeoff_field_length_computed = regulated_takeoff_weight(vehicle, airport_departure, takeoff_runway)
     regulated_landing_mass, landing_field_length_computed = regulated_landing_weight(vehicle, airport_destination, landing_runway)
 
     max_takeoff_mass = regulated_takeoff_mass
@@ -163,15 +163,27 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
     #     * reference_load_factor
     # )
 
-
-    initial_altitude = airport_departure['elevation']
+    
 
     f = 0
     while f == 0:
         step = 500
         out = 0
+        initial_altitude = airport_departure['elevation']
+
+        distance_vec = []
+        altitude_vec = []
+        mass_vec = []
+        time_vec = []
+        sfc_vec = []
+        thrust_vec = []
+        mach_vec = []
+        CL_vec = []
+        CD_vec = []
+        LoD_vec = []
 
         while out == 0:
+
 
             # Maximum altitude calculation
             max_altitude, rate_of_climb = maximum_altitude(
@@ -248,7 +260,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
 
             # Initial climb fuel estimation
             initial_altitude = initial_altitude + 1500
-            _, _, total_burned_fuel0, _ = climb_integration(
+            _, _, total_burned_fuel0, _, _, _, _, _, _, _, _, _, _, _ = climb_integration(
                 max_takeoff_mass,
                 mach_climb,
                 climb_V_cas,
@@ -270,7 +282,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
             mach_descent = operations['mach_cruise']
 
             # Recalculate climb with new mach
-            final_distance, total_climb_time, total_burned_fuel, final_altitude = climb_integration(
+            final_distance, total_climb_time, total_burned_fuel, final_altitude, distancev, altitudev, massv, timev, sfcv, thrustv, machv, CLv, CDv, LoDv = climb_integration(
                 max_takeoff_mass,
                 mach_climb,
                 climb_V_cas,
@@ -284,7 +296,18 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
 
             if delta < tolerance:
                 out = 1
-
+        
+        distance_vec = np.append(distance_vec, distancev)
+        altitude_vec = np.append(altitude_vec, altitudev)
+        mass_vec = np.append(mass_vec, massv)
+        time_vec = np.append(time_vec, timev)
+        sfc_vec = np.append(sfc_vec, sfcv)
+        thrust_vec = np.append(thrust_vec, thrustv)
+        mach_vec = np.append(mach_vec, machv)
+        CL_vec = np.append(CL_vec, CLv)
+        CD_vec = np.append(CD_vec, CDv)
+        LoD_vec = np.append(LoD_vec, LoDv)
+        
         mass_at_top_of_climb = max_takeoff_mass - total_burned_fuel
 
         initial_cruise_altitude = final_altitude
@@ -336,7 +359,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
             if type_of_descent == 1:
 
                 # Recalculate climb with new mach
-                final_distance, total_descent_time, total_burned_fuel, final_altitude = descent_integration(
+                final_distance, total_descent_time, total_burned_fuel, final_altitude, distancev, altitudev, massv, timev, sfcv, thrustv, machv, CLv, CDv, LoDv = descent_integration(
                     final_cruise_mass,
                     mach_descent,
                     descent_V_cas,
@@ -359,17 +382,29 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
                     else:
                         distance_cruise = distance_cruise + distance_error*0.95
                         
+        distance_vec = np.append(distance_vec, final_distance + distancev)
+        altitude_vec = np.append(altitude_vec, altitudev)
+        mass_vec = np.append(mass_vec, massv)
+        time_vec = np.append(time_vec, total_climb_time +
+                             total_cruise_time + timev)
+        sfc_vec = np.append(sfc_vec, sfcv)
+        thrust_vec = np.append(thrust_vec, thrustv)
+        mach_vec = np.append(mach_vec, machv)
+        CL_vec = np.append(CL_vec, CLv)
+        CD_vec = np.append(CD_vec, CDv)
+        LoD_vec = np.append(LoD_vec, LoDv)
+        
         if iteration >= 200:
             raise ValueError 
 
 
-            if type_of_descent == 2:
-                flag = 0
-                total_burned_fuel = 0
-                final_distance = 0
-                total_decent_time = 0
-                total_burned_fuel = 0
-                final_altitude = 0
+        if type_of_descent == 2:
+            flag = 0
+            total_burned_fuel = 0
+            final_distance = 0
+            total_decent_time = 0
+            total_burned_fuel = 0
+            final_altitude = 0
 
         final_mission_mass = final_cruise_mass - total_burned_fuel
         total_mission_burned_fuel = max_takeoff_mass - final_mission_mass
@@ -454,12 +489,15 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
 
     complete_mission_flight_time = total_mission_flight_time + operations['average_departure_delay'] + operations['average_arrival_delay'] + operations['turn_around_time'] 
 
+    _, _, _, _, _, rho_ISA, _, _ = atmosphere_ISA_deviation(0, delta_ISA)
+    # Approach speed
+    app_speed = 1.23*math.sqrt(2*aircraft['maximum_landing_weight']*GRAVITY/(wing['area']*rho_ISA*aircraft['CL_maximum_landing']))
 
     # log.info('---- End DOC mission function ----')
     # end_time = datetime.now()
     # log.info('DOC mission execution time: {}'.format(end_time - start_time))
 
-    return float(fuel_mass), float(complete_mission_flight_time),float(DOC),float(mach),float(passenger_capacity), float(SAR), float(landing_field_length_computed)
+    return float(fuel_mass), float(complete_mission_flight_time), float(DOC), float(mach), float(passenger_capacity), float(SAR), float(landing_field_length_computed), float(takeoff_field_length_computed), float(app_speed), distance_vec, altitude_vec, mass_vec, time_vec, sfc_vec, thrust_vec, mach_vec, CL_vec, CD_vec, LoD_vec
 
 
 # =============================================================================

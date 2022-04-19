@@ -27,11 +27,12 @@ TODO's:
 # =============================================================================
 # IMPORTS
 # =============================================================================
+from ast import Yield
 import copy
 from framework.Performance.Mission.mission import mission
 from framework.Network.network_optimization import network_optimization
 from framework.Economics.revenue import revenue
-from framework.Sizing.airplane_sizing_check_fpo import airplane_sizing
+from framework.Sizing.airplane_sizing_check_fpo import airplane_sizing, objective_function_FPO
 import pandas as pd
 import sys
 import pickle
@@ -62,100 +63,6 @@ from jsonschema import validate
 # FUNCTIONS
 # =============================================================================
 log = get_logger(__file__.split('.')[0])
-
-
-def objective_function_FPO(x, original_vehicle, mission_range,
-                           computation_mode, airports, distances, demands):
-
-    # Do a copy of original vehicle
-    vehicle = copy.deepcopy(original_vehicle)
-    # with open('Database/DOC/Vehicle.pkl', 'rb') as f:
-    #     vehicle = pickle.load(f)
-
-    DOC_ik = 0
-    status = 0
-    # =============================================================================
-    # Airplane sizing and
-    try:
-        status, flags, vehicle = airplane_sizing(vehicle, x)
-    except:
-        log.error(">>>>>>>>>> Error at <<<<<<<<<<<< airplane_sizing",
-                  exc_info=True)
-
-    # status = 0
-    performance = vehicle['performance']
-
-    fuel_mass = 0
-    total_mission_flight_time = 0
-    mach = 0
-    passenger_capacity = 0
-    SAR = 0
-    landing_field_length_computed = 0
-
-    # =============================================================================
-    # If airplane pass checks, status = 0, else status = 1 and profit = 0
-    if status == 0:
-        log.info('Aircraft passed sizing and checks status: {}'.format(status))
-
-        # =============================================================================
-        log.info('---- Start DOC calculation ----')
-        # The DOC is estimated for each city pair and stored in the DOC dictionary
-
-        airports_keys = list(airports.keys())
-        try:
-            if (distances[airports_keys[0]][airports_keys[1]] <=
-                    performance['range']):
-                # Update information about orign-destination pair airports:
-                airport_departure = {}
-                airport_departure['latitude'] = airports[
-                    airports_keys[0]]['latitude']
-                airport_departure['longitude'] = airports[
-                    airports_keys[0]]['longitude']
-                airport_departure['elevation'] = airports[
-                    airports_keys[0]]['elevation']
-                airport_departure['dmg'] = airports[airports_keys[0]]['dmg']
-                airport_departure['tref'] = airports[airports_keys[0]]['tref']
-
-                takeoff_runway = airports[airports_keys[0]]['runways'][demands[
-                    airports_keys[0]][airports_keys[1]]['takeoff_runway']]
-
-                airport_destination = {}
-                airport_destination['latitude'] = airports[
-                    airports_keys[1]]['latitude']
-                airport_destination['longitude'] = airports[
-                    airports_keys[1]]['longitude']
-                airport_destination['elevation'] = airports[
-                    airports_keys[1]]['elevation']
-                airport_destination['dmg'] = airports[airports_keys[1]]['dmg']
-                airport_destination['tref'] = airports[
-                    airports_keys[1]]['tref']
-
-                landing_runway = airports[airports_keys[1]]['runways'][demands[
-                    airports_keys[0]][airports_keys[1]]['landing_runway']]
-
-                # Calculate DOC and mission parameters for origin-destination airports pair:
-                mission_range = distances[airports_keys[0]][airports_keys[1]]
-                print('Mission range = ', mission_range)
-                fuel_mass, total_mission_flight_time, DOC, mach, passenger_capacity, SAR, landing_field_length_computed = mission(
-                    vehicle, airport_departure, takeoff_runway,
-                    airport_destination, landing_runway, mission_range)
-                DOC_nd = DOC
-                DOC_ik = DOC * mission_range
-
-            elif computation_mode == 0:
-                DOC_ik = 100000
-                log.info(
-                    ">>>>>>>>>> Range computed by design is lower than the distance between airports >>>>>>>>>> DOC calculation failed! Performance range =",
-                    performance['range'])
-
-            log.info('---- End DOC calculation ----')
-        except:
-            log.error(">>>>>>>>>> Error at <<<<<<<<<<<< DOC calculation ",
-                      exc_info=True)
-        # =============================================================================
-
-    return DOC_ik, fuel_mass, total_mission_flight_time, mach, passenger_capacity, SAR, landing_field_length_computed
-
 
 # def objective_function(x, original_vehicle, computation_mode, route_computation_mode, airports, distances, demands):
 # 	print("--------------------------------------------------------------------")
@@ -433,32 +340,42 @@ def main(argv):
         print(f"Error: {err}")
         sys.exit(1)
 
-    x = [
-        130,  #WingArea - x0
+    X = [
+        142.5,  #WingArea - x0
         10 * (42**2) / 130,  #AspectRatio x 10 - x1
         30,  #TaperRatio - x2
         25,  #sweep_c4 - x3
         -2.25,  #twist - x4
         38.5,  #semi_span_kink - x5
-        220,  #PAX number - x6 // should be 250
+        250,  #PAX number - x6 // should be 250
         6,  #seat abreast - x7
         3000,  #range - x8
- 		65,  #BPR*10 - x9 // should be 100
-        20,  #FanDiameter*10 - x10
+ 		50,  #BPR*10 - x9 // should be 100
+        25,  #FanDiameter*10 - x10
         27,  #Compressor pressure ratio - x11
-        1450,  #turbine inlet temperature - x12
+        1350,  #turbine inlet temperature - x12
         15,  #FPR*10 - x13
-        39000,  #design point pressure - x14 // should be 37000
+        38000,  #design point pressure - x14 // should be 37000
         78  #design point mach x 10 - x15
     ]
 
     distances = {'FAD': {'FAD': 0, 'FAA': 800}, 'FAA': {'FAA': 0, 'FAD': 800}}
 
-
-
-    (y1) = objective_function_FPO(
-                x, fixed_parameters, computation_mode, route_computation_mode,
+    (Y) = objective_function_FPO(
+                X, fixed_parameters, computation_mode, route_computation_mode,
                 airports, distances, demands)
+
+    # Create a pandas dataframe with all the information
+    X = np.array(X)
+    Y = np.array(Y)
+    df_input = pd.DataFrame([X], columns = ['WingArea','x1','x2','x3', 'x4','x5','x6','x7','x8','x9','FanDiameter','x11','x12','x13','x14','x15'])
+    df_output = pd.DataFrame([Y], columns=['MTOW', 'DOC', 'fuel_mass', 'total_mission_flight_time', 'mach', 'passenger_capacity',
+                             'SAR', 'landing_field_length_computed', 'takeoff_field_length_computed', 'app_speed', 'status', 'design_status', 'distance', 'altitude', 'mass', 'time', 'sfc', 'thrust', 'mach', 'CL', 'CD', 'LoD'])
+
+    df_input.to_csv(
+        "Results/analysis_single_input_1-new.csv", index=False)
+    df_output.to_csv(
+        "Results/analysis_single_output_1-new.csv", index=False)
 
 
 
