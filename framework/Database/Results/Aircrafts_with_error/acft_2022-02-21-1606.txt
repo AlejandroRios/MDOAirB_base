@@ -1,8 +1,0 @@
-======== Aircraft parameters ========
-
-
- ----- Aircraft parameters ----- 
-[120.0, 106.80333333333331, 38, 29, -4.5, 33, 80, 21.25, 25, 1480, 11, 144, 6, 1000, 41000, 78, 1, 1, 1, 1]
-
- ----- Error message ----- 
-<class 'UnboundLocalError'>

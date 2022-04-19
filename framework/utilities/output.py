@@ -268,6 +268,8 @@ def write_optimal_results(individual, airports_keys, distances, demands, profit,
                      str("{:.2f}".format(winglet['sweep_leading_edge'])) + ' [deg] \n')
 
         output.write('\n Engine: \n')
+        output.write('Engine type: ' +
+                     str("{:.0f}".format(engine['type'])) + '\n')
         output.write('Maximum thrust: ' +
                      str(engine['maximum_thrust']*aircraft['number_of_engines']) + ' [N] \n')
         output.write('Bypass ratio: ' +
@@ -281,12 +283,12 @@ def write_optimal_results(individual, airports_keys, distances, demands, profit,
         output.write('Turbine inlet temperature: ' +
                      str("{:.2f}".format(engine['turbine_inlet_temperature'])) + ' [deg C] \n')
         output.write('Engine length: ' +
-                     str("{:.2f}".format(engine['length'])) + ' [m] \n')
+                     str("{:.2f}".format(float(engine['length']))) + ' [m] \n')
 
         output.write('\n Pylon: \n')
 
         output.write('Wetted area: ' +
-                     str("{:.2f}".format(pylon['wetted_area'])) + ' [m2] \n')
+                     str("{:.2f}".format(float(pylon['wetted_area']))) + ' [m2] \n')
 
         output.write('\n Aircraft: \n')
 

@@ -323,7 +323,7 @@ if __name__ == "__main__":
     #     def _evaluate(self, x, out, *args, **kwargs):
     #         out["F"] = obj_function(x)
 
-    n_proccess = 10
+    n_proccess = 1
     pool = multiprocessing.Pool(n_proccess)
     # problem = MyProblem(runner=pool.starmap, func_eval=starmap_parallelized_eval)
     n_var = 10

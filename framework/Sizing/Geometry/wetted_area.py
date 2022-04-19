@@ -367,10 +367,12 @@ def wetted_area(vehicle):
     ###########################################################################
     ###################################ENGINE##################################
     ###########################################################################
-
-    engine['length'] = 2.22*((engine_thrust_lbf)**0.4) * \
-        (operations['mach_maximum_operating']**0.2) * \
-        2.54/100  # [m] Raymer pg 19
+    if engine['type'] == 0:
+        engine['length'] = 2.22*((engine_thrust_lbf)**0.4) * \
+            (operations['mach_maximum_operating']**0.2) * \
+            2.54/100  # [m] Raymer pg 19
+    else:
+        engine['length'] = 2.13
 
     if engine['position'] == 1:
         # livro 6 pag 111 fig 4.41 x/l=0.6

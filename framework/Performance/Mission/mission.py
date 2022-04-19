@@ -38,6 +38,8 @@ from framework.Performance.Analysis.climb_integration import climb_integration
 from framework.Performance.Analysis.cruise_performance import *
 from framework.Performance.Analysis.descent_integration import \
     descent_integration
+from framework.Performance.Mission.mission_alternative import \
+    mission_alternative
 from framework.Performance.Analysis.maximum_range_cruise import \
     maximum_range_mach
 from framework.Performance.Analysis.mission_altitude import (maximum_altitude,

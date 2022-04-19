@@ -28,6 +28,7 @@ import copy
 import csv
 import getopt
 import json
+from multiprocessing.dummy import Namespace
 import os
 import pickle
 import sys
@@ -100,11 +101,17 @@ def dict_to_list(computation_mode, airports_keys, info_acft):
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
             if i != j and i < j:
-                docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
+                if doc0[airports_keys[i]][airports_keys[j]] > 10000000:
+                    docs_list.append(100000000000000000000000000000)
+                else:
+                    docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
             if i != j and i > j:
-                docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
+                if doc0[airports_keys[i]][airports_keys[j]] > 10000000:
+                    docs_list.append(100000000000000000000000000000)
+                else:
+                    docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
 
     froms_list = []
     if (computation_mode == 0):
@@ -149,13 +156,10 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
     _, _, _, docs_list2, _, _ = dict_to_list(computation_mode, airports_keys, acft2)
     _, _, _, docs_list3, _, _ = dict_to_list(computation_mode, airports_keys, acft3)
 
+
     vehicle01= acft1['vehicle']
     vehicle02= acft2['vehicle']
     vehicle03= acft3['vehicle']
-
-    print(docs_list1)
-    print(docs_list2)
-    print(docs_list3)
 
 
     demands = acft1['demands']
@@ -285,13 +289,24 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
         # =============================================================================
         log.info('==== Start PuLP optimization ====')
         # prob.solve(GLPK(timeLimit=60*5, msg = 0))
-        prob.solve(PULP_CBC_CMD(timeLimit=60*6, msg = 0))
+        prob.solve(COIN_CMD(timeLimit=60*5, msg = 0))
+        # prob.solve(COIN_CMD(timeLimit=60*5, msg = 0))
+        # prob.solve(PULP_CBC_CMD(timeLimit=60*6, msg = 0))
 
         log.info('==== Start PuLP optimization ====')
         print('Problem solution:',value(prob.objective))
-
+        
+        names = []
+        values = []
         for v in prob.variables():
-            print(v.name, "=", v.varValue)
+            # print(v.name, "=", v.varValue)
+            names.append(v.name)
+            values.append(v.varValue)
+
+        combined = zip(names, values)
+        zipped_sorted = sorted(combined, key=lambda x: int(x[0].split("_")[-1].split(".")[0]))
+        names, values = map(list, zip(*zipped_sorted))
+     
 
         log.info('Network optimization status: {}'.format(LpStatus[prob.status]))
         try:
@@ -300,25 +315,26 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
                 raise ValueError('Optimal network solution NOT found')
         except (ValueError, IndexError):
             exit('Could not complete network optimization')
+        
 
 
         list_aircrafts1 = []
         list_aircrafts2 = []
         list_aircrafts3 = []
         list_of_pax = []
-        for v in prob.variables():
-            variable_name = v.name
+        for v in range(len(names)):
+            variable_name = names[v]         
             if variable_name.find('aircrafts1') != -1:
-                list_aircrafts1.append(v.varValue)
+                list_aircrafts1.append(values[v])
             if variable_name.find('aircrafts2') != -1:
-                list_aircrafts2.append(v.varValue)
+                list_aircrafts2.append(values[v])
             if variable_name.find('aircrafts3') != -1:
-                list_aircrafts3.append(v.varValue)
+                list_aircrafts3.append(values[v])
             if variable_name.find('flow') != -1:
                 # print(v.name, "=", v.varValue)
-                list_of_pax.append(v.varValue)
+                list_of_pax.append(values[v])
 
-        print('flow',sum(list_of_pax))
+        # print('flow',sum(list_of_pax))
 
         idx = 0
         fraction = np.zeros((len(airports_keys),len(airports_keys)))
@@ -329,23 +345,6 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
                 else:
                     fraction[i][j] = list_of_pax[idx]
                     idx = idx+1
-
-        # list_size = len(airports_keys)**2 - len(airports_keys)
-        # fraction = np.zeros((len(airports_keys),len(airports_keys)))
-        # idx = 0
-        # while idx<list_size/2:
-        #     for i in range(len(airports_keys)):
-        #         for j in range(len(airports_keys)):
-        #             if j>i:
-        #                 fraction[i][j] = list_of_pax[idx]
-        #                 idx = idx+1
-        # while idx<list_size:
-        #     for i in range(len(airports_keys)):
-        #         for j in range(len(airports_keys)):
-        #             if j<i:
-        #                 fraction[i][j] = list_of_pax[idx]
-        #                 idx = idx+1
-
     else:
         aircrafts01 = [demand_list[i]/pax_number01 for i in range(len(arcs))]
         # aircrafts = pax_number
@@ -355,7 +354,7 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
 
         fraction = restructure_data(list_of_pax,n)
 
-    print('Flow matrix:',fraction)
+    # print('Flow matrix:',fraction)
 
 
     list_size = len(airports_keys)**2 - len(airports_keys)
@@ -396,11 +395,7 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
 
     revenue_mat = np.zeros((len(airports_keys),len(airports_keys)))
 
-    print(doc0_01)
 
-    print(doc0_02)
-
-    print(doc0_03)
     doc_1_list = []
     for i in range(len(list_of_pax)):
         if (list_of_pax[i] <= 0):
@@ -411,9 +406,9 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
 
     doc_tot= sum(doc_1_list)
 
-    profit = np.int(1.0*revenue_tot - 1.0*doc_tot)
-    results01['profit'] = np.round(profit)
-    results01['total_cost'] = np.round(doc_tot)
+    # profit = np.int(1.0*revenue_tot - 1.0*doc_tot)
+    # results01['profit'] = np.round(profit)
+    # results01['total_cost'] = np.round(doc_tot)
 
     idx = 0
     while idx<list_size/2:
@@ -435,9 +430,9 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
         for j in range(len(airports_keys)):
             list_of_airplanes_processed[i][j]= aircrafts1[i][j] +aircrafts2[i][j] + aircrafts3[i][j]
 
-    print('Aircraft matrix:',list_of_airplanes_processed)
+    # print('Aircraft matrix:',list_of_airplanes_processed)
 
-    print('Aircraft matrix:',aircrafts1)
+    # print('Aircraft matrix:',aircrafts1)
 
     DOCmat1 =  np.zeros((len(airports_keys),len(airports_keys)))
     DOCmat2 =  np.zeros((len(airports_keys),len(airports_keys)))
@@ -495,7 +490,7 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
     DOC_tot = np.sum(DOC_proccessed1+DOC_proccessed2+DOC_proccessed3)
 
     
-    profit = np.int(1.0*revenue_tot - 1.0*DOC_tot)
+    profit = np.int(1.0*revenue_tot - 1.2*DOC_tot)
 
     results01['profit'] = np.round(profit)
     results01['total_cost'] = np.round(DOC_tot)

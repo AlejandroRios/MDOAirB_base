@@ -319,7 +319,7 @@
 							"type": "object",
 							"required": ["demand", "takeoff_runway", "landing_runway"],
 							"properties": {
-								"demand": {"type": "integer", "minimum": 1, "maximum":10000},
+								"demand": {"type": "integer", "minimum": 0, "maximum":10000},
 								"takeoff_runway": {"type": "string", "pattern": "^[0-9]{1,2}[A-Z]{0,1}$"},
 								"landing_runway": {"type": "string", "pattern": "^[0-9]{1,2}[A-Z]{0,1}$"}
 							}
