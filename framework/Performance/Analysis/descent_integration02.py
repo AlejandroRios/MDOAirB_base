@@ -178,7 +178,7 @@ def climb(time, state, climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria
     total_fuel_flow = fuel_flow*aircraft['number_of_engines']
     step_throttle = 0.01
 
-    while (total_fuel_flow < 0 and throttle_position <= 1):
+    while (total_fuel_flow < 0 or thrust_force < 0) and throttle_position <= 1:
 
         if engine['type'] == 0:
             thrust_force, fuel_flow , vehicle = turbofan(
