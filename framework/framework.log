@@ -1,7 +1,0 @@
-2022-03-29 17:04:18,024 - c:\users\aarc8\documents\github\mdoairb\framework\Sizing\Geometry\wetted_area     - INFO - ---- Start wetted area module ----
-2022-03-29 17:04:21,302 - c:\users\aarc8\documents\github\mdoairb\framework\Sizing\Geometry\wetted_area     - INFO - Individual wetted area [m2]: 941.411286823674
-2022-03-29 17:04:21,303 - c:\users\aarc8\documents\github\mdoairb\framework\Sizing\Geometry\2022-03-29 17:04:21,377 - c:\users\aarc8\documents\github\mdoairb\framework\Sizing\airplane_sizing_check_fpo     - INFO - ---- Start sizing loop for tail sizing ----
-2022-03-29 17:06:36,859 - c:\users\aarc8\documents\github\mdoairb\framework\Sizing\airplane_sizing_check_fpo     - INFO - ---- End sizing loop for tail sizing ----
-2022-03-29 17:09:42,860 - c:\users\aarc8\documents\github\mdoairb\framework\Sizing\airplane_sizing_check_fpo     - INFO - Aircraft flags: [0, 1, 0, 0, 1, 0, 0]
-2022-03-29 17:09:42,861 - c:\users\aarc8\documents\github\mdoairb\framework\Sizing\airplane_sizing_check_fpo     - INFO - Aircraft status (pass = 0, no pass =1): 1
-2022-03-29 17:09:42,861 - c:\users\aarc8\documents\github\mdoairb\framework\Sizing\airplane_sizing_check_fpo     - INFO - ---- End aircraft sizing module ----

@@ -409,7 +409,7 @@ def climb(time, state, climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria
     total_fuel_flow = fuel_flow*aircraft['number_of_engines']
     step_throttle = 0.01
 
-    while (total_fuel_flow < 0 and throttle_position <= 1):
+    while (total_fuel_flow < 0 or thrust_force < 0) and throttle_position <= 1:
         thrust_force, fuel_flow , vehicle = turbofan(
             altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
         TSFC = (fuel_flow*GRAVITY)/thrust_force
@@ -476,7 +476,7 @@ def compute_flight_data(altitude, mass, climb_V_cas, mach_climb, delta_ISA, vehi
     total_fuel_flow = fuel_flow*aircraft['number_of_engines']
     step_throttle = 0.01
 
-    while (total_fuel_flow < 0 and throttle_position <= 1):
+    while (total_fuel_flow < 0 or thrust_force < 0) and throttle_position <= 1:
         thrust_force, fuel_flow, vehicle = turbofan(
             altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
         sfc = (fuel_flow)/(thrust_force/10)  # sfc in kg/h/daN

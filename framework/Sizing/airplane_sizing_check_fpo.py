@@ -622,8 +622,9 @@ def objective_function_FPO(x, original_vehicle, mission_range,
                     airports_keys[0]]['latitude']
                 airport_departure['longitude'] = airports[
                     airports_keys[0]]['longitude']
-                airport_departure['elevation'] = airports[
-                    airports_keys[0]]['elevation']
+                airport_departure['elevation'] = 6000
+                # airport_departure['elevation'] = airports[
+                #     airports_keys[0]]['elevation']
                 airport_departure['dmg'] = airports[airports_keys[0]]['dmg']
                 airport_departure['tref'] = airports[airports_keys[0]]['tref']
 
