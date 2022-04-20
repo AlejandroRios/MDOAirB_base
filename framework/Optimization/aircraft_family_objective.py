@@ -101,7 +101,24 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         with open('Database/Family/161_to_220/all_dictionaries/'+str(x[2])+'.pkl', 'rb') as f:
             all_info_acft3 = pickle.load(f)
 
-        print(all_info_acft1['vehicle']['engine']['type'])
+
+
+        # print(all_info_acft3['vehicle']['aircraft']['passenger_capacity'])
+        # print(all_info_acft3['vehicle']['fuselage']['seat_abreast_number'])
+        # print(all_info_acft3['vehicle']['wing']['area'])
+        # print(all_info_acft3['vehicle']['wing']['aspect_ratio'])
+        # print(all_info_acft3['vehicle']['wing']['semi_span_kink'])
+        # print(all_info_acft3['vehicle']['wing']['sweep_c_4'])
+        
+        # print(all_info_acft3['vehicle']['wing']['taper_ratio'])
+        # print(all_info_acft3['vehicle']['wing']['twist'])
+
+        # print(all_info_acft3['vehicle']['engine']['type'])
+        # print(all_info_acft3['vehicle']['engine']['bypass'])
+        # print(all_info_acft3['vehicle']['engine']['fan_diameter'])
+        # print(all_info_acft3['vehicle']['engine']['maximum_thrust'])
+        # print(all_info_acft3['vehicle']['engine']['turbine_inlet_temperature'])
+        # print(all_info_acft3['vehicle']['performance']['range'])
 
         airports = all_info_acft1['airports']
         distances = all_info_acft1['distances']
@@ -564,7 +581,7 @@ def objective_function(vehicle,x=None):
     # x = [37, 7, 5]
     # x = [9, 7, 5]
     # x = [33, 7, 4]
-    # x = [32, 11, 5] # opt
+    x = [32, 11, 5] # opt
 
     if not fixed_aircraft:
         res = objective_function0(x, fixed_parameters, computation_mode,
