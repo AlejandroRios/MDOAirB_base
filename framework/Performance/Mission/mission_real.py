@@ -51,6 +51,7 @@ from framework.Performance.Engine.engine_performance import turbofan
 from framework.Weights.weights import aircraft_empty_weight
 from framework.Performance.Mission.reserve_fuel import reserve_fuel
 from framework.utilities.logger import get_logger
+from framework.Attributes.Geo.bearing import calculate_bearing
 # =============================================================================
 # CLASSES
 # =============================================================================
@@ -66,7 +67,7 @@ GRAVITY = 9.80665
 gallon_to_liter = 3.7852
 feet_to_nautical_miles = 0.000164579
 
-def mission(departure,arrival, heading, vehicle):
+def mission(vehicle, airport_dep, takeoff_runway, airport_des, landing_runway, range,departure,arrival):
     """
     Description:
         - This function performs the mission analysis (based on datadriven approach) of the aircraft and computes the DOC.
@@ -116,7 +117,11 @@ def mission(departure,arrival, heading, vehicle):
     
     reference_load_factor = operations['reference_load_factor']
 
-    heading = heading
+    # Heading                                                          
+    bearing = calculate_bearing((airport_dep['latitude'],airport_dep['longitude']),(airport_des['latitude'],airport_des['longitude']))
+    heading = round(bearing - (airport_dep['dmg'] + airport_des['dmg'])/2)
+    if heading < 0:
+        heading = heading + 360
 
     # Operations and certification parameters:
     buffet_margin = operations['buffet_margin']  # [g]
@@ -144,8 +149,8 @@ def mission(departure,arrival, heading, vehicle):
     delta_ISA = operations['flight_planning_delta_ISA']
     captain_salary, first_officer_salary, flight_attendant_salary = crew_salary(aircraft['maximum_takeoff_weight'])
     
-    regulated_takeoff_mass = regulated_takeoff_weight(vehicle)
-    regulated_landing_mass = regulated_landing_weight(vehicle)
+    regulated_takeoff_mass = regulated_takeoff_weight(vehicle, airport_dep, takeoff_runway)
+    regulated_landing_mass = regulated_landing_weight(vehicle, airport_des, landing_runway)
 
     max_takeoff_mass = regulated_takeoff_mass
     max_landing_mass = regulated_landing_mass
@@ -466,7 +471,7 @@ def mission(departure,arrival, heading, vehicle):
     # Cruise average specific air range
     SAR = fuel_mass/mission_range
 
-    complete_mission_flight_time = total_mission_flight_time + airport_departure['avg_delay'] + airport_destination['avg_delay'] + operations['turn_around_time'] 
+    complete_mission_flight_time = total_mission_flight_time + operations['average_departure_delay'] + operations['average_arrival_delay'] + operations['turn_around_time'] 
 
 
     # log.info('---- End DOC mission function ----')

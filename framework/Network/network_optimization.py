@@ -292,7 +292,7 @@ def network_optimization(computation_mode, airports_keys, distances, demands, do
 
         fraction = restructure_data(list_of_pax,n)
 
-    print('Flow matrix:',fraction)
+    # print('Flow matrix:',fraction)
 
     # Post processing
     min_capacity = 0.5
@@ -378,7 +378,7 @@ def network_optimization(computation_mode, airports_keys, distances, demands, do
                 fracction_aux = 0
             list_of_airplanes_processed[i][j]= fraction_1[i][j]+fracction_aux
 
-    print('Aircraft matrix:',list_of_airplanes_processed)
+    # print('Aircraft matrix:',list_of_airplanes_processed)
 
     DOCmat =  np.zeros((len(airports_keys),len(airports_keys)))
     for i in range(len(airports_keys)):

@@ -110,7 +110,7 @@ def descent_integration(mass, mach_descent, descent_V_cas, delta_ISA, altitude_v
 
 def climb_integrator(initial_block_distance, initial_block_altitude, initial_block_mass, initial_block_time, final_block_altitude, climb_V_cas, mach_climb, delta_ISA, vehicle):
 
-    Tsim = initial_block_time + 40
+    Tsim = initial_block_time + 50
     stop_condition.terminal = True
 
     stop_criteria = final_block_altitude
