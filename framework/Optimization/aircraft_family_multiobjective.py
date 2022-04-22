@@ -132,6 +132,8 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         SAR = all_info_acft1['SAR']
         vehicle= all_info_acft1['vehicle']
 
+        # SAR_all = float(all_info_acft1['SAR']) + float(all_info_acft2['SAR']) + float(all_info_acft3['SAR'])
+
         status = 0
         results = vehicle['results']
         performance = vehicle['performance']
@@ -252,6 +254,13 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
                      results['nodes_number']-results['nodes_number'])
                 kpi_df2['total_time'] = kpi_df2['aircraft_number'] * \
                     kpi_df2['time']
+
+                total_fuel = kpi_df2['total_fuel'].sum()
+                total_CO2 = total_fuel*3.15
+                total_distance = kpi_df2['total_distance'].sum()
+                total_pax = results['covered_demand']
+                CO2_efficiency = 3.15*total_fuel/(total_pax*total_distance*1.852)
+
             except:
                 log.error(
                     ">>>>>>>>>> Error at <<<<<<<<<<<< writting dataframes", exc_info=True)
@@ -304,7 +313,7 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
     log.info('Network profit excecution time: {}'.format(end_time - start_time))
     log.info('==== End network profit module ====')
 
-    return profit
+    return profit, CO2_efficiency
 
 # def objective_function(x, original_vehicle, computation_mode, route_computation_mode, airports, distances, demands):
 # 	print("--------------------------------------------------------------------")
@@ -581,15 +590,15 @@ def objective_function(vehicle,x=None):
     # x = [37, 7, 5]
     # x = [9, 7, 5]
     # x = [33, 7, 4]
-    # x = [32, 11, 5] # opt
+    x = [32, 11, 5] # opt
 
     if not fixed_aircraft:
-        res = objective_function0(x, fixed_parameters, computation_mode,
+        res, res2 = objective_function0(x, fixed_parameters, computation_mode,
                            route_computation_mode, airports, distances, demands)
 
 
     
-    return res
+    return res, res2
 
 
 if __name__ == "__main__":

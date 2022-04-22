@@ -42,7 +42,7 @@ from bokeh.layouts import row
 from bokeh.plotting import figure
 
 from framework.Database.Aircrafts.baseline_aircraft_parameters import *
-from framework.Optimization.aircraft_family_objective import objective_function
+from framework.Optimization.aircraft_family_multiobjective import objective_function
 
 from jsonschema import validate
 
@@ -170,9 +170,9 @@ def obj_function(individual):
     '''
     vehicle = initialize_aircraft_parameters()
     vehicle = UpdateVehicle(vehicle, fixed_parameters)
-    net_profit = objective_function(vehicle,individual)
+    net_profit,SAR= objective_function(vehicle,individual)
     vehicle.clear()
-    return -net_profit,
+    return -net_profit,SAR
 
 def initPopulation(pcls, ind_init, file):
     return pcls(ind_init(c) for c in file)
@@ -298,33 +298,28 @@ from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.factory import get_problem
 from pymoo.optimize import minimize
 from pymoo.visualization.scatter import Scatter
-
 from pymoo.core.problem import starmap_parallelized_eval
-
 from pymoo.problems.functional import FunctionalProblem
-
-
 from pymoo.factory import get_sampling, get_crossover, get_mutation
 from pymoo.operators.mixed_variable_operator import MixedVariableSampling, MixedVariableMutation, MixedVariableCrossover
+from pymoo.core.problem import ElementwiseProblem
 
+class MyProblem(ElementwiseProblem):
 
+    def __init__(self, **kwargs):
+        super().__init__(n_var=3,
+                        n_obj=2,
+                        n_constr=0,
+                        xl=np.array([1,1, 1]),
+                        xu=np.array([69,36, 73]),
+                        type_var=int, **kwargs)
 
-
+    def _evaluate(self, x, out, *args, **kwargs):
+        f1,f2 = obj_function(x)
+        out["F"] = [f1, f2]
 if __name__ == "__main__":
 
-    # # DO LIKE THIS
-    # class MyProblem(Problem):
 
-    #     def __init__(self):
-    #         super().__init__(n_var=10,
-    #                         n_obj=1,
-    #                         n_constr=0,
-    #                         xl=np.array([90,    70,   20,     20,      -5,        30,     161,       4,       1500,     0]),
-    #                         xu=np.array([290,  120,   50,     35,       0 ,       45,     220,       6,       3200,    44]))
-
-
-    #     def _evaluate(self, x, out, *args, **kwargs):
-    #         out["F"] = obj_function(x)
     mask = ["int", "int", "int"]
 
     sampling = MixedVariableSampling(mask, {
@@ -343,18 +338,15 @@ if __name__ == "__main__":
     })
 
     n_proccess = 14
+
     pool = multiprocessing.Pool(n_proccess)
-    # problem = MyProblem(runner=pool.starmap, func_eval=starmap_parallelized_eval)
-    n_var = 3
-
-
-
-    problem = FunctionalProblem(n_var,
-                            obj_function,
-                            xl=np.array([1,1,1]),
-                            xu=np.array([38,  30,  34]),
-                            type_var=int,
-                            runner=pool.starmap, func_eval=starmap_parallelized_eval)
+    problem = MyProblem(runner=pool.starmap, func_eval=starmap_parallelized_eval)
+    # problem = FunctionalProblem(n_var,
+    #                         obj_function,
+    #                         xl=np.array([1,1,1]),
+    #                         xu=np.array([38,  30,  34]),
+    #                         type_var=int,
+    #                         runner=pool.starmap, func_eval=starmap_parallelized_eval)
 
     
 
@@ -366,7 +358,7 @@ if __name__ == "__main__":
                         )
 
     res = minimize(problem,algorithm,('n_gen', 10), verbose=True,save_history=True,seed=1)
-
+    print('Processes:', res.exec_time)
     print("Best solution found: %s" % res.X)
     print("Function value: %s" % res.F)
     print("Constraint violation: %s" % res.CV)
@@ -374,9 +366,22 @@ if __name__ == "__main__":
 
     n_evals = np.array([e.evaluator.n_eval for e in res.history])
     opt = np.array([e.opt[0].F for e in res.history])
+    pool.close()
 
-    plt.title("Convergence")
-    plt.plot(n_evals, opt, "--")
-    plt.yscale("symlog")
+
+    X = res.X
+    F = res.F
+    xl, xu = problem.bounds()
+    plt.figure(figsize=(7, 5))
+    plt.scatter(X[:, 0], X[:, 1], s=30, facecolors='none', edgecolors='r')
+    plt.xlim(xl[0], xu[0])
+    plt.ylim(xl[1], xu[1])
+    plt.title("Design Space")
+    plt.show()
+
+    plt.figure(figsize=(7, 5))
+    plt.scatter(F[:, 0], F[:, 1], s=30, facecolors='none', edgecolors='blue')
+    plt.title("Objective Space")
+    plt.show()
     plt.show()
 
