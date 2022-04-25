@@ -154,7 +154,7 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
             city_matrix_size = len(airports)*len(airports)
             airports_keys = list(airports.keys())
             
-            log.info('Aircraft DOC matrix: {}'.format(DOC_ik))
+            # log.info('Aircraft DOC matrix: {}'.format(DOC_ik))
             # =============================================================================
             log.info('---- Start Network Optimization ----')
             # Network optimization that maximizes the network profit
@@ -590,7 +590,8 @@ def objective_function(vehicle,x=None):
     # x = [37, 7, 5]
     # x = [9, 7, 5]
     # x = [33, 7, 4]
-    x = [32, 11, 5] # opt
+    # x = [32, 11, 5] # opt
+    x = [52,32,56]
 
     if not fixed_aircraft:
         res, res2 = objective_function0(x, fixed_parameters, computation_mode,

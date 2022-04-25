@@ -350,14 +350,16 @@ if __name__ == "__main__":
 
     
 
-    algorithm = NSGA2(pop_size=14,
+    algorithm = NSGA2(pop_size=70,
                         sampling=sampling,
                         crossover=crossover,
                         mutation=mutation,
                         eliminate_duplicates=True,
                         )
 
-    res = minimize(problem,algorithm,('n_gen', 10), verbose=True,save_history=True,seed=1)
+
+
+    res = minimize(problem,algorithm,('n_gen', 50), verbose=True,save_history=True,seed=1)
     print('Processes:', res.exec_time)
     print("Best solution found: %s" % res.X)
     print("Function value: %s" % res.F)
@@ -372,12 +374,31 @@ if __name__ == "__main__":
     X = res.X
     F = res.F
     xl, xu = problem.bounds()
+
+    plt.rc('font', family='serif')
+    plt.rc('xtick', labelsize='x-small')
+    plt.rc('ytick', labelsize='x-small')
+
+    fig = plt.figure(figsize=(10, 9))
+    ax = fig.add_subplot(1, 1, 1)
+
+    ax.set_xlabel('Predicted')
+    ax.set_ylabel('Actual')
+
+
     plt.figure(figsize=(7, 5))
     plt.scatter(X[:, 0], X[:, 1], s=30, facecolors='none', edgecolors='r')
     plt.xlim(xl[0], xu[0])
     plt.ylim(xl[1], xu[1])
     plt.title("Design Space")
     plt.show()
+
+    fig2 = plt.figure(figsize=(10, 9))
+    ax2 = fig2.add_subplot(1, 1, 1)
+
+    ax2.set_xlabel('Profit')
+    ax2.set_ylabel('CO2')
+
 
     plt.figure(figsize=(7, 5))
     plt.scatter(F[:, 0], F[:, 1], s=30, facecolors='none', edgecolors='blue')
