@@ -303,6 +303,10 @@ from pymoo.problems.functional import FunctionalProblem
 from pymoo.factory import get_sampling, get_crossover, get_mutation
 from pymoo.operators.mixed_variable_operator import MixedVariableSampling, MixedVariableMutation, MixedVariableCrossover
 from pymoo.core.problem import ElementwiseProblem
+from pymoo.util.misc import stack
+from pymoo.factory import get_termination
+from pymoo.indicators.hv import Hypervolume
+from pymoo.util.running_metric import RunningMetric
 
 class MyProblem(ElementwiseProblem):
 
@@ -350,7 +354,7 @@ if __name__ == "__main__":
 
     
 
-    algorithm = NSGA2(pop_size=70,
+    algorithm = NSGA2(pop_size=14,
                         sampling=sampling,
                         crossover=crossover,
                         mutation=mutation,
@@ -359,7 +363,7 @@ if __name__ == "__main__":
 
 
 
-    res = minimize(problem,algorithm,('n_gen', 50), verbose=True,save_history=True,seed=1)
+    res = minimize(problem,algorithm,('n_gen', 10), verbose=True,save_history=True,seed=1)
     print('Processes:', res.exec_time)
     print("Best solution found: %s" % res.X)
     print("Function value: %s" % res.F)
@@ -379,30 +383,119 @@ if __name__ == "__main__":
     plt.rc('xtick', labelsize='x-small')
     plt.rc('ytick', labelsize='x-small')
 
+
     fig = plt.figure(figsize=(10, 9))
     ax = fig.add_subplot(1, 1, 1)
 
-    ax.set_xlabel('Predicted')
-    ax.set_ylabel('Actual')
+    ax.set_xlabel('obj1')
+    ax.set_ylabel('obj2')
 
-
-    plt.figure(figsize=(7, 5))
-    plt.scatter(X[:, 0], X[:, 1], s=30, facecolors='none', edgecolors='r')
-    plt.xlim(xl[0], xu[0])
-    plt.ylim(xl[1], xu[1])
-    plt.title("Design Space")
+    ax.scatter(F[:, 0], F[:, 1], s=30, facecolors='none', edgecolors='blue')
+    ax.set_title("Objective Space")
     plt.show()
 
-    fig2 = plt.figure(figsize=(10, 9))
-    ax2 = fig2.add_subplot(1, 1, 1)
 
-    ax2.set_xlabel('Profit')
-    ax2.set_ylabel('CO2')
+    pf_a, pf_b = problem.pareto_front(use_cache=False, flatten=False)
 
+    pf = problem.pareto_front(use_cache=False, flatten=True)
 
-    plt.figure(figsize=(7, 5))
-    plt.scatter(F[:, 0], F[:, 1], s=30, facecolors='none', edgecolors='blue')
-    plt.title("Objective Space")
+    fig = plt.figure(figsize=(10, 9))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.scatter(F[:, 0], F[:, 1], s=30, facecolors='none', edgecolors='b', label="Solutions")
+    ax.plot(pf_a[:, 0], pf_a[:, 1], alpha=0.5, linewidth=2.0, color="red", label="Pareto-front")
+    ax.plot(pf_b[:, 0], pf_b[:, 1], alpha=0.5, linewidth=2.0, color="red")
+    ax.set_title("Objective Space")
+    plt.legend()
     plt.show()
+
+
+
+    X, F = res.opt.get("X", "F")
+
+    hist = res.history
+    print(len(hist))
+    n_evals = []             # corresponding number of function evaluations\
+    hist_F = []              # the objective space values in each generation
+    hist_cv = []             # constraint violation in each generation
+    hist_cv_avg = []         # average constraint violation in the whole population
+
+    for algo in hist:
+
+        # store the number of function evaluations
+        n_evals.append(algo.evaluator.n_eval)
+
+        # retrieve the optimum from the algorithm
+        opt = algo.opt
+
+        # store the least contraint violation and the average in each population
+        hist_cv.append(opt.get("CV").min())
+        hist_cv_avg.append(algo.pop.get("CV").mean())
+
+        # filter out only the feasible and append and objective space values
+        feas = np.where(opt.get("feasible"))[0]
+        hist_F.append(opt.get("F")[feas])
+
+    k = np.where(np.array(hist_cv) <= 0.0)[0].min()
+    print(f"At least one feasible solution in Generation {k} after {n_evals[k]} evaluations.")
+
+    # replace this line by `hist_cv` if you like to analyze the least feasible optimal solution and not the population
+    vals = hist_cv_avg
+
+    k = np.where(np.array(vals) <= 0.0)[0].min()
+    print(f"Whole population feasible in Generation {k} after {n_evals[k]} evaluations.")
+
+    fig = plt.figure(figsize=(10, 9))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.plot(n_evals, vals,  color='black', lw=0.7, label="Avg. CV of Pop")
+    ax.scatter(n_evals, vals,  facecolor="none", edgecolor='black', marker="p")
+    ax.axvline(n_evals[k], color="red", label="All Feasible", linestyle="--")
+    ax.set_title("Convergence")
+    ax.set_xlabel("Function Evaluations")
+    ax.set_ylabel("Constraint Violation")
+    ax.legend()
     plt.show()
+
+    approx_ideal = F.min(axis=0)
+    approx_nadir = F.max(axis=0)
+
+    from pymoo.indicators.hv import Hypervolume
+
+    metric = Hypervolume(ref_point= np.array([1.1, 1.1]),
+                        norm_ref_point=False,
+                        zero_to_one=True,
+                        ideal=approx_ideal,
+                        nadir=approx_nadir)
+
+    hv = [metric.do(_F) for _F in hist_F]
+
+    fig = plt.figure(figsize=(10, 9))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.plot(n_evals, hv,  color='black', lw=0.7, label="Avg. CV of Pop")
+    ax.scatter(n_evals, hv,  facecolor="none", edgecolor='black', marker="p")
+    ax.set_title("Convergence")
+    ax.set_xlabel("Function Evaluations")
+    ax.set_ylabel("Hypervolume")
+    plt.show()
+
+    from pymoo.util.running_metric import RunningMetric
+
+    running = RunningMetric(delta_gen=5,
+                            n_plots=3,
+                            only_if_n_plots=True,
+                            key_press=False,
+                            do_show=True)
+
+    for algorithm in res.history[:15]:
+        running.notify(algorithm)
+
+    from pymoo.util.running_metric import RunningMetric
+
+    running = RunningMetric(delta_gen=10,
+                            n_plots=4,
+                            only_if_n_plots=True,
+                            key_press=False,
+                            do_show=True)
+
+    for algorithm in res.history:
+        running.notify(algorithm)
 
