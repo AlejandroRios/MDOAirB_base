@@ -172,7 +172,7 @@ def obj_function(individual):
     vehicle = UpdateVehicle(vehicle, fixed_parameters)
     net_profit,SAR= objective_function(vehicle,individual)
     vehicle.clear()
-    return -net_profit,SAR
+    return -net_profit, SAR
 
 def initPopulation(pcls, ind_init, file):
     return pcls(ind_init(c) for c in file)
@@ -307,6 +307,11 @@ from pymoo.util.misc import stack
 from pymoo.factory import get_termination
 from pymoo.indicators.hv import Hypervolume
 from pymoo.util.running_metric import RunningMetric
+from pymoo.util.running_metric import RunningMetric
+
+import pandas as pd
+from pymoo.core.population import Population
+
 
 class MyProblem(ElementwiseProblem):
 
@@ -379,6 +384,13 @@ if __name__ == "__main__":
     F = res.F
     xl, xu = problem.bounds()
 
+    all_pop = Population()
+
+    for algorithm in res.history:
+        all_pop = Population.merge(all_pop, algorithm.off)
+
+    df = pd.DataFrame(all_pop.get("F"), columns=[f"X{i+1}" for i in range(problem.n_obj)])
+
     plt.rc('font', family='serif')
     plt.rc('xtick', labelsize='x-small')
     plt.rc('ytick', labelsize='x-small')
@@ -387,26 +399,27 @@ if __name__ == "__main__":
     fig = plt.figure(figsize=(10, 9))
     ax = fig.add_subplot(1, 1, 1)
 
-    ax.set_xlabel('obj1')
-    ax.set_ylabel('obj2')
+    ax.set_xlabel('Profit [US$]')
+    ax.set_ylabel('CO2 efficiecy [kg/nm]')
 
-    ax.scatter(F[:, 0], F[:, 1], s=30, facecolors='none', edgecolors='blue')
+    ax.scatter(F[:, 0], F[:, 1], s=30, facecolors='none',marker= '^',edgecolors='blue')
+    ax.scatter(df['X1'], df['X2'],s=5, facecolors='none', edgecolors='red')
     ax.set_title("Objective Space")
     plt.show()
 
 
-    pf_a, pf_b = problem.pareto_front(use_cache=False, flatten=False)
+    # pf_a, pf_b = problem.pareto_front(use_cache=False, flatten=False)
 
-    pf = problem.pareto_front(use_cache=False, flatten=True)
+    # pf = problem.pareto_front(use_cache=False, flatten=True)
 
-    fig = plt.figure(figsize=(10, 9))
-    ax = fig.add_subplot(1, 1, 1)
-    ax.scatter(F[:, 0], F[:, 1], s=30, facecolors='none', edgecolors='b', label="Solutions")
-    ax.plot(pf_a[:, 0], pf_a[:, 1], alpha=0.5, linewidth=2.0, color="red", label="Pareto-front")
-    ax.plot(pf_b[:, 0], pf_b[:, 1], alpha=0.5, linewidth=2.0, color="red")
-    ax.set_title("Objective Space")
-    plt.legend()
-    plt.show()
+    # fig = plt.figure(figsize=(10, 9))
+    # ax = fig.add_subplot(1, 1, 1)
+    # ax.scatter(F[:, 0], F[:, 1], s=30, facecolors='none', edgecolors='b', label="Solutions")
+    # ax.plot(pf_a[:, 0], pf_a[:, 1], alpha=0.5, linewidth=2.0, color="red", label="Pareto-front")
+    # ax.plot(pf_b[:, 0], pf_b[:, 1], alpha=0.5, linewidth=2.0, color="red")
+    # ax.set_title("Objective Space")
+    # plt.legend()
+    # plt.show()
 
 
 
@@ -477,7 +490,7 @@ if __name__ == "__main__":
     ax.set_ylabel("Hypervolume")
     plt.show()
 
-    from pymoo.util.running_metric import RunningMetric
+    
 
     running = RunningMetric(delta_gen=5,
                             n_plots=3,
@@ -488,8 +501,6 @@ if __name__ == "__main__":
     for algorithm in res.history[:15]:
         running.notify(algorithm)
 
-    from pymoo.util.running_metric import RunningMetric
-
     running = RunningMetric(delta_gen=10,
                             n_plots=4,
                             only_if_n_plots=True,
@@ -498,4 +509,6 @@ if __name__ == "__main__":
 
     for algorithm in res.history:
         running.notify(algorithm)
+
+    plt.show()
 
