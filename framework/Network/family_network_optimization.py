@@ -101,14 +101,14 @@ def dict_to_list(computation_mode, airports_keys, info_acft):
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
             if i != j and i < j:
-                if doc0[airports_keys[i]][airports_keys[j]] > 10000000:
+                if (doc0[airports_keys[i]][airports_keys[j]] > 10000000) or (demands[airports_keys[i]][airports_keys[j]]['demand']==0):
                     docs_list.append(100000000000000000000000000000)
                 else:
                     docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
             if i != j and i > j:
-                if doc0[airports_keys[i]][airports_keys[j]] > 10000000:
+                if (doc0[airports_keys[i]][airports_keys[j]] > 10000000) or (demands[airports_keys[i]][airports_keys[j]]['demand']==0):
                     docs_list.append(100000000000000000000000000000)
                 else:
                     docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
@@ -379,10 +379,19 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
                     aircrafts3[i][j] = list_aircrafts3[idx]
                     idx = idx+1
 
-    print('acft1:', aircrafts1)
-    print('acft2:', aircrafts2)
-    print('acft3:', aircrafts3)
 
+
+    print('===============================')
+    print('Aircraft1 matrix:',aircrafts1)
+    print('===============================')
+    print('Aircraft2 matrix:',aircrafts2)
+    print('===============================')
+    print('Aircraft3 matrix:',aircrafts3)
+    print('===============================')
+
+    np.save('Database/Results_FamOpt/acft1', aircrafts1)
+    np.save('Database/Results_FamOpt/acft2', aircrafts2)
+    np.save('Database/Results_FamOpt/acft3', aircrafts3)
 
     revenue_1_list = []
     for i in range(len(list_of_pax)):
@@ -503,7 +512,7 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
     print('profit',profit)
 
 
-    pax_number_flatt = aircrafts1.flatten()
+    pax_number_flatt = aircrafts1.flatten() 
     
     pax_number_df = pd.DataFrame({'pax_number':pax_number_flatt})
     kpi_df1 = pd.DataFrame()

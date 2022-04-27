@@ -116,11 +116,17 @@ def network_optimization(computation_mode, airports_keys, distances, demands, do
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
             if i != j and i < j:
-                docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
+                if (doc0[airports_keys[i]][airports_keys[j]] > 10000000) or (demands[airports_keys[i]][airports_keys[j]]['demand']==0):
+                    docs_list.append(100000000000000000000000000000)
+                else:
+                    docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
             if i != j and i > j:
-                docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
+                if (doc0[airports_keys[i]][airports_keys[j]] > 10000000) or (demands[airports_keys[i]][airports_keys[j]]['demand']==0):
+                    docs_list.append(100000000000000000000000000000)
+                else:
+                    docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
 
     froms_list = []
     if (computation_mode == 0):

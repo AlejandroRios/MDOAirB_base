@@ -359,7 +359,7 @@ if __name__ == "__main__":
 
     
 
-    algorithm = NSGA2(pop_size=14,
+    algorithm = NSGA2(pop_size=42,
                         sampling=sampling,
                         crossover=crossover,
                         mutation=mutation,
@@ -368,7 +368,7 @@ if __name__ == "__main__":
 
 
 
-    res = minimize(problem,algorithm,('n_gen', 10), verbose=True,save_history=True,seed=1)
+    res = minimize(problem,algorithm,('n_gen', 50), verbose=True,save_history=True,seed=1)
     print('Processes:', res.exec_time)
     print("Best solution found: %s" % res.X)
     print("Function value: %s" % res.F)
