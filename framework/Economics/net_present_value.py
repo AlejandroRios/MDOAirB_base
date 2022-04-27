@@ -159,7 +159,7 @@ def complexity_factor():
 # =============================================================================
 
 
-def manegment_and_administration_hours():
+def manegment_and_administration_hours(MTOW_factor,thrust_factor):
     '''
     Man Power - Management and Administration hours
     Methodology from Roskam???
@@ -168,8 +168,6 @@ def manegment_and_administration_hours():
     Outputs:
         -
     '''
-
-    MTOW_factor, thrust_factor = baseline_aircraft()
     preliminar_design_baseline = 27983
     interior_baseline = 229950
     structures_baseline = 279833
@@ -187,7 +185,7 @@ def manegment_and_administration_hours():
     return man_power_managment_and_administration
 
 
-def engineering_hours():
+def engineering_hours(MTOW_factor, thrust_factor):
     '''
     Man Power - Engineering hours
     Methodology from Roskam???
@@ -196,7 +194,6 @@ def engineering_hours():
     Outputs:
         -
     '''
-    MTOW_factor, thrust_factor = baseline_aircraft()
 
     aerodinamics_baseline = 135050
     aeroelasticity_baseline = 237250
@@ -227,7 +224,7 @@ def engineering_hours():
     return engineering_hours
 
 
-def test_and_validation():
+def test_and_validation(MTOW_factor,thrust_factor):
     '''
     Man Power - Test and Validation
     Methodology from Roskam???
@@ -236,7 +233,6 @@ def test_and_validation():
     Outputs:
         -
     '''
-    MTOW_factor, _ = baseline_aircraft()
     ground_testing_baseline = 208050
     systems_testing_baseline = 111933
     flight_test_baseline = 160600
@@ -266,7 +262,7 @@ def test_and_validation():
     return test_hours
 
 
-def support_hours():
+def support_hours(MTOW_factor,thrust_factor):
     '''
     Man Power - Support hours
     Methodology from Roskam???
@@ -277,7 +273,6 @@ def support_hours():
     TODO's:
         - service_bul_baseline - Trabalho de documentação manuais etc.
     '''
-    MTOW_factor, _ = baseline_aircraft()
     service_bul_baseline = 19467
     spare_parts_baseline = 103417
     operations_manuals_baseline = 203183
@@ -298,7 +293,7 @@ def support_hours():
 # Infrastructure Cost
 
 
-def infrastructure():
+def infrastructure(MTOW_factor,thrust_factor):
     '''
     Infrastructure Cost
     Methodology from Roskam???
@@ -309,8 +304,6 @@ def infrastructure():
     TODO's:
         - FSW - factory shop and warehouse
     '''
-
-    MTOW_factor, _ = baseline_aircraft()
     machine_equipement_baseline = 17880000
     FSW_baseline = 9536000
     prototypes_baseline = 35760000
@@ -336,7 +329,7 @@ def infrastructure():
 # General Cost
 
 
-def general():
+def general(MTOW_factor,thrust_factor):
     '''
     General costs
     Methodology from Roskam???
@@ -349,7 +342,6 @@ def general():
         - TPMP_baseline - third part men-power
         - TPMPP_baseline - third part men-power partner
     '''
-    MTOW_factor, _ = baseline_aircraft()
 
     communications_baseline = 834400
     instrFT_baseline = 4529600
@@ -369,7 +361,7 @@ def general():
     return general_cost
 
 
-def total_non_recurrig_year_cost():
+def total_non_recurrig_year_cost(MTOW_factor,thrust_factor):
     '''
     TOTAL NON RECURRING COST PER YEAR
     Methodology from Roskam???
@@ -381,19 +373,19 @@ def total_non_recurrig_year_cost():
         -
     '''
     manufacturer, man_power_cost_average = program_share()
-    total_hours = manegment_and_administration_hours() + engineering_hours() + \
-        test_and_validation() + support_hours()
+    total_hours = manegment_and_administration_hours(MTOW_factor,thrust_factor) + engineering_hours(MTOW_factor,thrust_factor) + \
+        test_and_validation(MTOW_factor,thrust_factor) + support_hours(MTOW_factor,thrust_factor)
 
     hour_cost = total_hours*man_power_cost_average
 
     man_power_distribution, infrastructure_distribution, generic_cost_distribution = product_development_cost()
     man_power_cost_vector = [i * hour_cost for i in man_power_distribution]
 
-    infrastructure_cost = infrastructure()
+    infrastructure_cost = infrastructure(MTOW_factor,thrust_factor)
     infrastructure_cost_vector = [
         i * infrastructure_cost for i in infrastructure_distribution]
 
-    general_cost = general()
+    general_cost = general(MTOW_factor,thrust_factor)
     general_cost_vector = [i * general_cost for i in generic_cost_distribution]
 
     total_non_recurrig_year_cost = []
@@ -432,6 +424,10 @@ def material():
     materials['avionics'] = 953600
     materials['structures'] = 143
     materials['fuel'] = 119
+
+    aircraft = {}
+
+    aircraft['number_of_engines'] = 2
 
     materials_cost = (materials['landing_gear'] * complexity_factors['landing_gear'] * MTOW
                       + materials['flight_controls'] *
@@ -479,7 +475,7 @@ def man_power():
     return recurring_man_power_cost
 
 
-def cost_matrix():
+def cost_matrix(MTOW_factor,thrust_factor):
     '''
     Cost Matrix
     Methodology from Roskam???
@@ -490,7 +486,7 @@ def cost_matrix():
     TODO's:
         -
     '''
-    total_non_recurring_cost = total_non_recurrig_year_cost()
+    total_non_recurring_cost = total_non_recurrig_year_cost(MTOW_factor,thrust_factor)
     _, deliveries = delivery_forecast()
     material_costs = material()
     recurring_man_power_cost = man_power()
@@ -510,7 +506,7 @@ def cost_matrix():
     return costs
 
 
-def cash_flow_matrix():
+def cash_flow_matrix(MTOW_factor,thrust_factor):
     '''
     Cash Flow Matrix
     Methodology from Roskam???
@@ -523,7 +519,7 @@ def cash_flow_matrix():
     '''
     price = aircraft_price()
     _, deliveries = delivery_forecast()
-    costs = cost_matrix()
+    costs = cost_matrix(MTOW_factor,thrust_factor)
 
     total_net_present_value = np.zeros(1)
     cash_flow = []
@@ -552,7 +548,7 @@ def IRR():
         - Test with other values
         - Reference?
     '''
-    _, cash_flow, _ = cash_flow_matrix()
+    _, cash_flow, _ = cash_flow_matrix(MTOW_factor,thrust_factor)
     n = len(cash_flow)
     r = 0
     f = 0
@@ -582,7 +578,7 @@ def break_even():
         - Test other cases
         - This perform a interpolation
     '''
-    _, _, present_value = cash_flow_matrix()
+    _, _, present_value = cash_flow_matrix(MTOW_factor,thrust_factor)
     break_even = np.zeros(1)
     for i in range(1, p):
         x1 = i
@@ -602,47 +598,54 @@ def break_even():
 # TODO's:
 #     - This part should be inputed in a different way when integrated
 # """
-# global MTOW, thrust_maximum, wing_surface, engine_diameter, engines_number, pax_number, KVA, p, share, IR
+global MTOW, thrust_maximum, wing_surface, engine_diameter, engines_number, pax_number, KVA, p, share, IR
 
-# MTOW_baseline = 22010
+MTOW_baseline = 22010
 # wing_surface_baseline = 52
 # engines_number_baseline = 2
 # engine_diameter_baseline = 1.52
 # pax_number_baseline = 50
-# thrust_maximum_baseline = 8895
+thrust_maximum_baseline = 8895
 # KVA_baseline = 75
-# p = 14
-# share = 0.6
-# IR = 0.05
+p = 14
+share = 0.6
+IR = 0.05
 
-# MTOW = 22000
-# thrust_maximum = (MTOW/22000)*8895
-# wing_surface = 50
-# wing_surface_ft = wing_surface * 10.764
-# engine_diameter = 1.11
-# engine_diameter_in = engine_diameter * 39.3701
-# engines_number = 2
-# pax_number = 44
-# KVA = 75
+MTOW = 22000
+thrust_maximum = (MTOW/22000)*8895
+wing_surface = 50
+wing_surface_ft = wing_surface * 10.764
+engine_diameter = 1.11
+engine_diameter_in = engine_diameter * 39.3701
+engines_number = 2
+pax_number = 44
+KVA = 75
 
 
-# MTOW_factor = MTOW/MTOW_baseline
-# thrust_factor = thrust_maximum/thrust_maximum_baseline
-# wing_surface_ft2 = wing_surface*3.28**2
-# engine_diameter_in = engine_diameter*39.37
+MTOW_factor = MTOW/MTOW_baseline
+thrust_factor = thrust_maximum/thrust_maximum_baseline
+wing_surface_ft2 = wing_surface*3.28**2
+engine_diameter_in = engine_diameter*39.37
 
-# total  = total_non_recurrig_year_cost()
-# print('Total non recurring year cost: ', total)
+total  = total_non_recurrig_year_cost(MTOW_factor,thrust_factor)
+print('Total non recurring year cost: ', total)
 
-# material_costs = material()
-# print('Material cost: ', material_costs)
+material_costs = material()
+print('Material cost: ', material_costs)
 
-# print('Man power cost:', man_power())
+print('Man power cost:', man_power())
 
-# print(delivery_forecast())
-# print('Matrix cost:', cost_matrix())
+print(delivery_forecast())
+print('Matrix cost:', cost_matrix(MTOW_factor,thrust_factor))
 
-# print('Total net present value: ', cash_flow_matrix())
+total_net_present_value, cash_flow, present_value = cash_flow_matrix(MTOW_factor,thrust_factor)
 
-# print('IRR: ', IRR())
-# print('Break even: ', break_even())
+
+print('Cash flow: ', cash_flow)
+
+print('Present value: ', present_value)
+
+print('Total net present value: ', total_net_present_value)
+
+print('IRR: ', IRR())
+print('Break even: ', break_even())

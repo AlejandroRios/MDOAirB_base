@@ -342,7 +342,7 @@ if __name__ == "__main__":
         "int": get_mutation("int_pm", eta=3.0)
     })
 
-    n_proccess = 14
+    n_proccess = 8
     pool = multiprocessing.Pool(n_proccess)
     # problem = MyProblem(runner=pool.starmap, func_eval=starmap_parallelized_eval)
     n_var = 3
@@ -351,8 +351,8 @@ if __name__ == "__main__":
 
     problem = FunctionalProblem(n_var,
                             obj_function,
-                            xl=np.array([1,1,1]),
-                            xu=np.array([38,  30,  34]),
+                            xl=np.array([1,1, 1]),
+                            xu=np.array([69,36, 73]),
                             type_var=int,
                             runner=pool.starmap, func_eval=starmap_parallelized_eval)
 
@@ -373,10 +373,38 @@ if __name__ == "__main__":
 
 
     n_evals = np.array([e.evaluator.n_eval for e in res.history])
+    n_gens = np.array([e.n_gen for e in res.history])
     opt = np.array([e.opt[0].F for e in res.history])
 
-    plt.title("Convergence")
-    plt.plot(n_evals, opt, "--")
-    plt.yscale("symlog")
+    plt.rc('font', family='serif')
+    plt.rc('xtick', labelsize='x-small')
+    plt.rc('ytick', labelsize='x-small')
+
+
+    fig = plt.figure(figsize=(10, 9))
+    ax = fig.add_subplot(1, 1, 1)
+
+    ax.set_xlabel('Function evaluations')
+    ax.set_ylabel('Obective function')
+    ax.set_title('Convergence plot')
+
+    #ax.set_xlim([0,None])
+    #ax.set_ylim([0,None])
+    ax.plot(n_evals, opt, "--")
+    #plt.yscale("symlog")
     plt.show()
 
+
+    fig2 = plt.figure(figsize=(10, 9))
+    ax2 = fig2.add_subplot(1, 1, 1)
+
+    ax2.set_xlabel('Generation')
+    ax2.set_ylabel('Obective function')
+    ax2.set_title('Convergence plot')
+
+    #ax.set_xlim([0,None])
+    #ax.set_ylim([0,None])
+
+    ax2.plot(n_gens, opt, "--")
+    #plt.yscale("symlog")
+    plt.show()

@@ -379,9 +379,9 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
                     aircrafts3[i][j] = list_aircrafts3[idx]
                     idx = idx+1
 
-    # print('acft1:' aircrafts1)
-    # print('acft2:' aircrafts2)
-    # print('acft3:' aircrafts3
+    print('acft1:', aircrafts1)
+    print('acft2:', aircrafts2)
+    print('acft3:', aircrafts3)
 
 
     revenue_1_list = []
