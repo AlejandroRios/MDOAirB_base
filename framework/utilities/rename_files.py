@@ -1,6 +1,6 @@
 import os
-path = 'Database/Family/161_to_220/all_dictionaries/'
-path2 = 'Database/Family/161_to_220/all_dictionaries2/'
+path = 'Database/Family/101_to_160/all_dictionaries/'
+path2 = 'Database/Family/101_to_160/all_dictionaries2/'
 files = os.listdir(path)
 
 
