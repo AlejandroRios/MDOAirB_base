@@ -390,6 +390,13 @@ if __name__ == "__main__":
         all_pop = Population.merge(all_pop, algorithm.off)
 
     df = pd.DataFrame(all_pop.get("F"), columns=[f"X{i+1}" for i in range(problem.n_obj)])
+    df2 = pd.DataFrame(all_pop.get("X"), columns=[f"X{i+1}" for i in range(problem.n_var)])
+
+    df.to_pickle("functions_opt.pkl") 
+    df2.to_pickle("vars_opt.pkl") 
+
+    np.save('results', all_pop)
+
 
     plt.rc('font', family='serif')
     plt.rc('xtick', labelsize='x-small')
@@ -405,6 +412,8 @@ if __name__ == "__main__":
     ax.scatter(F[:, 0], F[:, 1], s=30, facecolors='none',marker= '^',edgecolors='blue')
     ax.scatter(df['X1'], df['X2'],s=5, facecolors='none', edgecolors='red')
     ax.set_title("Objective Space")
+
+    plt.savefig("pareto.pdf", format="pdf", bbox_inches="tight")
     plt.show()
 
 
@@ -488,6 +497,7 @@ if __name__ == "__main__":
     ax.set_title("Convergence")
     ax.set_xlabel("Function Evaluations")
     ax.set_ylabel("Hypervolume")
+    plt.savefig("hypervolume.pdf", format="pdf", bbox_inches="tight")
     plt.show()
 
     
@@ -509,6 +519,9 @@ if __name__ == "__main__":
 
     for algorithm in res.history:
         running.notify(algorithm)
+
+    
+    plt.savefig("seila.pdf", format="pdf", bbox_inches="tight")
 
     plt.show()
 

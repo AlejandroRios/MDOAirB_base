@@ -334,7 +334,7 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
                 # print(v.name, "=", v.varValue)
                 list_of_pax.append(values[v])
 
-        # print('flow',sum(list_of_pax))
+        print('flow',sum(list_of_pax))
 
         idx = 0
         fraction = np.zeros((len(airports_keys),len(airports_keys)))
@@ -381,13 +381,13 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
 
 
 
-    print('===============================')
-    print('Aircraft1 matrix:',aircrafts1)
-    print('===============================')
-    print('Aircraft2 matrix:',aircrafts2)
-    print('===============================')
-    print('Aircraft3 matrix:',aircrafts3)
-    print('===============================')
+    # print('===============================')
+    # print('Aircraft1 matrix:',aircrafts1)
+    # print('===============================')
+    # print('Aircraft2 matrix:',aircrafts2)
+    # print('===============================')
+    # print('Aircraft3 matrix:',aircrafts3)
+    # print('===============================')
 
     np.save('Database/Results_FamOpt/acft1', aircrafts1)
     np.save('Database/Results_FamOpt/acft2', aircrafts2)
@@ -476,6 +476,16 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
     results01['aircrafts_used']= np.sum(aircrafts1)
     results01['covered_demand'] = np.sum(list_of_pax)
     results01['total_revenue'] = revenue_tot
+
+    results02['aircrafts_used']= np.sum(aircrafts2)
+    results02['covered_demand'] = np.sum(list_of_pax)
+    results02['total_revenue'] = revenue_tot
+
+    results03['aircrafts_used']= np.sum(aircrafts3)
+    results03['covered_demand'] = np.sum(list_of_pax)
+    results03['total_revenue'] = revenue_tot
+
+
     airplanes_ik = {}
     n = 0
     for i in range(len(airports_keys)):
@@ -489,16 +499,6 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
     airplanes_flatt = flatten_dict(airplanes_ik)
     np.save('Database/Network/frequencies.npy', airplanes_flatt) 
 
-    # airplanes_flatt = flatten_dict(airplanes_ik)
-    
-    # np.save('Database/Network/frequencies.npy', airplanes_flatt) 
-
-    # list_of_pax_db = pd.DataFrame(list_pax_processed)
-
-    # list_of_pax_db = list_of_pax_db.loc[~(list_of_pax_db==0).all(axis=1)]
-    # print(list_of_pax)
-
-    # list_of_pax_db.to_csv('Database/Network/pax.csv')
 
     DOC_tot = np.sum(DOC_proccessed1+DOC_proccessed2+DOC_proccessed3)
 
@@ -507,43 +507,65 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
 
     results01['profit'] = np.round(profit)
     results01['total_cost'] = np.round(DOC_tot)
+    results02['profit'] = np.round(profit)
+    results02['total_cost'] = np.round(DOC_tot)
+    results03['profit'] = np.round(profit)
+    results03['total_cost'] = np.round(DOC_tot)
 
     print('margin',profit/revenue_tot)
     print('profit',profit)
 
 
-    pax_number_flatt = aircrafts1.flatten() 
+    pax_number_flatt1 = aircrafts1.flatten()
+    pax_number_flatt2 = aircrafts2.flatten() 
+    pax_number_flatt3 = aircrafts3.flatten() 
     
-    pax_number_df = pd.DataFrame({'pax_number':pax_number_flatt})
-    kpi_df1 = pd.DataFrame()
-    # print(pax_number_df)
-    kpi_df1['pax_number'] = pax_number_df['pax_number'].values
-    # print(kpi_df1["pax_number"])
+    pax_number_df1 = pd.DataFrame({'pax_number':pax_number_flatt1})
+    pax_number_df2 = pd.DataFrame({'pax_number':pax_number_flatt2})
+    pax_number_df3 = pd.DataFrame({'pax_number':pax_number_flatt3})
 
-    # kpi_df1.drop(columns=["variable_object"], inplace=True)
-    kpi_df1.to_csv("Test/optimization_solution01.csv")
+    kpi_df1_1 = pd.DataFrame()
+    kpi_df1_1['pax_number'] = pax_number_df1['pax_number'].values
+    kpi_df1_1.to_csv("Test/optimization_solution01.csv")
+
+    kpi_df1_2 = pd.DataFrame()
+    kpi_df1_2['pax_number'] = pax_number_df2['pax_number'].values
+    kpi_df1_2.to_csv("Test/optimization_solution02.csv")
+
+    kpi_df1_3 = pd.DataFrame()
+    kpi_df1_3['pax_number'] = pax_number_df3['pax_number'].values
+    kpi_df1_3.to_csv("Test/optimization_solution03.csv")
 
     n = len(airports_keys)
 
     if (computation_mode == 0):
-        # aircrafts_aux = np.reshape(aircrafts, (n,n-1))
-
-        kpi_df2 = pd.DataFrame.from_dict(aircrafts01, orient="index", 
+        kpi_df2_1 = pd.DataFrame.from_dict(aircrafts01, orient="index", 
                                     columns = ["variable_object"])
-        # kpi_df2.idx =  pd.MultiIndex.from_tuples(kpi_df2.idx, 
-        #                             names=["origin", "destination"])
-        kpi_df2.reset_index(inplace=True)
+        kpi_df2_1.reset_index(inplace=True)
+        kpi_df2_1["aircraft_number"] =  kpi_df2_1["variable_object"].apply(lambda item: item.varValue)
+        kpi_df2_1.drop(columns=["variable_object"], inplace=True)
 
-        kpi_df2["aircraft_number"] =  kpi_df2["variable_object"].apply(lambda item: item.varValue)
+        kpi_df2_2 = pd.DataFrame.from_dict(aircrafts02, orient="index", 
+                                    columns = ["variable_object"])
+        kpi_df2_2.reset_index(inplace=True)
+        kpi_df2_2["aircraft_number"] =  kpi_df2_2["variable_object"].apply(lambda item: item.varValue)
+        kpi_df2_2.drop(columns=["variable_object"], inplace=True)
 
-        kpi_df2.drop(columns=["variable_object"], inplace=True)
+        kpi_df2_3 = pd.DataFrame.from_dict(aircrafts01, orient="index", 
+                                    columns = ["variable_object"])
+        kpi_df2_3.reset_index(inplace=True)
+        kpi_df2_3["aircraft_number"] =  kpi_df2_3["variable_object"].apply(lambda item: item.varValue)
+        kpi_df2_3.drop(columns=["variable_object"], inplace=True)
     else:
-        kpi_df2 = pd.DataFrame(aircrafts01, columns = ["aircraft_number"])
+        kpi_df2_1 = pd.DataFrame(aircrafts01, columns = ["aircraft_number"])
+        kpi_df2_2 = pd.DataFrame(aircrafts02, columns = ["aircraft_number"])
+        kpi_df2_3 = pd.DataFrame(aircrafts03, columns = ["aircraft_number"])
 
 
     distances_flatt = flatten_dict(distances)
     # doc_flatt = flatten_dict(DOC)
     demand_flatt = flatten_dict(demands)
+
     revenue_flatt = revenue_mat.flatten()
     doc_flatt = DOC_proccessed1.flatten()
 
@@ -556,62 +578,149 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
     demand_df =  pd.DataFrame.from_dict(demand_flatt,orient="index",columns=['demand'])
     # revenue_df =  pd.DataFrame.from_dict(revenue_flatt,orient="idx",columns=['revenue'])
 
-    kpi_df2['distances'] = distances_list
-    kpi_df2['doc'] = docs_list1
-    kpi_df2['demand'] = demand_list
-    # kpi_df2['revenue'] = revenue_df['revenue'].values
-    
-    kpi_df2['active_arcs'] = np.where(kpi_df2["aircraft_number"] > 0, 1, 0)
-    X = kpi_df2['active_arcs'].to_numpy()
-    X = restructure_data(X,n)
+    kpi_df2_1['distances'] = distances_list
+    kpi_df2_1['doc'] = docs_list1
+    kpi_df2_1['demand'] = demand_list
+    kpi_df2_1['active_arcs'] = np.where(kpi_df2_1["aircraft_number"] > 0, 1, 0)
+    X_1 = kpi_df2_1['active_arcs'].to_numpy()
+    X_1 = restructure_data(X_1,n)
 
-    Distances = kpi_df2['distances'].to_numpy()
-    Distances = restructure_data(Distances,n)
+    kpi_df2_2['distances'] = distances_list
+    kpi_df2_2['doc'] = docs_list2
+    kpi_df2_2['demand'] = demand_list
+    kpi_df2_2['active_arcs'] = np.where(kpi_df2_2["aircraft_number"] > 0, 1, 0)
+    X_2 = kpi_df2_2['active_arcs'].to_numpy()
+    X_2 = restructure_data(X_2,n)
 
-    Demand = kpi_df2['demand'].to_numpy()
-    Demand= restructure_data(Demand,n)
+    kpi_df2_3['distances'] = distances_list
+    kpi_df2_3['doc'] = docs_list3
+    kpi_df2_3['demand'] = demand_list
+    kpi_df2_3['active_arcs'] = np.where(kpi_df2_3["aircraft_number"] > 0, 1, 0)
+    X_3 = kpi_df2_3['active_arcs'].to_numpy()
+    X_3 = restructure_data(X_3,n)
+
+    Distances_1 = kpi_df2_1['distances'].to_numpy()
+    Distances_1 = restructure_data(Distances_1,n)
+    Demand_1 = kpi_df2_1['demand'].to_numpy()
+    Demand_1= restructure_data(Demand_1,n)
+
+    Distances_2 = kpi_df2_2['distances'].to_numpy()
+    Distances_2 = restructure_data(Distances_2,n)
+    Demand_2 = kpi_df2_2['demand'].to_numpy()
+    Demand_2= restructure_data(Demand_2,n)
+
+    Distances_3 = kpi_df2_3['distances'].to_numpy()
+    Distances_3 = restructure_data(Distances_3,n)
+    Demand_3 = kpi_df2_3['demand'].to_numpy()
+    Demand_3= restructure_data(Demand_3,n)
+
 
     N = 0
-    for i,j in np.ndindex(X.shape):
-        if X[i,j] == 1:
+    for i,j in np.ndindex(X_1.shape):
+        if X_1[i,j] == 1:
             N = N+1
 
-    DON = np.zeros(n)
+    DON_1 = np.zeros(n)
     for i in range(n):
-        DON[i] = 0
+        DON_1[i] = 0
         for j in range(n):
             if i != n:
-                if X[i,j] == 1:
-                    DON[i] = DON[i]+1
+                if X_1[i,j] == 1:
+                    DON_1[i] = DON_1[i]+1
+
+    N = 0
+    for i,j in np.ndindex(X_2.shape):
+        if X_2[i,j] == 1:
+            N = N+1
+
+    DON_2= np.zeros(n)
+    for i in range(n):
+        DON_2[i] = 0
+        for j in range(n):
+            if i != n:
+                if X_2[i,j] == 1:
+                    DON_2[i] = DON_2[i]+1
+
+    N = 0
+    for i,j in np.ndindex(X_3.shape):
+        if X_3[i,j] == 1:
+            N = N+1
+
+    DON_3= np.zeros(n)
+    for i in range(n):
+        DON_3[i] = 0
+        for j in range(n):
+            if i != n:
+                if X_3[i,j] == 1:
+                    DON_3[i] = DON_3[i]+1
     
-    results01['avg_degree_nodes'] = np.mean(DON)
+    results01['avg_degree_nodes'] = np.mean(DON_1)
+    results02['avg_degree_nodes'] = np.mean(DON_2)
+    results03['avg_degree_nodes'] = np.mean(DON_3)
 
     R = 500
-    C = np.zeros(n)
+    C_1 = np.zeros(n)
     for i in range(n):
         CON =0
         MAXCON = 0
         for j in range(n):
             if i != j:
-                if Distances[i,j] <= R:
+                if Distances_1[i,j] <= R:
                     MAXCON = MAXCON + 1
-                    if X[i,j] == 1:
+                    if X_1[i,j] == 1:
                         CON = CON+1
         if MAXCON>0:
-            C[i] = CON/MAXCON
+            C_1[i] = CON/MAXCON
         else:
-            C[i] = 0
+            C_1[i] = 0
 
-    results01['average_clustering'] = np.mean(C)
+    R = 500
+    C_2 = np.zeros(n)
+    for i in range(n):
+        CON =0
+        MAXCON = 0
+        for j in range(n):
+            if i != j:
+                if Distances_2[i,j] <= R:
+                    MAXCON = MAXCON + 1
+                    if X_2[i,j] == 1:
+                        CON = CON+1
+        if MAXCON>0:
+            C_2[i] = CON/MAXCON
+        else:
+            C_2[i] = 0
+
+    R = 500
+    C_3 = np.zeros(n)
+    for i in range(n):
+        CON =0
+        MAXCON = 0
+        for j in range(n):
+            if i != j:
+                if Distances_3[i,j] <= R:
+                    MAXCON = MAXCON + 1
+                    if X_3[i,j] == 1:
+                        CON = CON+1
+        if MAXCON>0:
+            C_3[i] = CON/MAXCON
+        else:
+            C_3[i] = 0
+
+    results01['average_clustering'] = np.mean(C_1)
+    results02['average_clustering'] = np.mean(C_2)
+    results03['average_clustering'] = np.mean(C_3)
+
 
 
     LF = np.ones((n,n))
-    FREQ = X
+    FREQ_1 = X_1
+    FREQ_2 = X_2
+    FREQ_3 = X_3
 
     results01['number_of_frequencies'] = np.sum(list_of_airplanes_processed)
 
     log.info('==== End network optimization module ====')
-    return profit, vehicle01, kpi_df1, kpi_df2, airplanes_ik
+    return profit, vehicle01,vehicle02,vehicle03, kpi_df1_1, kpi_df2_1,kpi_df1_2, kpi_df2_2,kpi_df1_3, kpi_df2_3, airplanes_ik
 
 # =============================================================================
 # MAIN
