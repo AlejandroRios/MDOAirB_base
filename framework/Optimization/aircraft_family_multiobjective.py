@@ -101,22 +101,22 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         with open('Database/Family/161_to_220/all_dictionaries/'+str(x[2])+'.pkl', 'rb') as f:
             all_info_acft3 = pickle.load(f)
 
-        # print(all_info_acft1['vehicle']['aircraft']['passenger_capacity'])
-        # print(all_info_acft1['vehicle']['fuselage']['seat_abreast_number'])
-        # print(all_info_acft1['vehicle']['wing']['area'])
-        # print(all_info_acft1['vehicle']['wing']['aspect_ratio'])
-        # print(all_info_acft1['vehicle']['wing']['semi_span_kink'])
-        # print(all_info_acft1['vehicle']['wing']['sweep_c_4'])
+        print(all_info_acft3['vehicle']['aircraft']['passenger_capacity'])
+        print(all_info_acft3['vehicle']['fuselage']['seat_abreast_number'])
+        print(all_info_acft3['vehicle']['wing']['area'])
+        print(all_info_acft3['vehicle']['wing']['aspect_ratio'])
+        print(all_info_acft3['vehicle']['wing']['semi_span_kink'])
+        print(all_info_acft3['vehicle']['wing']['sweep_c_4'])
 
-        # print(all_info_acft1['vehicle']['wing']['taper_ratio'])
-        # print(all_info_acft1['vehicle']['wing']['twist'])
+        print(all_info_acft3['vehicle']['wing']['taper_ratio'])
+        print(all_info_acft3['vehicle']['wing']['twist'])
 
-        # print(all_info_acft1['vehicle']['engine']['type'])
-        # print(all_info_acft1['vehicle']['engine']['bypass'])
-        # print(all_info_acft1['vehicle']['engine']['fan_diameter'])
-        # print(all_info_acft1['vehicle']['engine']['maximum_thrust'])
-        # print(all_info_acft1['vehicle']['engine']['turbine_inlet_temperature'])
-        # print(all_info_acft1['vehicle']['performance']['range'])
+        print(all_info_acft3['vehicle']['engine']['type'])
+        print(all_info_acft3['vehicle']['engine']['bypass'])
+        print(all_info_acft3['vehicle']['engine']['fan_diameter'])
+        print(all_info_acft3['vehicle']['engine']['maximum_thrust'])
+        print(all_info_acft3['vehicle']['engine']['turbine_inlet_temperature'])
+        print(all_info_acft3['vehicle']['performance']['range'])
 
         airports = all_info_acft1['airports']
         distances = all_info_acft1['distances']
@@ -298,9 +298,12 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
                 total_fuel = kpi_df2_1['total_fuel'].sum() + kpi_df2_2['total_fuel'].sum() + kpi_df2_3['total_fuel'].sum()
                 total_CO2 = total_fuel*3.15
                 total_distance = kpi_df2_1['total_distance'].sum() + kpi_df2_2['total_distance'].sum() +kpi_df2_3['total_distance'].sum()
-                total_pax = results_1['covered_demand'] + results_2['covered_demand'] + results_3['covered_demand']
+                total_pax = results_1['covered_demand']
                 CO2_efficiency =  total_CO2 / \
                     (total_pax*total_distance*1.852)
+
+                print(total_pax)
+                print(CO2_efficiency)
 
             except:
                 log.error(
@@ -633,6 +636,7 @@ def objective_function(vehicle, x=None):
     # x = [32, 11, 5] # opt
     # x = [52,32,56]
     # x = [38, 29, 60]
+    x = [15,21,60] # mono
 
     if not fixed_aircraft:
         res, res2 = objective_function0(x, fixed_parameters, computation_mode,

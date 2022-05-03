@@ -1,10 +1,17 @@
 from framework.CPACS_update.cpacsfunctions import *
 import numpy as np
+
+# import tixi3.tixi3wrapper as tixi3wrapper
+# import tigl3.tigl3wrapper as tigl3wrapper
+# from tixi3.tixi3wrapper import Tixi3Exception
+# from tigl3.tigl3wrapper import Tigl3Exception
+
+
 def plot3d_tigl(vehicle):
 
     MODULE_DIR = 'c:/Users/aarc8/Documents/github\MDOAirB_base/framework/CPACS_update'
-    cpacs_path = os.path.join(MODULE_DIR, 'ToolInput', 'baseline_in.xml')
-    cpacs_out_path = os.path.join(MODULE_DIR, 'ToolOutput', 'baseline_out.xml')
+    cpacs_path = os.path.join(MODULE_DIR, 'ToolInput', 'Aircraft_In.xml')
+    cpacs_out_path = os.path.join(MODULE_DIR, 'ToolOutput', 'Aircraft_Out.xml')
     tixi = open_tixi(cpacs_out_path)
     tigl = open_tigl(tixi)
 
@@ -16,11 +23,12 @@ def plot3d_tigl(vehicle):
     engine = vehicle['engine']
     nacelle = vehicle['nacelle']
     aircraft = vehicle['aircraft']
+    
+    print((wing['semi_span']-(wing['semi_span_kink']*wing['semi_span'])))
 
-
-    delta_x = (wing['center_chord'] - wing['tip_chord'])/4 + wing['semi_span']*np.tan((wing['sweep_c_4']*np.pi)/180)
-    delta_x_kink = (wing['root_chord'] - wing['kink_chord'])/4 + wing['semi_span_kink']*wing['semi_span']*np.tan((wing['sweep_c_4']*np.pi)/180)
-    delta_x_tip = (wing['root_chord'] - wing['tip_chord'])/4 + wing['semi_span']*np.tan((wing['sweep_c_4']*np.pi)/180)
+    delta_x_root = 0
+    delta_x_kink =  ((wing['semi_span_kink']*wing['semi_span'])-wing['root_chord_yposition'])*np.tan((wing['sweep_leading_edge']*np.pi)/180)
+    delta_x_tip = (wing['semi_span']-(wing['semi_span_kink']*wing['semi_span']))*np.tan((wing['sweep_leading_edge']*np.pi)/180)
 
     # Wing ------------------------------------
     # center chord
@@ -30,7 +38,7 @@ def plot3d_tigl(vehicle):
     zc_w = 0
     # root chord
     cr_w = wing['root_chord']
-    xr_w = wing['leading_edge_xposition']
+    xr_w = wing['leading_edge_xposition'] + delta_x_root
     yr_w = wing['root_chord_yposition']
     zr_w = 0
     # kink chord
@@ -40,7 +48,7 @@ def plot3d_tigl(vehicle):
     zk_w = 0
     # tip chord
     ct_w = wing['tip_chord']
-    xt_w = xr_w + delta_x
+    xt_w = xr_w + delta_x_kink+ delta_x_tip
     yt_w = wing['semi_span']
     zt_w = 0 + wing['semi_span']*(np.tan((wing['dihedral']*np.pi)/180))
 
@@ -80,30 +88,32 @@ def plot3d_tigl(vehicle):
     xnp = aircraft['neutral_point_xposition']
 
 
+    len_hip = vertical_tail['span']/np.cos((vertical_tail['sweep_leading_edge']*np.pi)/180)
 
 
-    # fuselage_xpath = '/cpacs/vehicles/aircraft/model/fuselages/fuselage[1]/'
+
+    fuselage_xpath = '/cpacs/vehicles/aircraft/model/fuselages/fuselage[1]/'
     
-    # # Update leading edge position
-    # tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[8]/length',fuselage['cabine_length']/4, '%g')
-    # tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[9]/length',fuselage['cabine_length']/4, '%g')
-    # tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[10]/length',fuselage['cabine_length']/4, '%g')
-    # tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[11]/length',fuselage['cabine_length']/4, '%g')
+    # Update leading edge position
+    tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[8]/length',fuselage['cabine_length']/4, '%g')
+    tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[9]/length',fuselage['cabine_length']/4, '%g')
+    tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[10]/length',fuselage['cabine_length']/4, '%g')
+    tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[11]/length',fuselage['cabine_length']/4, '%g')
 
-    # tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[12]/length',fuselage['tail_length']/2, '%g')
-    # tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[13]/length',fuselage['tail_length']/2, '%g')
+    tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[12]/length',fuselage['tail_length']/2, '%g')
+    tixi_out.updateDoubleElement(fuselage_xpath+'positionings/positioning[13]/length',fuselage['tail_length']/2, '%g')
 
-    # nominal_diameter = 2.0705*2
-    # scale_factor = fuselage['diameter']/nominal_diameter
+    nominal_diameter = 1.939*2
+    scale_factor = fuselage['diameter']/nominal_diameter
 
-    # tixi_out.updateDoubleElement(fuselage_xpath+'transformation/scaling/y',scale_factor, '%g')
-    # tixi_out.updateDoubleElement(fuselage_xpath+'transformation/scaling/z',scale_factor, '%g')
+    tixi_out.updateDoubleElement(fuselage_xpath+'transformation/scaling/y',scale_factor, '%g')
+    tixi_out.updateDoubleElement(fuselage_xpath+'transformation/scaling/z',scale_factor, '%g')
 
 
     wing_xpath = '/cpacs/vehicles/aircraft/model/wings/wing[1]/'
     
-    # Update leading edge position
     # tixi_out.updateDoubleElement(wing_xpath+'transformation/translation/x', wing['leading_edge_xposition'], '%g')
+    tixi_out.updateDoubleElement(wing_xpath+'transformation/translation/z', -fuselage['diameter']/4, '%g')
     # Update center chord 
     tixi_out.updateDoubleElement(wing_xpath+'sections/section[1]/elements/element/transformation/scaling/x', cc_w, '%g')
     tixi_out.updateDoubleElement(wing_xpath+'sections/section[1]/elements/element/transformation/scaling/y', cc_w, '%g')
@@ -146,16 +156,23 @@ def plot3d_tigl(vehicle):
     # vertical_tail_xpath = '/cpacs/vehicles/aircraft/model/wings/wing[3]/'
 
     # # Update leading edge position
-    # tixi_out.updateDoubleElement(vertical_tail_xpath+'transformation/translation/x', vertical_tail['leading_edge_xposition'], '%g')
+    # # tixi_out.updateDoubleElement(vertical_tail_xpath+'transformation/translation/x', vertical_tail['leading_edge_xposition'], '%g')
     # # Update center chord 
-    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/x', vertical_tail['center_chord'], '%g')
-    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/y', vertical_tail['center_chord'], '%g')
-    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/z', vertical_tail['center_chord'], '%g')
+    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/x', cr_v, '%g')
+    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/y', cr_v, '%g')
+    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/z', cr_v, '%g')
+    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/transformation/translation/x', xr_v, '%g')
+    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/transformation/translation/y', yr_v, '%g')
+    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/transformation/translation/z', zr_v, '%g')
+
 
     # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/x', vertical_tail['tip_chord'], '%g')
     # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/y', vertical_tail['tip_chord'], '%g')
     # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/z', vertical_tail['tip_chord'], '%g')
-    # # Update root chord 
+    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/transformation/translation/x', xt_v, '%g')
+    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/transformation/translation/y', yt_v, '%g')
+    # tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/transformation/translation/z', zt_v, '%g')
+    # Update root chord 
     # tixi_out.updateDoubleElement(vertical_tail_xpath+'positionings/positioning[2]/length',vertical_tail['span'], '%g')
     # tixi_out.updateDoubleElement(vertical_tail_xpath+'positionings/positioning[2]/sweepAngle',vertical_tail['sweep_leading_edge'], '%g')
 
@@ -164,6 +181,7 @@ def plot3d_tigl(vehicle):
     horizontal_thail_xpath = '/cpacs/vehicles/aircraft/model/wings/wing[2]/'
 
     # Update center chord 
+    # tixi_out.updateDoubleElement(horizontal_thail_xpath+'transformation/translation/x', horizontal_tail['leading_edge_xposition'], '%g')
     tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[1]/elements/element/transformation/scaling/x', cr_h, '%g')
     tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[1]/elements/element/transformation/scaling/y', cr_h, '%g')
     tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[1]/elements/element/transformation/scaling/z', cr_h, '%g')
@@ -186,7 +204,7 @@ def plot3d_tigl(vehicle):
     
 
     # # Update leading edge position
-    # tixi_out.updateDoubleElement(vertical_tail_xpath+'transformation/translation/x', vertical_tail['leading_edge_xposition'], '%g')
+    tixi_out.updateDoubleElement(vertical_tail_xpath+'transformation/translation/x', vertical_tail['leading_edge_xposition'], '%g')
     # # Update center chord 
     tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/x', cr_v, '%g')
     tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/y', cr_v, '%g')
@@ -196,7 +214,7 @@ def plot3d_tigl(vehicle):
     tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/y', ct_v, '%g')
     tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/z', ct_v, '%g')
     # Update root chord 
-    tixi_out.updateDoubleElement(vertical_tail_xpath+'positionings/positioning[2]/length',vertical_tail['span'], '%g')
+    tixi_out.updateDoubleElement(vertical_tail_xpath+'positionings/positioning[2]/length',len_hip, '%g')
     tixi_out.updateDoubleElement(vertical_tail_xpath+'positionings/positioning[2]/sweepAngle',vertical_tail['sweep_leading_edge'], '%g')
 
     tixi_out = close_tixi(tixi_out, cpacs_out_path)
@@ -213,3 +231,13 @@ def plot3d_tigl(vehicle):
     return
 
 
+# import pickle
+
+# # with open('Database/Family/40_to_100/all_dictionaries/'+str(15)+'.pkl', 'rb') as f:
+# # with open('Database/Family/101_to_160/all_dictionaries/'+str(21)+'.pkl', 'rb') as f:
+# with open('Database/Family/161_to_220/all_dictionaries/'+str(60)+'.pkl', 'rb') as f:
+#     all_info_acft1 = pickle.load(f)
+# #     all_info_acft1 = pickle.load(f)
+
+# vehicle = all_info_acft1['vehicle']
+# plot3d_tigl(vehicle)

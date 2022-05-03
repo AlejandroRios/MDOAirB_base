@@ -551,7 +551,7 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
         kpi_df2_2["aircraft_number"] =  kpi_df2_2["variable_object"].apply(lambda item: item.varValue)
         kpi_df2_2.drop(columns=["variable_object"], inplace=True)
 
-        kpi_df2_3 = pd.DataFrame.from_dict(aircrafts01, orient="index", 
+        kpi_df2_3 = pd.DataFrame.from_dict(aircrafts03, orient="index", 
                                     columns = ["variable_object"])
         kpi_df2_3.reset_index(inplace=True)
         kpi_df2_3["aircraft_number"] =  kpi_df2_3["variable_object"].apply(lambda item: item.varValue)

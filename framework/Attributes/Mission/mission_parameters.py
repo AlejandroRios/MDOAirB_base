@@ -68,6 +68,8 @@ def actual_mission_range(departure,arrival):
     flight = pd.read_csv('Database/Routes/'+ departure+'_'+arrival+'/'+sorted_altitudes[0]+'.csv', header=0, delimiter=',')
     climb_flight = flight.query('flight_phase == "CL" & alt >= 1500')
 
+    print(flight.head())
+
     chunk_size = 100
 
     # # Resizing vector of flights lat, lon and alt
@@ -81,6 +83,31 @@ def actual_mission_range(departure,arrival):
     xlon = np.arange(lon.size)
     new_xlon = np.linspace(xlon.min(), xlon.max(), chunk_size)
     lon_rz = sp.interpolate.interp1d(xlon, lon, kind='linear')(new_xlon)
+
+    plt.rc('font', family='serif')
+    plt.rc('xtick', labelsize=12)
+    plt.rc('ytick', labelsize=12)
+    plt.rc('legend',fontsize=12) # using a size in points
+    plt.rc('legend',fontsize='medium') # using a named size
+    plt.rc('axes',labelsize=12, titlesize=12) # using a size in points
+
+
+
+    fig = plt.figure(figsize=(10, 9))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.plot(flight['times'], flight['alt'],'-',label='altitude')
+    ax.set_xlabel('time [s]')
+    ax.set_ylabel('altitude [ft]')
+
+    
+    color = 'tab:red'
+    ax1 = ax.twinx()  # instantiate a second axes that shares the same x-axis
+    ax1.set_ylabel('speed', color=color)  # we already handled the x-label with ax1
+    ax1.plot(flight['times'], flight['speed'], color=color,label='speed')
+    ax1.set_ylabel('speed [ft/s]')
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    fig.legend(loc='best', ncol=1)
 
     distances_pp = []
     distances_pp_f = []
@@ -283,12 +310,14 @@ def descent_altitudes_vector(departure,arrival,max_altitude):
 # TEST
 # =============================================================================
 
-# max_altitude = 37000
+max_altitude = 42000
 
-# departure= 'ZRH'
-# arrival = 'LHR'
+departure= 'AMS'
+arrival = 'IST'
 
-# distance = actual_mission_range(departure,arrival)
+distance = actual_mission_range(departure,arrival)
+
+print(distance)
 
 
 # alt_rz, spds_rz, mach_rz, time_rz = climb_altitudes_vector(departure,arrival,max_altitude)
@@ -300,26 +329,32 @@ def descent_altitudes_vector(departure,arrival,max_altitude):
 # ynew = f(xnew)
 # fig1, ax1 = plt.subplots()
 # ax1.plot(alt_rz, mach_rz,'-x')
+# ax1.set_xlabel('altitude')
+# ax1.set_ylabel('mach')
 # ax1.legend(['data'], loc='best')
 
 
 
 # fig1, ax1 = plt.subplots()
 # ax1.plot(alt_rz, spds_rz,'-x')
+# ax1.set_xlabel('altitude')
+# ax1.set_ylabel('speed')
 # ax1.legend(['data'], loc='best')
 
 # alt_rz, spds_rz, mach_rz, time_rz = descent_altitudes_vector(departure,arrival,max_altitude)
 
-# # x = alt_rz
-# # y = mach_rz
-# # f = interpolate.interp1d(x, y)
-# # xnew = np.linspace(min(alt_rz),max(alt_rz), num=30, endpoint=True)
-# # fig2, ax2 = plt.subplots()
-# # ax2.plot(x, y, 'o', xnew, f(xnew), '-x')
-# # ax2.legend(['data', 'linear', 'cubic'], loc='best')
+# x = alt_rz
+# y = mach_rz
+# f = interpolate.interp1d(x, y)
+# xnew = np.linspace(min(alt_rz),max(alt_rz), num=30, endpoint=True)
+# fig2, ax2 = plt.subplots()
+# ax2.plot(x, y, 'o', xnew, f(xnew), '-x')
+# ax2.legend(['data', 'linear', 'cubic'], loc='best')
 
 # fig2, ax2 = plt.subplots()
 # ax2.plot(alt_rz, spds_rz,'-x')
+# ax2.set_xlabel('altitude')
+# ax2.set_ylabel('speed_2')
 # ax2.legend(['data'], loc='best')
 
-# plt.show()
+plt.show()

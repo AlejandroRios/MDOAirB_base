@@ -35,7 +35,7 @@ import networkx as nx
 # FUNCTIONS
 # =============================================================================
 fig, ax = plt.subplots()
-m = Basemap(resolution='i', projection='merc', llcrnrlat=30,
+m = Basemap(resolution='l', projection='merc', llcrnrlat=30,
             urcrnrlat=70, llcrnrlon=-15, urcrnrlon=50)
 m.drawmapboundary(fill_color='aqua')
 m.fillcontinents(color='1.0', lake_color='aqua')
@@ -86,7 +86,7 @@ names = data.APT
 
 
 x, y = m(x, y)
-m.scatter(x, y, 225, color="orange", marker="o", edgecolor="r", zorder=3)
+m.scatter(x, y, 50, color="orange", marker="o", edgecolor="r", zorder=3)
 for i in range(len(names)):
     plt.text(x[i], y[i], names[i], va="baseline", color='k',
              fontsize=12, family="monospace", weight="bold")
@@ -94,7 +94,7 @@ for i, j in arcs:
     if freq_matrix[i][j] > 0:
         x1, y1 = m(lon_coordinates[i], lat_coordinates[i])
         x2, y2 = m(lon_coordinates[j], lat_coordinates[j])
-        color_value = plt.cm.viridis(freq_matrix[i][j]/15)
+        color_value = plt.cm.viridis(freq_matrix[i][j]/10)
         m.drawgreatcircle(lon_coordinates[i], lat_coordinates[i], lon_coordinates[j],
                           lat_coordinates[j], linewidth=freq_matrix[i][j]/2, color=color_value, alpha=0.9)
 
@@ -102,8 +102,13 @@ departure_airports = ["FRA", "LHR", "CDG", "AMS",
                       "MAD", "BCN", "FCO", "DUB", "VIE", "ZRH",'ARN','DME','HEL','IST','KBP']
 arrival_airports = ["FRA", "LHR", "CDG", "AMS",
                       "MAD", "BCN", "FCO", "DUB", "VIE", "ZRH",'ARN','DME','HEL','IST','KBP']
+
+plt.rc('font', family='serif')
+plt.rc('xtick', labelsize='x-small')
+plt.rc('ytick', labelsize='x-small')
 fig1, ax1 = plt.subplots()
 im = ax1.imshow(freq_matrix)
+im.set_clim(0, 10)
 print(im)
 fig.colorbar(im,orientation="vertical", pad=0.2)
 # We want to show all ticks...
