@@ -75,18 +75,18 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
     try:
         # =============================================================================
         # Airplane sizing and checks
-        # try:
-        #     status, flags, vehicle = airplane_sizing(vehicle, x)
-        # except:
-        #     log.error(
-        #         ">>>>>>>>>> Error at <<<<<<<<<<<< airplane_sizing", exc_info=True)
+        try:
+            status, flags, vehicle = airplane_sizing(vehicle, x)
+        except:
+            log.error(
+                ">>>>>>>>>> Error at <<<<<<<<<<<< airplane_sizing", exc_info=True)
 
-        with open('Database/Family/161_to_220/all_dictionaries/'+str(5)+'.pkl', 'rb') as f:
-            all_info_acft3 = pickle.load(f)
+        # with open('Database/Family/161_to_220/all_dictionaries/'+str(5)+'.pkl', 'rb') as f:
+        #     all_info_acft3 = pickle.load(f)
 
-        vehicle= all_info_acft3['vehicle']
-        status = 0
-        flags = [0,0,0,0,0]
+        # vehicle= all_info_acft3['vehicle']
+        # status = 0
+        # flags = [0,0,0,0,0]
         
         # status = 0
         results = vehicle['results']

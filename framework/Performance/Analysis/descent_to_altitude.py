@@ -69,7 +69,8 @@ def rate_of_descent_calculation(thrust_to_weight, h, delta_ISA, mach, mass, vehi
     knots_to_meters_second = 0.514444
     ft_to_m = 0.3048
     phase = "descent"
-
+    if mach>0.85:
+        print('mach excess!!!!!!!!!!')
     V_tas = mach_to_V_tas(mach, h, delta_ISA)
 
     _, _, _, _, _, rho_ISA, _, _ = atmosphere_ISA_deviation(h, delta_ISA)
@@ -77,6 +78,7 @@ def rate_of_descent_calculation(thrust_to_weight, h, delta_ISA, mach, mass, vehi
     CL = (2*mass*GRAVITY) / \
         (rho_ISA*((V_tas*knots_to_meters_second)**2)*wing_surface)
     CL = float(CL)
+
 
     # print('CL',CL)
 

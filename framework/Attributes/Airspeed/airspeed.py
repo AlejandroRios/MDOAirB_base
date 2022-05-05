@@ -130,6 +130,21 @@ def V_cas_to_mach(V_cas, h, delta_ISA):
     aux2 = ((1/delta)*aux1 + 1)**((1.4-1)/1.4)
     return np.sqrt(5 * (aux2-1))
 
+def V_tas_to_mach(V_tas, h, delta_ISA):
+    """
+    Description:
+        -  Converts True Air Speed to Calibrated Air Speed
+    Inputs:
+        - V_tas - true airspeed [kt]
+        - h - altitude [ft]
+        - delta_ISA - ISA temperature deviation [deg C]
+    Outputs:
+        - Calibrated airspeed [kt]
+    """
+    V_cas = V_tas_to_V_cas(V_tas,h, delta_ISA)
+    mach = V_cas_to_mach(V_cas, h, delta_ISA)
+
+    return mach
 
 def crossover_altitude(mach, V_cas, delta_ISA):
     """

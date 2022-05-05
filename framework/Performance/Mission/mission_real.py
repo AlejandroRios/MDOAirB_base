@@ -35,10 +35,10 @@ from framework.Attributes.Mission.mission_parameters import actual_mission_range
 # from framework.baseline_aircraft_parameters import *
 from framework.Economics.crew_salary import crew_salary
 from framework.Economics.direct_operational_cost import direct_operational_cost
-from framework.Performance.Analysis.climb_integration02 import climb_integration
+from framework.Performance.Analysis.climb_integration import climb_integration_datadriven
 from framework.Performance.Analysis.cruise_performance import *
-from framework.Performance.Analysis.descent_integration02 import \
-    descent_integration
+from framework.Performance.Analysis.descent_integration import \
+    descent_integration_datadriven
 from framework.Performance.Analysis.maximum_range_cruise import \
     maximum_range_mach
 from framework.Performance.Analysis.mission_altitude import (maximum_altitude,
@@ -78,14 +78,14 @@ def mission(vehicle, airport_dep, takeoff_runway, airport_des, landing_runway, r
         - heading -[deg]
         - vehicle - dictionary containing aircraft parameters
     Outputs:
-        - fuel_mass - [kg]
-        - complete_mission_flight_time [min]
         - DOC - direct operational cost [US$]
         - mach - mach number
         - passenger_capacity - passenger capacity
         - SAR - cruise average specific air range [nm/kg]
         - mission_range - [nm]
     """
+    # departure = 'LHR'
+    # arrival = 'BCN'
 
     start_time = datetime.now()
     # log.info('---- Start DOC mission function ----')
@@ -261,7 +261,7 @@ def mission(vehicle, airport_dep, takeoff_runway, airport_des, landing_runway, r
 
             # Initial climb fuel estimation
             initial_altitude = initial_altitude + 1500
-            _, _, total_burned_fuel0, _ = climb_integration(
+            _, _, total_burned_fuel0, _ = climb_integration_datadriven(
                 max_takeoff_mass,
                 mach_climb,
                 climb_V_cas,
@@ -285,7 +285,7 @@ def mission(vehicle, airport_dep, takeoff_runway, airport_des, landing_runway, r
             mach_descent = operations['mach_cruise']
 
             # Recalculate climb with new mach
-            final_distance, total_climb_time, total_burned_fuel, final_altitude = climb_integration(
+            final_distance, total_climb_time, total_burned_fuel, final_altitude = climb_integration_datadriven(
                 max_takeoff_mass,
                 mach_climb,
                 climb_V_cas,
@@ -298,6 +298,8 @@ def mission(vehicle, airport_dep, takeoff_runway, airport_des, landing_runway, r
             )
 
             delta = total_burned_fuel0 - total_burned_fuel
+
+            # print('delta fuel loop1:',delta  )
 
             if delta < tolerance:
                 out = 1
@@ -353,7 +355,7 @@ def mission(vehicle, airport_dep, takeoff_runway, airport_des, landing_runway, r
             if type_of_descent == 1:
 
                 # Recalculate climb with new mach
-                final_distance, total_descent_time, total_burned_fuel, final_altitude = descent_integration(
+                final_distance, total_descent_time, total_burned_fuel, final_altitude = descent_integration_datadriven(
                     final_cruise_mass,
                     mach_descent,
                     descent_V_cas,
@@ -367,6 +369,8 @@ def mission(vehicle, airport_dep, takeoff_runway, airport_des, landing_runway, r
                 distance_descent = final_distance*feet_to_nautical_miles
                 distance_mission = distance_climb + distance_cruise + distance_descent
                 distance_error = np.abs(mission_range -distance_mission)
+
+                # print('distance erro:',distance_error)
 
                 iteration = iteration + 1
 

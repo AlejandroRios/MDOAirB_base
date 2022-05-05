@@ -229,10 +229,17 @@ def descent_integration_datadriven(mass, mach_descent, descent_V_cas, delta_ISA,
         mach_descent = (mach_vec[i+1] + mach_vec[i])/2
         if mach_descent <= 0.3:
             mach_descent = 0.78
+        elif mach_descent > 0.85:
+            mach_descent = 0.82
 
 
         initial_block_altitude = altitude_vec[i]
         final_block_altitude = altitude_vec[i+1]
+
+
+        # print('h_ini',initial_block_altitude)
+        # print('h_fin',final_block_altitude)
+
 
         distance_vec.append(initial_block_distance)
         mass_vec.append(initial_block_mass)
@@ -278,7 +285,7 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
         - final_block_mass
         - final_block_time
     """
-    Tsim = initial_block_time + 40
+    Tsim = initial_block_time + 10
     stop_condition.terminal = True
 
     stop_criteria = final_block_altitude

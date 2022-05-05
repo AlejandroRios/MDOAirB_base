@@ -855,7 +855,7 @@
 				"landing_runway": "04L"
 			},
 			"IST": {
-				"demand": 96,
+				"demand": 0,
 				"takeoff_runway": "14R",
 				"landing_runway": "35R"
 			},
@@ -994,7 +994,7 @@
 				"landing_runway": "01L"
 			},
 			"DME": {
-				"demand": 96,
+				"demand": 0,
 				"takeoff_runway": "17L",
 				"landing_runway": "32L"
 			},

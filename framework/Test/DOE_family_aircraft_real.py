@@ -12,8 +12,8 @@ TODO's:
 
 | Authors: Alejandro Rios
            Lionel Guerin
-           
-  
+
+
 | Email: aarc.88@gmail.com
 | Creation: January 2021
 | Last modification: July 2021
@@ -21,35 +21,44 @@ TODO's:
 | Aeronautical Institute of Technology - Airbus Brazil
 
 """
+import copy
+import csv
+import getopt
+import json
+import os
+import pickle
+import sys
+from datetime import datetime
+from multiprocessing import Pool
+from random import randrange
+
+import haversine
+import jsonschema
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from framework.Database.Aircrafts.baseline_aircraft_parameters import \
+    initialize_aircraft_parameters
+from framework.Database.Airports.airports_database import AIRPORTS_DATABASE
+from framework.Economics.revenue import revenue
+from framework.Network.network_optimization import network_optimization
+from framework.Performance.Mission.mission_real import mission
+from framework.Sizing.airplane_sizing_check import airplane_sizing
+from framework.utilities.logger import get_logger
+from framework.utilities.output import (write_bad_results, write_kml_results,
+                                        write_newtork_results,
+                                        write_optimal_results,
+                                        write_unfeasible_results)
+from haversine import Unit, haversine
+from jsonschema import validate
+from pymoo.factory import get_sampling
+from pymoo.interface import sample
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
-import copy
-from framework.Performance.Mission.mission import mission
-from framework.Network.network_optimization import network_optimization
-from framework.Economics.revenue import revenue
-from framework.Sizing.airplane_sizing_check import airplane_sizing
-import pandas as pd
-import sys
-import pickle
-import numpy as np
-import csv
-from datetime import datetime
-from random import randrange
-from framework.utilities.logger import get_logger
-from framework.utilities.output import write_optimal_results, write_kml_results, write_bad_results, write_newtork_results, write_unfeasible_results
-
-import getopt
-import haversine
-import json
-import jsonschema
-import os
-
-from framework.Database.Aircrafts.baseline_aircraft_parameters import initialize_aircraft_parameters
-from framework.Database.Airports.airports_database import AIRPORTS_DATABASE
-
-from haversine import haversine, Unit
-from jsonschema import validate
+from aux_tools import corrdot
 
 # =============================================================================
 # CLASSES
@@ -61,7 +70,16 @@ from jsonschema import validate
 log = get_logger(__file__.split('.')[0])
 
 
-def objective_function0(x, original_vehicle, computation_mode, route_computation_mode, airports, distances, demands):
+def objective_function(args):
+
+    x = args[0]
+    original_vehicle= args[1]
+    computation_mode= args[2]
+    route_computation_mode= args[3]
+    airports= args[4]
+    distances= args[5]
+    demands = args[6]
+    index= args[7]
 
     log.info('==== Start network profit module ====')
     start_time = datetime.now()
@@ -70,8 +88,6 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
     vehicle = copy.deepcopy(original_vehicle)
     # with open('Database/DOC/Vehicle.pkl', 'rb') as f:
     #     vehicle = pickle.load(f)
-
-
 
     # Try running profit calculation. If error appears during run profit = 0
     try:
@@ -82,14 +98,6 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         except:
             log.error(
                 ">>>>>>>>>> Error at <<<<<<<<<<<< airplane_sizing", exc_info=True)
-
-        # with open('Database/Family/161_to_220/all_dictionaries/'+str(5)+'.pkl', 'rb') as f:
-        #     all_info_acft3 = pickle.load(f)
-
-        # vehicle= all_info_acft3['vehicle']
-        # status = 0
-        # flags = [0,0,0,0,0]
-        
         # status = 0
         results = vehicle['results']
         performance = vehicle['performance']
@@ -167,15 +175,14 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
                             mission_range = distances[airports_keys[i]
                                                       ][airports_keys[k]]
                             fuel_mass[airports_keys[i]][airports_keys[k]], total_mission_flight_time[airports_keys[i]][airports_keys[k]], DOC, mach[airports_keys[i]][airports_keys[k]], passenger_capacity[airports_keys[i]
-                                                                                                                                                                                                            ][airports_keys[k]], SAR[airports_keys[i]][airports_keys[k]] = mission(vehicle, airport_departure, takeoff_runway, airport_destination, landing_runway, mission_range)
+                                                                                                                                                                                                            ][airports_keys[k]], SAR[airports_keys[i]][airports_keys[k]] = mission(vehicle, airport_departure, takeoff_runway, airport_destination, landing_runway, mission_range,airports_keys[i],airports_keys[k])
                             DOC_nd[airports_keys[i]][airports_keys[k]] = DOC
                             DOC_ik[airports_keys[i]][airports_keys[k]] = int(
                                 DOC*mission_range)
 
                         elif (i != k) and (demands[airports_keys[i]][airports_keys[k]]['demand'] > 0) and computation_mode == 0:
                             DOC_ik[airports_keys[i]][airports_keys[k]] = 1e10
-                        
-                        print(DOC_ik)
+
                         city_matrix_size = city_matrix_size - 1
                         print(
                             'INFO >>>> city pairs remaining to finish DOC matrix fill: ', city_matrix_size)
@@ -196,6 +203,8 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
             #     pickle.dump(vehicle, f, pickle.HIGHEST_PROTOCOL)
 
             log.info('Aircraft DOC matrix: {}'.format(DOC_ik))
+            # =============================================================================
+
             # =============================================================================
             log.info('---- Start Network Optimization ----')
             # Network optimization that maximizes the network profit
@@ -300,7 +309,7 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
                     ">>>>>>>>>> Error at <<<<<<<<<<<< writting dataframes", exc_info=True)
 
             try:
-                write_optimal_results(x,list(airports.keys(
+                write_optimal_results(args[0],list(airports.keys(
                 )), distances, demands, profit, DOC_ik, vehicle, kpi_df2, airplanes_ik)
             except:
                 log.error(
@@ -317,6 +326,13 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
             except:
                 log.error(
                     ">>>>>>>>>> Error at <<<<<<<<<<<< write_newtork_results", exc_info=True)
+
+            print("Save dictionary results:")
+            all_in_one = {'airports': airports, 'distances': distances, 'demands': demands, 'DOC_ik': DOC_ik, 'DOC_nd': DOC_nd,
+                'fuel_mass': fuel_mass, 'total_mission_flight_time': total_mission_flight_time , 'mach': mach, 'passenger_capacity':passenger_capacity, 'SAR':SAR,  'vehicle': vehicle}
+
+            with open('Database/Family/161_to_220/all_dictionaries/'+str(index)+'.pkl', 'wb') as f:
+                pickle.dump(all_in_one, f)
 
         else:
             profit = 0
@@ -341,90 +357,15 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
 
     else:
         print("Final individual results is:", profit)
+
     finally:
         print("Executing finally clause")
     end_time = datetime.now()
     log.info('Network profit excecution time: {}'.format(end_time - start_time))
     log.info('==== End network profit module ====')
 
-    return profit,
+    return profit
 
-# def objective_function(x, original_vehicle, computation_mode, route_computation_mode, airports, distances, demands):
-# 	print("--------------------------------------------------------------------")
-# 	print(x)
-# 	print("--------------------------------------------------------------------")
-# 	print(original_vehicle)
-# 	print("--------------------------------------------------------------------")
-# 	print(computation_mode)
-# 	print("--------------------------------------------------------------------")
-# 	print(route_computation_mode)
-# 	print("--------------------------------------------------------------------")
-# 	print(airports)
-# 	print("--------------------------------------------------------------------")
-# 	print(distances)
-# 	print("--------------------------------------------------------------------")
-# 	print(demands)
-# 	print("--------------------------------------------------------------------")
-# 	return randrange(0,10000),
-
-# =============================================================================
-# TEST
-# =============================================================================
-# global NN_induced, NN_wave, NN_cd0, NN_CL, num_Alejandro
-# num_Alejandro = 100000000000000000000000
-# global NN_induced, NN_wave, NN_cd0, NN_CL
-
-
-# from framework.Database.Aircrafts.baseline_aircraft_parameters import initialize_aircraft_parameters
-
-# # # # # x = [130, 8.204561481970153, 0.3229876327660606, 31, -4, 0.3896951781733875, 4.826332970409506, 1.0650795018081771, 27, 1485, 1.6, 101, 4, 2185, 41000, 0.78, 1, 1, 1, 1]
-# # # # # # x = [73, 8.210260198894748, 0.34131954092766925, 28, -5, 0.32042307969643524, 5.000456116634125, 1.337333818504011, 27, 1442, 1.6, 106, 6, 1979, 41000, 0.78, 1, 1, 1, 1]
-# # # # # # x = [106, 9.208279852593964, 0.4714790814543369, 16, -3, 0.34987438995033143, 6.420120321538892, 1.7349297171205607, 29, 1461, 1.6, 74, 6, 1079, 41000, 0.78, 1, 1, 1, 1]
-
-# # # # print(result)
-# # # # x =[0, 77, 35, 19, -3, 33, 63, 17, 29, 1396, 25, 120, 6, 2280, 41000, 78]
-
-# # # # result = objective_function(x, vehicle)
-
-# # # # x = [103, 81, 40, 16, -4, 34, 59, 14, 29, 1370, 18, 114, 6, 1118]
-
-
-# # # # x = [9.700e+01,9.900e+01,4.400e+01,1.800e+01,-2.000e+00,3.200e+01, 4.800e+01,1.400e+01,3.000e+01,1.462e+03,1.700e+01,6.000e+01, 6.000e+00,1.525e+03]
-# # # # # x = [7.300e+01,8.600e+01,2.900e+01,1.600e+01,-5.000e+00,3.400e+01, 4.600e+01,2.000e+01,2.700e+01,1.372e+03,1.800e+01,1.160e+02, 4.000e+00,2.425e+03]
-# # # # # x = [1.210e+02,9.600e+01,4.100e+01,2.600e+01,-3.000e+00,3.600e+01, 6.200e+01,1.800e+01,2.900e+01,1.478e+03,1.800e+01,6.800e+01, 5.000e+00,1.975e+03]
-# # # # # x = [7.900e+01,9.400e+01,3.100e+01,2.000e+01,-4.000e+00,3.700e+01, 5.600e+01,1.000e+01,2.900e+01,1.448e+03,1.600e+01,8.200e+01, 5.000e+00,1.825e+03]
-# # # # # x = [1.270e+02,7.600e+01,3.600e+01,2.800e+01,-4.000e+00,3.800e+01, 6.000e+01,1.800e+01,3.000e+01,1.432e+03,1.700e+01,8.800e+01, 5.000e+00,1.225e+03]
-# # # # # x = [1.150e+02,8.400e+01,4.900e+01,3.200e+01,-2.000e+00,3.600e+01, 5.000e+01,1.400e+01,2.800e+01,1.492e+03,1.900e+01,1.100e+02, 4.000e+00,1.375e+03]
-# # # # # x = [1.090e+02,8.100e+01,2.600e+01,2.400e+01,-5.000e+00,4.000e+01, 5.200e+01,1.600e+01,2.700e+01,1.402e+03,1.400e+01,7.400e+01, 4.000e+00,2.125e+03]
-# # # # # x = [9.100e+01,8.900e+01,3.400e+01,3.000e+01,-3.000e+00,3.900e+01, 6.400e+01,1.200e+01,2.800e+01,1.358e+03,2.000e+01,9.600e+01, 5.000e+00,1.675e+03]
-# # # # # x = [8.500e+01,9.100e+01,3.900e+01,3.400e+01,-3.000e+00,3.300e+01, 5.800e+01,1.200e+01,2.800e+01,1.418e+03,1.600e+01,1.020e+02, 6.000e+00,2.275e+03]
-# # # # # x = [1.030e+02,7.900e+01,4.600e+01,2.200e+01,-4.000e+00,3.500e+01, 5.400e+01,1.600e+01,2.900e+01,1.388e+03,1.500e+01,5.400e+01, 6.000e+00,1.075e+03]
-
-# # # # x = [1.150e+02,8.400e+01,4.900e+01,3.200e+01,-2.000e+00,3.600e+01, 5.000e+01,1.400e+01,2.800e+01,1.492e+03,1.900e+01,1.100e+02, 4.000e+00,1.375e+03,41000, 78, 1, 1, 1, 1] # Prifit ok
-# # # # x =  [127, 82, 46, 22, -2, 44, 48, 21, 27, 1358, 22,  92, 5, 2875, 41200, 82, 1, 1, 1, 1]
-# # # # x =  [115, 84, 49, 32, -2, 36, 50, 14, 28, 1492, 19, 110, 4, 1375, 41000, 78, 1, 1, 1, 1] #good one
-# # # x =  [72, 86, 28, 26, -5, 34, 50, 13, 28, 1450, 14, 70, 4, 1600, 41000, 78, 1, 1, 1, 1] # Baseline
-
-# x =  [130, 91, 38, 29, -4.5, 33, 62, 17, 30, 1480, 18, 144, 6, 1900, 41000, 78, 1, 1, 1, 1] # 144 seat
-# # # # x =  [121, 80, 40, 18, -2, 40, 52, 13, 28, 1358, 15, 108, 4, 1875, 41000, 82, 1, 1, 1, 1] # Baseline2
-# # # # # # # x = [int(x) for x in x]
-# # # # # # # print(x)
-
-# # x =  [121, 114, 27, 25, -4.0, 35, 50, 14, 29, 1430, 23, 142, 6, 1171, 41000, 78, 1, 1, 1, 1] # Optim_Jose
-
-# # # # # # x = [76, 118, 46, 23, -3, 33, 55, 19, 30, 1357, 18, 86, 6, 2412, 42260, 79, 1, 1, 1, 1]
-# # # # # # x = [91, 108, 50, 29, -3, 34, 52, 12, 27, 1366, 19, 204, 4, 1812, 39260, 80, 1, 1, 1, 1]
-# # # x = [110, 82, 34, 25, -5, 38, 52, 11, 30, 1462, 19, 92, 4, 1375, 39600, 80, 1, 1, 1, 1]
-# # # # # vehicle = initialize_aircraft_parameters()
-
-# from framework.Database.Aircrafts.baseline_aircraft_parameters import initialize_aircraft_parameters
-
-# x =[98,78,31,16,-4,40,61,20,28,1418,17,98,4,2005,41000,78,1,1,1,1]
-# vehicle = initialize_aircraft_parameters()
-
-# result = objective_function(x, vehicle, [])
-
-# print(result)
 
 CUSTOM_INPUTS_SCHEMA = 'Database/JsonSchema/Custom_Inputs.schema.json'
 
@@ -599,49 +540,11 @@ def readArgv(argv):
             customInputsfile = arg
     return customInputsfile
 
-def objective_function(vehicle,x=None):
 
-    argv = ['--file', 'Database/JsonSchema/00_Demands_Only.json']
-
-    fixed_parameters = {}
-    fixed_aircraft = {}
-    customInputsfile = readArgv(argv)
-    if not customInputsfile or not os.path.isfile(customInputsfile):
-        print(f"Custom file {customInputsfile} does not exist")
-        sys.exit(1)
-
-    try:
-        computation_mode, route_computation_mode, airports, distances, demands, _, fixed_parameters, fixed_aircraft = read_custom_inputs(
-            CUSTOM_INPUTS_SCHEMA, customInputsfile)
-    except Exception as err:
-        print(
-            f"Exception ocurred while playing custom inputs file {customInputsfile}")
-        print(f"Error: {err}")
-        sys.exit(1)
-
-    # x = [121, 114, 27, 25, -4.0, 35, 50, 14, 29, 1430, 23, 142, 6, 1171, 41000, 78, 1, 1, 1, 1]
-    # x = [1.04013290e+02,  8.71272735e+01,  3.42639119e+01,  2.12550036e+01,
-    #    -3.42824373e+00,  4.12149389e+01,  4.98606638e+01,  1.47169661e+01,
-    #     2.87241618e+01,  1.36584947e+03,  2.09763441e+01,  1.61607474e+02,
-    #     5.55661531e+00,  1.27054142e+03,  4.10000000e+04,  7.80000000e+01,
-    #                1,            1,             1,            1]
-    #    0      1   2   3     4     5    6   7  8     9   10   11  12  13    14    15  16 17 18 19
-    # x = [130,  91, 38, 29,  -4.5,   33, 62, 17, 30,
-    #      1480, 18, 144, 6, 3000, 0]
-    # # x = [130, 100, 30, 25, -2.25, 38.5, 60, 20, 27, 1350, 15, 250, 6, 3000, 37000, 78, 1, 1, 1, 1] # Sylvain
-
-    # distances = {'FRA': {'FRA': 0, 'LHR': 355, 'CDG': 243, 'AMS': 198, 'MAD': 768, 'BCN': 591, 'FCO': 517, 'DUB': 589, 'VIE': 336, 'ZRH': 154}, 'LHR': {'FRA': 355, 'LHR': 0, 'CDG': 188, 'AMS': 200, 'MAD': 672, 'BCN': 620, 'FCO': 781, 'DUB': 243, 'VIE': 690, 'ZRH': 427}, 'CDG': {'FRA': 243, 'LHR': 188, 'CDG': 0, 'AMS': 215, 'MAD': 574, 'BCN': 463, 'FCO': 595, 'DUB': 425, 'VIE': 561, 'ZRH': 258}, 'AMS': {'FRA': 198, 'LHR': 200, 'CDG': 215, 'AMS': 0, 'MAD': 788, 'BCN': 670, 'FCO': 700, 'DUB': 406, 'VIE': 519, 'ZRH': 326}, 'MAD': {'FRA': 768, 'LHR': 672, 'CDG': 574, 'AMS': 788, 'MAD': 0, 'BCN': 261, 'FCO': 720, 'DUB': 784, 'VIE': 977, 'ZRH': 670}, 'BCN': {
-    #     'FRA': 591, 'LHR': 620, 'CDG': 463, 'AMS': 670, 'MAD': 261, 'BCN': 0, 'FCO': 459, 'DUB': 802, 'VIE': 741, 'ZRH': 463}, 'FCO': {'FRA': 517, 'LHR': 781, 'CDG': 595, 'AMS': 700, 'MAD': 720, 'BCN': 459, 'FCO': 0, 'DUB': 1020, 'VIE': 421, 'ZRH': 375}, 'DUB': {'FRA': 589, 'LHR': 243, 'CDG': 425, 'AMS': 406, 'MAD': 784, 'BCN': 802, 'FCO': 1020, 'DUB': 0, 'VIE': 922, 'ZRH': 670}, 'VIE': {'FRA': 336, 'LHR': 690, 'CDG': 561, 'AMS': 519, 'MAD': 977, 'BCN': 741, 'FCO': 421, 'DUB': 922, 'VIE': 0, 'ZRH': 327}, 'ZRH': {'FRA': 154, 'LHR': 427, 'CDG': 258, 'AMS': 326, 'MAD': 670, 'BCN': 463, 'FCO': 375, 'DUB': 670, 'VIE': 327, 'ZRH': 0}}
-
-    if not fixed_aircraft:
-        objective_function0(x, fixed_parameters, computation_mode,
-                           route_computation_mode, airports, distances, demands)
-
-    return 0
+# IMPORTS
 
 
 def main(argv):
-
     fixed_parameters = {}
     fixed_aircraft = {}
     customInputsfile = readArgv(argv)
@@ -652,62 +555,141 @@ def main(argv):
     try:
         computation_mode, route_computation_mode, airports, distances, demands, _, fixed_parameters, fixed_aircraft = read_custom_inputs(
             CUSTOM_INPUTS_SCHEMA, customInputsfile)
+        n_inputs = 10
+
+        # Lower and upeer bounds of each input variable
+        #     0   | 1   | 2   |  3     |   4    |   5      | 6    | 7        |  8     |   9    |
+        #    Areaw| ARw | TRw | Sweepw | Twistw | b/2kinkw | pax  | seat abr | range  | engine |
+        # lb = [72,    75,   25,     0,      -5,       32,     40,       4,       1000,    0]
+        # ub = [130,  120,  50,     30,       0 ,       45,     100,       6,       3500,    50]
+
+        # lb = [40,    70,   20,     0,      -5,        30,     40,        3,       950,     0]
+        # ub = [100,  120,   50,     25,       0 ,       45,     100,       6,       1955,    60]
+
+        # lb = [70,    70,   20,     15,      -5,        30,     101,       4,       1300,     0]
+        # ub = [130,  120,   50,     25,       0 ,       45,     160,       6,       3200,    44]
+
+        # lb = [90,    70,   20,     20,      -5,        30,     161,       4,       1500,     0]
+        # ub = [290,  120,   50,     35,       0 ,       45,     220,       6,       3200,    44]
+
+
+
+
+        # Desired number of samples
+        n_samples = 200
+
+        # Sampling type
+        # sampling_type = 'real_random'
+        # sampling_type = 'int_lhs'
+        sampling_type = 'real_lhs'
+
+        # Plot type (0-simple, 1-complete)
+        plot_type = 1
+        # =========================================
+
+        # EXECUTION
+
+        # Set random seed to make results repeatable
+        np.random.seed(321)
+
+        # Initialize sampler
+        sampling = get_sampling(sampling_type)
+
+        # Draw samples
+        X = sample(sampling, n_samples, n_inputs)
+
+        vehicle = initialize_aircraft_parameters()
+
+        # Samples are originally between 0 and 1,
+        # so we need to scale them to the desired interval
+        for ii in range(n_inputs):
+            X[:, ii] = lb[ii] + (ub[ii] - lb[ii])*X[:, ii]
+
+        # Execute all cases and store outputs
+        y1_samples = []
+        # y2_samples = []
+        index = 0
+
+        input_array = []
+        for ii in range(n_samples):
+
+            # Evaluate sample
+            # (y1)= objective_function(vehicle,X[ii,:])
+            # y1 = objective_function(
+            #     X[ii, :], fixed_parameters, computation_mode, route_computation_mode, airports, distances, demands,index)
+            # y1_samples.append(float(y1))
+
+            input_array.append([X[ii, :], fixed_parameters, computation_mode, route_computation_mode, airports, distances, demands,index])
+
+            index = index+1
+
+
+        # input_array = zip(X[ii, :], fixed_parameters, computation_mode, route_computation_mode, airports, distances, demands,range(n_samples ))
+
+        with Pool(14) as p:
+            y1 = p.map(objective_function,input_array)
+            y1_samples = float(y1)
+
+
+        # y2_samples.append(y2)
+        # Create a pandas dataframe with all the information
+        df = pd.DataFrame({'Sw': X[:, 0],
+                           'ARw': X[:, 1],
+                           'TRw': X[:, 2],
+                           'Sweepw': X[:, 3],
+                           'Twistw': X[:, 4],
+                           'kinkw': X[:, 5],
+                           'pax': X[:, 6],
+                           'seatabr': X[:, 7],
+                           'range': X[:, 8],
+                           'engine': X[:, 9],
+                           'profit': y1_samples})
+        # Plot the correlation matrix
+
+        df.to_pickle('doe.pkl')
+        sns.set(style='white', font_scale=1.4)
+
+        if plot_type == 0:
+        
+            # Simple plot
+            ax = sns.pairplot(df,corner=True)
+        
+        elif plot_type == 1:
+        
+        
+            # Complete plot
+            # based on: https://stackoverflow.com/questions/48139899/correlation-matrix-plot-with-coefficients-on-one-side-scatterplots-on-another
+            ax = sns.PairGrid(df, aspect=1.4, diag_sharey=False)
+            ax.map_lower(sns.regplot, lowess=True, line_kws={'color': 'black'})
+            ax.map_diag(sns.histplot)
+            ax.map_upper(corrdot)
+
+        for ax in ax.axes[:,0]:
+            ax.get_yaxis().set_label_coords(-0.22,0.5)
+
+        # Plot window
+        plt.tight_layout()
+        plt.show()
+        
+        plt.savefig('doe.pdf', dpi=None, facecolor='w', edgecolor='w',
+        orientation='portrait', papertype=None, format='pdf',
+        transparent=False, bbox_inches=None, pad_inches=0.1,
+        frameon=None, metadata=None)
     except Exception as err:
         print(
             f"Exception ocurred while playing custom inputs file {customInputsfile}")
         print(f"Error: {err}")
         sys.exit(1)
 
-    # x = [121, 114, 27, 25, -4.0, 35, 50, 14, 29, 1430, 23, 142, 6, 1171, 41000, 78, 1, 1, 1, 1]
-    # x = [1.04013290e+02,  8.71272735e+01,  3.42639119e+01,  2.12550036e+01,
-    #    -3.42824373e+00,  4.12149389e+01,  4.98606638e+01,  1.47169661e+01,
-    #     2.87241618e+01,  1.36584947e+03,  2.09763441e+01,  1.61607474e+02,
-    #     5.55661531e+00,  1.27054142e+03,  4.10000000e+04,  7.80000000e+01,
-    #                1,            1,             1,            1]
-    #    0      1   2   3     4     5    6   7  8     9   10   11  12  13    14    15  16 17 18 19
-
-        #     0   | 1   | 2   |  3     |   4    |   5      | 6    | 7        |  8     |   9    |
-        #    Areaw| ARw | TRw | Sweepw | Twistw | b/2kinkw | pax  | seat abr | range  | engine |
-    # x = [90,    70,   20,     20,      -5,        30,     161,       4,       1500,     45]
-
-    x = [90,    110,   27,     15,      -4,        40,     40,       3,       2000,     45]
-    # # x = [130, 100, 30, 25, -2.25, 38.5, 250, 6, 3000,44] # Sylvain
-
     # distances = {'FRA': {'FRA': 0, 'LHR': 355, 'CDG': 243, 'AMS': 198, 'MAD': 768, 'BCN': 591, 'FCO': 517, 'DUB': 589, 'VIE': 336, 'ZRH': 154}, 'LHR': {'FRA': 355, 'LHR': 0, 'CDG': 188, 'AMS': 200, 'MAD': 672, 'BCN': 620, 'FCO': 781, 'DUB': 243, 'VIE': 690, 'ZRH': 427}, 'CDG': {'FRA': 243, 'LHR': 188, 'CDG': 0, 'AMS': 215, 'MAD': 574, 'BCN': 463, 'FCO': 595, 'DUB': 425, 'VIE': 561, 'ZRH': 258}, 'AMS': {'FRA': 198, 'LHR': 200, 'CDG': 215, 'AMS': 0, 'MAD': 788, 'BCN': 670, 'FCO': 700, 'DUB': 406, 'VIE': 519, 'ZRH': 326}, 'MAD': {'FRA': 768, 'LHR': 672, 'CDG': 574, 'AMS': 788, 'MAD': 0, 'BCN': 261, 'FCO': 720, 'DUB': 784, 'VIE': 977, 'ZRH': 670}, 'BCN': {
     #     'FRA': 591, 'LHR': 620, 'CDG': 463, 'AMS': 670, 'MAD': 261, 'BCN': 0, 'FCO': 459, 'DUB': 802, 'VIE': 741, 'ZRH': 463}, 'FCO': {'FRA': 517, 'LHR': 781, 'CDG': 595, 'AMS': 700, 'MAD': 720, 'BCN': 459, 'FCO': 0, 'DUB': 1020, 'VIE': 421, 'ZRH': 375}, 'DUB': {'FRA': 589, 'LHR': 243, 'CDG': 425, 'AMS': 406, 'MAD': 784, 'BCN': 802, 'FCO': 1020, 'DUB': 0, 'VIE': 922, 'ZRH': 670}, 'VIE': {'FRA': 336, 'LHR': 690, 'CDG': 561, 'AMS': 519, 'MAD': 977, 'BCN': 741, 'FCO': 421, 'DUB': 922, 'VIE': 0, 'ZRH': 327}, 'ZRH': {'FRA': 154, 'LHR': 427, 'CDG': 258, 'AMS': 326, 'MAD': 670, 'BCN': 463, 'FCO': 375, 'DUB': 670, 'VIE': 327, 'ZRH': 0}}
 
-    if not fixed_aircraft:
-        objective_function0(x, fixed_parameters, computation_mode,
-                           route_computation_mode, airports, distances, demands)
+    # if not fixed_aircraft:
+    #     objective_function(x, fixed_parameters, computation_mode,
+    #                        route_computation_mode, airports, distances, demands)
 
 
 if __name__ == "__main__":
     main(sys.argv[1:])
 
 
-# # # x = [9.700e+01,9.900e+01,4.400e+01,1.800e+01,-2.000e+00,3.200e+01, 4.800e+01,1.400e+01,3.000e+01,1.462e+03,1.700e+01,6.000e+01, 6.000e+00,1.525e+03]
-# # # # x = [7.300e+01,8.600e+01,2.900e+01,1.600e+01,-5.000e+00,3.400e+01, 4.600e+01,2.000e+01,2.700e+01,1.372e+03,1.800e+01,1.160e+02, 4.000e+00,2.425e+03]
-# # # # x = [1.210e+02,9.600e+01,4.100e+01,2.600e+01,-3.000e+00,3.600e+01, 6.200e+01,1.800e+01,2.900e+01,1.478e+03,1.800e+01,6.800e+01, 5.000e+00,1.975e+03]
-# # # # x = [7.900e+01,9.400e+01,3.100e+01,2.000e+01,-4.000e+00,3.700e+01, 5.600e+01,1.000e+01,2.900e+01,1.448e+03,1.600e+01,8.200e+01, 5.000e+00,1.825e+03]
-# # # # x = [1.270e+02,7.600e+01,3.600e+01,2.800e+01,-4.000e+00,3.800e+01, 6.000e+01,1.800e+01,3.000e+01,1.432e+03,1.700e+01,8.800e+01, 5.000e+00,1.225e+03]
-# # # # x = [1.150e+02,8.400e+01,4.900e+01,3.200e+01,-2.000e+00,3.600e+01, 5.000e+01,1.400e+01,2.800e+01,1.492e+03,1.900e+01,1.100e+02, 4.000e+00,1.375e+03]
-# # # # x = [1.090e+02,8.100e+01,2.600e+01,2.400e+01,-5.000e+00,4.000e+01, 5.200e+01,1.600e+01,2.700e+01,1.402e+03,1.400e+01,7.400e+01, 4.000e+00,2.125e+03]
-# # # # x = [9.100e+01,8.900e+01,3.400e+01,3.000e+01,-3.000e+00,3.900e+01, 6.400e+01,1.200e+01,2.800e+01,1.358e+03,2.000e+01,9.600e+01, 5.000e+00,1.675e+03]
-# # # # x = [8.500e+01,9.100e+01,3.900e+01,3.400e+01,-3.000e+00,3.300e+01, 5.800e+01,1.200e+01,2.800e+01,1.418e+03,1.600e+01,1.020e+02, 6.000e+00,2.275e+03]
-# # # # x = [1.030e+02,7.900e+01,4.600e+01,2.200e+01,-4.000e+00,3.500e+01, 5.400e+01,1.600e+01,2.900e+01,1.388e+03,1.500e+01,5.400e+01, 6.000e+00,1.075e+03]
-
-# # # x = [1.150e+02,8.400e+01,4.900e+01,3.200e+01,-2.000e+00,3.600e+01, 5.000e+01,1.400e+01,2.800e+01,1.492e+03,1.900e+01,1.100e+02, 4.000e+00,1.375e+03,41000, 78, 1, 1, 1, 1] # Prifit ok
-# # # x =  [127, 82, 46, 22, -2, 44, 48, 21, 27, 1358, 22,  92, 5, 2875, 41200, 82, 1, 1, 1, 1]
-# # # x =  [115, 84, 49, 32, -2, 36, 50, 14, 28, 1492, 19, 110, 4, 1375, 41000, 78, 1, 1, 1, 1] #good one
-# # x =  [72, 86, 28, 26, -5, 34, 50, 13, 28, 1450, 14, 70, 4, 1600, 41000, 78, 1, 1, 1, 1] # Baseline
-
-# x =  [130, 91, 38, 29, -4.5, 33, 62, 17, 30, 1480, 18, 144, 6, 1900, 41000, 78, 1, 1, 1, 1] # 144 seat
-# # # x =  [121, 80, 40, 18, -2, 40, 52, 13, 28, 1358, 15, 108, 4, 1875, 41000, 82, 1, 1, 1, 1] # Baseline2
-# # # # # # x = [int(x) for x in x]
-# # # # # # print(x)
-
-# x =  [121, 114, 27, 25, -4.0, 35, 50, 14, 29, 1430, 23, 142, 6, 1171, 41000, 78, 1, 1, 1, 1] # Optim_Jose
-
-# # # # # x = [76, 118, 46, 23, -3, 33, 55, 19, 30, 1357, 18, 86, 6, 2412, 42260, 79, 1, 1, 1, 1]
-# # # # # x = [91, 108, 50, 29, -3, 34, 52, 12, 27, 1366, 19, 204, 4, 1812, 39260, 80, 1, 1, 1, 1]
-# # x = [110, 82, 34, 25, -5, 38, 52, 11, 30, 1462, 19, 92, 4, 1375, 39600, 80, 1, 1, 1, 1]

@@ -229,6 +229,12 @@ def climb_integration_datadriven(mass, mach_climb, climb_V_cas, delta_ISA, altit
 
         if mach_climb <= 0.3:
             mach_climb = 0.78
+        elif mach_climb > 0.85:
+            mach_climb = 0.82
+        
+
+        # print('init_h',initial_block_altitude)
+        # print('final_h',final_block_altitude)
 
 
         if initial_block_altitude <= transition_altitude:
@@ -270,7 +276,7 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
         - final_block_mass
         - final_block_time
     """
-    Tsim = initial_block_time + 40
+    Tsim = initial_block_time + 10
     stop_condition.terminal = True
 
     stop_criteria = final_block_altitude
@@ -325,7 +331,7 @@ def climb(time, state, climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria
     # if altitude > final_block_altitude:
     #     return
     _, _, _, _, _, rho_ISA, _, _ = atmosphere_ISA_deviation(altitude, delta_ISA)
-    throttle_position = 0.95
+    throttle_position = 1
 
     if climb_V_cas > 0:
         mach = V_cas_to_mach(climb_V_cas, altitude, delta_ISA)
