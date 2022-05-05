@@ -1,4 +1,27 @@
-2022-05-05 14:25:22,860 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - ---- Start wetted area module ----
----
-2022-05-05 14:25:22,569 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - Current individual vairables: [41.664802795488406, 85.39388762830224, 48.26805604283064, 6.405667120296497, -4.53984074727664, 37.79135227106675, 62.39453577795769, 5.694275897074721, 1242.5356205508429, 58.76952903712981]
+2022-05-05 15:28:33,940 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\network_optimization     - INFO - ==== Start network optimization module ====
+2022-05-05 15:32:27,234 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\network_optimization     - INFO - ==== Start network optimization module ====
+2022-05-05 15:20:37,211 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\network_optimization     - INFO - ==== Start network optimization module ====
+416 - 2022-05-05 15:20:01,877 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- Start aircraft noise module ----
+2022-05-05 15:23:10,700 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - Noise check execution time: 0:03:08.823514
+2022-05-05 15:23:10,701 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- End aircraft noise module ----
+2022-05-05 15:24:27,392 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- Start aircraft noise module ----
+2022-05-05 15:27:59,799 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - Noise check execution time: 0:03:32.407594
+2022-05-05 15:27:59,800 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- End aircraft noise module ----
+2022-05-05 15:34:10,189 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- Start aircraft noise module ----
+2022-05-05 15:37:30,129 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - Noise check execution time: 0:03:19.939973
+2022-05-05 15:37:30,131 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- End aircraft noise module ----
+2022-05-05 15:39:51,333 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- Start aircraft noise module ----
+2022-05-05 15:33:13,376 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - Noise check execution time: 0:03:22.400936
+2022-05-05 15:33:13,382 - c:\users\a2022-05-05 15:37:30,435 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - ---- Start wetted area module ----
+2022-05-05 15:37:37,409 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - Individual wetted ar2022-05-05 15:38:07,000 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - Noise check execution time: 0:04:08.510905
+2022-05-05 15:38:07,001 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- End aircraft noise module ----
+2022-05-05 15:38:52,723 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- Start aircraft noise module ----
 
+2022-05-05 15:38:03,060 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - ---- End wetted area module ----
+0:03:43.773580
+2022-05-05 15:34:30,391 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- End aircraft noise module ----
+2022-05-05 15:36:25,363 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- Start aircraft noise module ----
+2022-05-05 15:39:59,006 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - Noise check execution time: 0:03:33.643478
+2022-05-05 15:39:59,007 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- End aircraft noise module ----
+2022-05-05 15:41:02,617 - c:\users\aarc8\documents\github\mdoairb_base\framework\Noise\Noise_Smith\noise_calculation     - INFO - ---- Start aircraft noise module ----
+ts\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - ---- E

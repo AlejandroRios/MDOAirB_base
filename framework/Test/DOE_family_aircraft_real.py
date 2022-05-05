@@ -22,6 +22,7 @@ TODO's:
 
 """
 import copy
+from framework.Performance.Mission.mission_real import mission
 import csv
 import getopt
 import json
@@ -43,7 +44,6 @@ from framework.Database.Aircrafts.baseline_aircraft_parameters import \
 from framework.Database.Airports.airports_database import AIRPORTS_DATABASE
 from framework.Economics.revenue import revenue
 from framework.Network.network_optimization import network_optimization
-from framework.Performance.Mission.mission_real import mission
 from framework.Sizing.airplane_sizing_check import airplane_sizing
 from framework.utilities.logger import get_logger
 from framework.utilities.output import (write_bad_results, write_kml_results,
@@ -175,7 +175,7 @@ def objective_function(args):
                             mission_range = distances[airports_keys[i]
                                                       ][airports_keys[k]]
                             fuel_mass[airports_keys[i]][airports_keys[k]], total_mission_flight_time[airports_keys[i]][airports_keys[k]], DOC, mach[airports_keys[i]][airports_keys[k]], passenger_capacity[airports_keys[i]
-                                                                                                                                                                                                            ][airports_keys[k]], SAR[airports_keys[i]][airports_keys[k]] = mission(vehicle, airport_departure, takeoff_runway, airport_destination, landing_runway, mission_range,airports_keys[i],airports_keys[k])
+                                                                                                                                                                                                            ][airports_keys[k]], SAR[airports_keys[i]][airports_keys[k]], _ = mission(vehicle, airport_departure, takeoff_runway, airport_destination, landing_runway, mission_range,airports_keys[i],airports_keys[k])
                             DOC_nd[airports_keys[i]][airports_keys[k]] = DOC
                             DOC_ik[airports_keys[i]][airports_keys[k]] = int(
                                 DOC*mission_range)
@@ -331,7 +331,7 @@ def objective_function(args):
             all_in_one = {'airports': airports, 'distances': distances, 'demands': demands, 'DOC_ik': DOC_ik, 'DOC_nd': DOC_nd,
                 'fuel_mass': fuel_mass, 'total_mission_flight_time': total_mission_flight_time , 'mach': mach, 'passenger_capacity':passenger_capacity, 'SAR':SAR,  'vehicle': vehicle}
 
-            with open('Database/Family_DD/40_to_100_real/all_dictionaries/'+str(index)+'.pkl', 'wb') as f:
+            with open('Database/Family_DD/40_to_100/all_dictionaries/'+str(index)+'.pkl', 'wb') as f:
                 pickle.dump(all_in_one, f)
 
         else:
