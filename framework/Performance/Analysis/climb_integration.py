@@ -230,7 +230,7 @@ def climb_integration_datadriven(mass, mach_climb, climb_V_cas, delta_ISA, altit
         if mach_climb <= 0.3:
             mach_climb = 0.78
         elif mach_climb > 0.85:
-            mach_climb = 0.82
+            mach_climb = 0.85
         
 
         # print('init_h',initial_block_altitude)

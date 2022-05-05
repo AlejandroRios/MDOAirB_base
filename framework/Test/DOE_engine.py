@@ -80,7 +80,10 @@ for ii in range(n_samples):
     # Store the relevant information
     y1_samples.append(float(engine_thrust))
     y2_samples.append(float(ff))
-
+import winsound
+duration = 1000*60  # milliseconds
+freq = 1000 # Hz
+winsound.Beep(freq, duration)
 # Create a pandas dataframe with all the information
 df = pd.DataFrame({'De (m)' : X[:,0],
                    'BPR' : X[:,1],
@@ -91,7 +94,7 @@ df = pd.DataFrame({'De (m)' : X[:,0],
                    'FC (kg/hr)' : y2_samples})
 
 
-df.to_pickle("engines.pkl")  
+df.to_pickle("engines3.pkl")  
 print(df.head())
 # Plot the correlation matrix
 # fig = plt.subplots(figsize=(4, 4))

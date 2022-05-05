@@ -1,3 +1,4 @@
-2022-05-05 13:48:39,572 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\objective_function     - INFO - ==== Start network profit module ====
-2022-05-05 13:48:39,574 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\objective_function     - INFO - Aircraft passed sizing and checks status: 0
-2022-05-05 13:48:39,575 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\objective_function     - INFO - ---- Start DOC matrix calculation ----
+2022-05-05 14:25:22,860 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\Geometry\wetted_area     - INFO - ---- Start wetted area module ----
+---
+2022-05-05 14:25:22,569 - c:\users\aarc8\documents\github\mdoairb_base\framework\Sizing\airplane_sizing_check     - INFO - Current individual vairables: [41.664802795488406, 85.39388762830224, 48.26805604283064, 6.405667120296497, -4.53984074727664, 37.79135227106675, 62.39453577795769, 5.694275897074721, 1242.5356205508429, 58.76952903712981]
+

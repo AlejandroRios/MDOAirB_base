@@ -230,7 +230,7 @@ def descent_integration_datadriven(mass, mach_descent, descent_V_cas, delta_ISA,
         if mach_descent <= 0.3:
             mach_descent = 0.78
         elif mach_descent > 0.85:
-            mach_descent = 0.82
+            mach_descent = 0.85
 
 
         initial_block_altitude = altitude_vec[i]
