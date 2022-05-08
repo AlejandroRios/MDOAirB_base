@@ -97,14 +97,12 @@ def dict_to_list(computation_mode, airports_keys, info_acft):
 
     demand_sum = sum(demand_list)
     
-    # print(demands)
     # import pprint
 
     # pprint.pprint(doc0)
     docs_list = []
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
-            print(i,j)
             if i != j and i < j:
                 if (doc0[airports_keys[i]][airports_keys[j]] > 10000000) or (demands[airports_keys[i]][airports_keys[j]]['demand']==0):
                     docs_list.append(100000000000000000000000000000)
@@ -112,7 +110,6 @@ def dict_to_list(computation_mode, airports_keys, info_acft):
                     docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
-            print(i,j)
             if i != j and i > j:
                 if (doc0[airports_keys[i]][airports_keys[j]] > 10000000) or (demands[airports_keys[i]][airports_keys[j]]['demand']==0):
                     docs_list.append(100000000000000000000000000000)
@@ -154,13 +151,22 @@ def dict_to_list(computation_mode, airports_keys, info_acft):
 
     return distances_list, demand_list, demand_sum, docs_list, froms_list, tos_list
 
+def family_network_optimization_check(computation_mode, airports_keys, acft,index):
+
+    try:
+        _, _, _, docs_list2, _, _ = dict_to_list(computation_mode, airports_keys, acft)
+    except:
+        print(index)
+
+
+    return
 def family_network_optimization(computation_mode, airports_keys, acft1, acft2, acft3):
     log.info('==== Start network optimization module ====')
-
 
     distances_list, demand_list, demand_sum, docs_list1, froms_list, tos_list = dict_to_list(computation_mode, airports_keys, acft1)
     _, _, _, docs_list2, _, _ = dict_to_list(computation_mode, airports_keys, acft2)
     _, _, _, docs_list3, _, _ = dict_to_list(computation_mode, airports_keys, acft3)
+
 
 
     vehicle01= acft1['vehicle']
@@ -796,27 +802,27 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
 CUSTOM_INPUTS_SCHEMA = 'Database/JsonSchema/Custom_Inputs.schema.json'
 
 class CustomInputsError(Exception):
-	def __init__(self, message):
-		self.message = f"Custom inputs issue: {message}"
-		super().__init__(self.message)
+    def __init__(self, message):
+        self.message = f"Custom inputs issue: {message}"
+        super().__init__(self.message)
 
 def check_runways(demands, airports):
-	for departure in demands:
-		for arrival in demands[departure]:
-			takeoff_runway = demands[departure][arrival]["takeoff_runway"]
-			if takeoff_runway not in airports[departure]["runways"]:
-				raise CustomInputsError(f'Take-of runway {takeoff_runway} do not exit for airport {departure} in MDO database')
-			landing_runway = demands[departure][arrival]["landing_runway"]
-			if landing_runway not in airports[arrival]["runways"]:
-				raise CustomInputsError(f'Landing runway {landing_runway} do not exit for airport {arrival} in MDO database')
+    for departure in demands:
+        for arrival in demands[departure]:
+            takeoff_runway = demands[departure][arrival]["takeoff_runway"]
+            if takeoff_runway not in airports[departure]["runways"]:
+                raise CustomInputsError(f'Take-of runway {takeoff_runway} do not exit for airport {departure} in MDO database')
+            landing_runway = demands[departure][arrival]["landing_runway"]
+            if landing_runway not in airports[arrival]["runways"]:
+                raise CustomInputsError(f'Landing runway {landing_runway} do not exit for airport {arrival} in MDO database')
 
 def check_airports(airport_keys):
-	try:
-		airports = { k: AIRPORTS_DATABASE[k] for k in airport_keys }
-	except KeyError as key_error:
-		raise CustomInputsError(f'Airports {key_error.args} do not exit in MDO database')
+    try:
+        airports = { k: AIRPORTS_DATABASE[k] for k in airport_keys }
+    except KeyError as key_error:
+        raise CustomInputsError(f'Airports {key_error.args} do not exit in MDO database')
 
-	return airports
+    return airports
 
 def haversine_distance(coordinates_departure,coordinates_arrival):
     # Perform haversine distance calculation in nautical miles
@@ -824,98 +830,98 @@ def haversine_distance(coordinates_departure,coordinates_arrival):
     return distance
 
 def check_demands(data, fixed_parameters):
-	airport_keys = list(data.keys())
-	for key in data:
-		if (key in data[key]):
-			raise CustomInputsError(f'Airport {key} exist on both departure and arrival for the same demand')
-		airport_keys = airport_keys + list(set(data[key].keys()) - set(airport_keys))
+    airport_keys = list(data.keys())
+    for key in data:
+        if (key in data[key]):
+            raise CustomInputsError(f'Airport {key} exist on both departure and arrival for the same demand')
+        airport_keys = airport_keys + list(set(data[key].keys()) - set(airport_keys))
 
-	airports = check_airports(airport_keys)
+    airports = check_airports(airport_keys)
 
-	check_runways(data, airports)
+    check_runways(data, airports)
 
-	market_share = fixed_parameters['operations']['market_share']
+    market_share = fixed_parameters['operations']['market_share']
 
-	distances = {}
-	for departure in airport_keys:
-		distances[departure] = {}
-		if (departure not in data):
-			data[departure] = {}
-		for arrival in airport_keys:
-			if (arrival not in data[departure]):
-				data[departure][arrival] = {}
-				data[departure][arrival]['demand'] = 0
-				distances[departure][arrival] = 0
-			else:
-				data[departure][arrival]['demand'] = np.round(market_share * data[departure][arrival]['demand'])
+    distances = {}
+    for departure in airport_keys:
+        distances[departure] = {}
+        if (departure not in data):
+            data[departure] = {}
+        for arrival in airport_keys:
+            if (arrival not in data[departure]):
+                data[departure][arrival] = {}
+                data[departure][arrival]['demand'] = 0
+                distances[departure][arrival] = 0
+            else:
+                data[departure][arrival]['demand'] = np.round(market_share * data[departure][arrival]['demand'])
 
-				coordinates_departure = (airports[departure]["latitude"],airports[departure]["longitude"])
-				coordinates_arrival = (airports[arrival]["latitude"],airports[arrival]["longitude"])
-				distances[departure][arrival] = round(haversine_distance(coordinates_departure,coordinates_arrival))
+                coordinates_departure = (airports[departure]["latitude"],airports[departure]["longitude"])
+                coordinates_arrival = (airports[arrival]["latitude"],airports[arrival]["longitude"])
+                distances[departure][arrival] = round(haversine_distance(coordinates_departure,coordinates_arrival))
 
-	return airports, distances, data
+    return airports, distances, data
 
 def check_design_variables(data):
-	for key in data:
-		if (data[key]["lower_band"] > data[key]["upper_band"]):
-			raise CustomInputsError(f'Lower band {data[key]["lower_band"]} is greater than upper band {data[key]["upper_band"]} for {key}')
+    for key in data:
+        if (data[key]["lower_band"] > data[key]["upper_band"]):
+            raise CustomInputsError(f'Lower band {data[key]["lower_band"]} is greater than upper band {data[key]["upper_band"]} for {key}')
 
 def read_custom_inputs(schema_path, file_path):
-	computation_mode = 0
-	route_computation_mode = 0
-	design_variables = {}
-	custom_fixed_parameters = {}
-	fixed_aircraft = {}
+    computation_mode = 0
+    route_computation_mode = 0
+    design_variables = {}
+    custom_fixed_parameters = {}
+    fixed_aircraft = {}
 
-	try:
-		with open(schema_path) as f:
-			schema = json.load(f)
+    try:
+        with open(schema_path) as f:
+            schema = json.load(f)
 
-		with open(file_path) as f:
-			data = json.load(f)
+        with open(file_path) as f:
+            data = json.load(f)
 
-		validate(instance=data, schema=schema)
+        validate(instance=data, schema=schema)
 
-		if ("computation_mode" in data):
-			computation_mode = data["computation_mode"]
+        if ("computation_mode" in data):
+            computation_mode = data["computation_mode"]
 
-		if ("route_computation_mode" in data):
-			route_computation_mode = data["route_computation_mode"]
+        if ("route_computation_mode" in data):
+            route_computation_mode = data["route_computation_mode"]
 
-		if ("demands" not in data):
-			raise CustomInputsError(f"Demands is mandatory in custom inputs")
+        if ("demands" not in data):
+            raise CustomInputsError(f"Demands is mandatory in custom inputs")
 
-		if ("design_variables" in data):
-			design_variables = data["design_variables"]
-			check_design_variables(design_variables)
+        if ("design_variables" in data):
+            design_variables = data["design_variables"]
+            check_design_variables(design_variables)
 
-		if ("fixed_parameters" in data):
-			custom_fixed_parameters = data["fixed_parameters"]
+        if ("fixed_parameters" in data):
+            custom_fixed_parameters = data["fixed_parameters"]
 
-		# Update vehicle with fixed parameters
-		fixed_parameters = initialize_aircraft_parameters()
-		fixed_parameters = update_vehicle(fixed_parameters, custom_fixed_parameters)
+        # Update vehicle with fixed parameters
+        fixed_parameters = initialize_aircraft_parameters()
+        fixed_parameters = update_vehicle(fixed_parameters, custom_fixed_parameters)
 
-		if ("fixed_aircraft" in data):
-			fixed_aircraft = data["fixed_aircraft"]
+        if ("fixed_aircraft" in data):
+            fixed_aircraft = data["fixed_aircraft"]
 
-		airports, distances, demands = check_demands(data["demands"], fixed_parameters)
+        airports, distances, demands = check_demands(data["demands"], fixed_parameters)
 
-	except OSError as os_error:
-		raise CustomInputsError(f"{os_error.strerror} [{os_error.filename}]")
-	except json.JSONDecodeError as dec_error:
-		raise CustomInputsError(f"{dec_error.msg} [line {dec_error.lineno} column {dec_error.colno} (char {dec_error.pos})]")
-	except jsonschema.exceptions.SchemaError:
-		raise CustomInputsError(f"There is an error with the schema")
-	except jsonschema.exceptions.ValidationError as val_error:
-		path_error = ""
-		for path in val_error.path:
-			if (path_error):
-				path_error += "."
-			path_error += path
-		raise CustomInputsError(f"{val_error.message} in path [{path_error}]")
+    except OSError as os_error:
+        raise CustomInputsError(f"{os_error.strerror} [{os_error.filename}]")
+    except json.JSONDecodeError as dec_error:
+        raise CustomInputsError(f"{dec_error.msg} [line {dec_error.lineno} column {dec_error.colno} (char {dec_error.pos})]")
+    except jsonschema.exceptions.SchemaError:
+        raise CustomInputsError(f"There is an error with the schema")
+    except jsonschema.exceptions.ValidationError as val_error:
+        path_error = ""
+        for path in val_error.path:
+            if (path_error):
+                path_error += "."
+            path_error += path
+        raise CustomInputsError(f"{val_error.message} in path [{path_error}]")
     
-	return computation_mode, route_computation_mode, airports, distances, demands, design_variables, fixed_parameters, fixed_aircraft
+    return computation_mode, route_computation_mode, airports, distances, demands, design_variables, fixed_parameters, fixed_aircraft
 
 def update_vehicle(vehicle, fixed_parameters):
     for key in fixed_parameters:
@@ -924,48 +930,63 @@ def update_vehicle(vehicle, fixed_parameters):
     return vehicle
 
 def usage():
-	print("This is the usage function")
-	print(f"Usage: {sys.argv[0]} -f <custom inputs file>")
+    print("This is the usage function")
+    print(f"Usage: {sys.argv[0]} -f <custom inputs file>")
 
 def readArgv(argv):
-	customInputsfile = ""
-	try:                                
-		opts, _ = getopt.getopt(argv, "hf:", ["help", "file="])
-	except getopt.GetoptError:          
-		usage()                         
-		sys.exit(2)                     
-	for opt, arg in opts:
-		if opt in ("-h", "--help"):
-			usage()                     
-			sys.exit()                  
-		elif opt in ("-f", "--file"):
-			customInputsfile = arg               
-	return customInputsfile
+    customInputsfile = ""
+    try:                                
+        opts, _ = getopt.getopt(argv, "hf:", ["help", "file="])
+    except getopt.GetoptError:          
+        usage()                         
+        sys.exit(2)                     
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            usage()                     
+            sys.exit()                  
+        elif opt in ("-f", "--file"):
+            customInputsfile = arg               
+    return customInputsfile
 
 def main(argv):
-	fixed_aircraft = {}
-	customInputsfile = readArgv(argv)
-	if not customInputsfile or not os.path.isfile(customInputsfile):
-		print(f"Custom file {customInputsfile} does not exist")
-		sys.exit(1)
+    fixed_aircraft = {}
+    customInputsfile = readArgv(argv)
+    if not customInputsfile or not os.path.isfile(customInputsfile):
+        print(f"Custom file {customInputsfile} does not exist")
+        sys.exit(1)
 
-	try:
-		computation_mode, _, airports, distances, demands, _, _, fixed_aircraft = read_custom_inputs(CUSTOM_INPUTS_SCHEMA, customInputsfile)
-	except Exception as err:
-		print(f"Exception ocurred while playing custom inputs file {customInputsfile}")
-		print(f"Error: {err}")
-		sys.exit(1)
+    try:
+        computation_mode, _, airports, distances, demands, _, _, fixed_aircraft = read_custom_inputs(CUSTOM_INPUTS_SCHEMA, customInputsfile)
+    except Exception as err:
+        print(f"Exception ocurred while playing custom inputs file {customInputsfile}")
+        print(f"Error: {err}")
+        sys.exit(1)
 
-	with open('Database/DOC/Vehicle.pkl', 'rb') as f:
-		vehicle = pickle.load(f)
+    # with open('Database/DOC/Vehicle.pkl', 'rb') as f:
+    #     vehicle = pickle.load(f)
 
-	with open('Database/DOC/DOC_ori.pkl', 'rb') as f:
-		doc0 = pickle.load(f)
-	doc0 = {'FRA': {'FRA': 0, 'LHR': 4810, 'CDG': 3806, 'AMS': 3449, 'MAD': 8713, 'BCN': 7118, 'FCO': 6370, 'DUB': 7098, 'VIE': 4626, 'ZRH': 2977}, 'LHR': {'FRA': 4821, 'LHR': 0, 'CDG': 3343, 'AMS': 3470, 'MAD': 7792, 'BCN': 7417, 'FCO': 9010, 'DUB': 3847, 'VIE': 8107, 'ZRH': 5461}, 'CDG': {'FRA': 3790, 'LHR': 3338, 'CDG': 0, 'AMS': 3528, 'MAD': 6896, 'BCN': 5828, 'FCO': 7131, 'DUB': 5467, 'VIE': 6798, 'ZRH': 3916}, 'AMS': {'FRA': 3423, 'LHR': 3415, 'CDG': 3600, 'AMS': 0, 'MAD': 9083, 'BCN': 7780, 'FCO': 8162, 'DUB': 5299, 'VIE': 6397, 'ZRH': 4549}, 'MAD': {'FRA': 8777, 'LHR': 7825, 'CDG': 6875, 'AMS': 8930, 'MAD': 0, 'BCN': 3930, 'FCO': 8300, 'DUB': 8817, 'VIE': 10855, 'ZRH': 7805}, 'BCN': {'FRA': 7000, 'LHR': 7418, 'CDG': 5854, 'AMS': 7865, 'MAD': 3948, 'BCN': 0, 'FCO': 5816, 'DUB': 9056, 'VIE': 8568, 'ZRH': 5854}, 'FCO': {'FRA': 6352, 'LHR': 9011, 'CDG': 7170, 'AMS': 8070, 'MAD': 8266, 'BCN': 5798, 'FCO': 0, 'DUB': 11410, 'VIE': 5450, 'ZRH': 5005}, 'DUB': {'FRA': 7017, 'LHR': 3829, 'CDG': 5485, 'AMS': 5303, 'MAD': 8944, 'BCN': 9105, 'FCO': 11320, 'DUB': 0, 'VIE': 10353, 'ZRH': 7812}, 'VIE': {'FRA': 4667, 'LHR': 8009, 'CDG': 6762, 'AMS': 6404, 'MAD': 10896, 'BCN': 8657, 'FCO': 5467, 'DUB': 10349, 'VIE': 0, 'ZRH': 4583}, 'ZRH': {'FRA': 2983, 'LHR': 5447, 'CDG': 3875, 'AMS': 4504, 'MAD': 7734, 'BCN': 5793, 'FCO': 4972, 'DUB': 7734, 'VIE': 4514, 'ZRH': 0}}
-	distances = {'FRA': {'FRA': 0, 'LHR': 355, 'CDG': 243, 'AMS': 198, 'MAD': 768, 'BCN': 591, 'FCO': 517, 'DUB': 589, 'VIE': 336, 'ZRH': 154}, 'LHR': {'FRA': 355, 'LHR': 0, 'CDG': 188, 'AMS': 200, 'MAD': 672, 'BCN': 620, 'FCO': 781, 'DUB': 243, 'VIE': 690, 'ZRH': 427}, 'CDG': {'FRA': 243, 'LHR': 188, 'CDG': 0, 'AMS': 215, 'MAD': 574, 'BCN': 463, 'FCO': 595, 'DUB': 425, 'VIE': 561, 'ZRH': 258}, 'AMS': {'FRA': 198, 'LHR': 200, 'CDG': 215, 'AMS': 0, 'MAD': 788, 'BCN': 670, 'FCO': 700, 'DUB': 406, 'VIE': 519, 'ZRH': 326}, 'MAD': {'FRA': 768, 'LHR': 672, 'CDG': 574, 'AMS': 788, 'MAD': 0, 'BCN': 261, 'FCO': 720, 'DUB': 784, 'VIE': 977, 'ZRH': 670}, 'BCN': {'FRA': 591, 'LHR': 620, 'CDG': 463, 'AMS': 670, 'MAD': 261, 'BCN': 0, 'FCO': 459, 'DUB': 802, 'VIE': 741, 'ZRH': 463}, 'FCO': {'FRA': 517, 'LHR': 781, 'CDG': 595, 'AMS': 700, 'MAD': 720, 'BCN': 459, 'FCO': 0, 'DUB': 1020, 'VIE': 421, 'ZRH': 375}, 'DUB': {'FRA': 589, 'LHR': 243, 'CDG': 425, 'AMS': 406, 'MAD': 784, 'BCN': 802, 'FCO': 1020, 'DUB': 0, 'VIE': 922, 'ZRH': 670}, 'VIE': {'FRA': 336, 'LHR': 690, 'CDG': 561, 'AMS': 519, 'MAD': 977, 'BCN': 741, 'FCO': 421, 'DUB': 922, 'VIE': 0, 'ZRH': 327}, 'ZRH': {'FRA': 154, 'LHR': 427, 'CDG': 258, 'AMS': 326, 'MAD': 670, 'BCN': 463, 'FCO': 375, 'DUB': 670, 'VIE': 327, 'ZRH': 0}}
 
-	if not fixed_aircraft:
-		family_network_optimization(computation_mode, list(airports.keys()), distances, demands, doc0, vehicle)
+
+    # with open('Database/Family_DD/101_to_160/all_dictionaries/'+str(1)+'.pkl', 'rb') as f:
+    #     acft2 = pickle.load(f)
+
+    # with open('Database/Family_DD/161_to_220/all_dictionaries/'+str(1)+'.pkl', 'rb') as f:
+    #     acft3 = pickle.load(f)
+    
+    # with open('Database/DOC/DOC_ori.pkl', 'rb') as f:
+    #     doc0 = pickle.load(f)
+
+
+    # doc0 = {'FRA': {'FRA': 0, 'LHR': 4810, 'CDG': 3806, 'AMS': 3449, 'MAD': 8713, 'BCN': 7118, 'FCO': 6370, 'DUB': 7098, 'VIE': 4626, 'ZRH': 2977}, 'LHR': {'FRA': 4821, 'LHR': 0, 'CDG': 3343, 'AMS': 3470, 'MAD': 7792, 'BCN': 7417, 'FCO': 9010, 'DUB': 3847, 'VIE': 8107, 'ZRH': 5461}, 'CDG': {'FRA': 3790, 'LHR': 3338, 'CDG': 0, 'AMS': 3528, 'MAD': 6896, 'BCN': 5828, 'FCO': 7131, 'DUB': 5467, 'VIE': 6798, 'ZRH': 3916}, 'AMS': {'FRA': 3423, 'LHR': 3415, 'CDG': 3600, 'AMS': 0, 'MAD': 9083, 'BCN': 7780, 'FCO': 8162, 'DUB': 5299, 'VIE': 6397, 'ZRH': 4549}, 'MAD': {'FRA': 8777, 'LHR': 7825, 'CDG': 6875, 'AMS': 8930, 'MAD': 0, 'BCN': 3930, 'FCO': 8300, 'DUB': 8817, 'VIE': 10855, 'ZRH': 7805}, 'BCN': {'FRA': 7000, 'LHR': 7418, 'CDG': 5854, 'AMS': 7865, 'MAD': 3948, 'BCN': 0, 'FCO': 5816, 'DUB': 9056, 'VIE': 8568, 'ZRH': 5854}, 'FCO': {'FRA': 6352, 'LHR': 9011, 'CDG': 7170, 'AMS': 8070, 'MAD': 8266, 'BCN': 5798, 'FCO': 0, 'DUB': 11410, 'VIE': 5450, 'ZRH': 5005}, 'DUB': {'FRA': 7017, 'LHR': 3829, 'CDG': 5485, 'AMS': 5303, 'MAD': 8944, 'BCN': 9105, 'FCO': 11320, 'DUB': 0, 'VIE': 10353, 'ZRH': 7812}, 'VIE': {'FRA': 4667, 'LHR': 8009, 'CDG': 6762, 'AMS': 6404, 'MAD': 10896, 'BCN': 8657, 'FCO': 5467, 'DUB': 10349, 'VIE': 0, 'ZRH': 4583}, 'ZRH': {'FRA': 2983, 'LHR': 5447, 'CDG': 3875, 'AMS': 4504, 'MAD': 7734, 'BCN': 5793, 'FCO': 4972, 'DUB': 7734, 'VIE': 4514, 'ZRH': 0}}
+    # distances = {'FRA': {'FRA': 0, 'LHR': 355, 'CDG': 243, 'AMS': 198, 'MAD': 768, 'BCN': 591, 'FCO': 517, 'DUB': 589, 'VIE': 336, 'ZRH': 154}, 'LHR': {'FRA': 355, 'LHR': 0, 'CDG': 188, 'AMS': 200, 'MAD': 672, 'BCN': 620, 'FCO': 781, 'DUB': 243, 'VIE': 690, 'ZRH': 427}, 'CDG': {'FRA': 243, 'LHR': 188, 'CDG': 0, 'AMS': 215, 'MAD': 574, 'BCN': 463, 'FCO': 595, 'DUB': 425, 'VIE': 561, 'ZRH': 258}, 'AMS': {'FRA': 198, 'LHR': 200, 'CDG': 215, 'AMS': 0, 'MAD': 788, 'BCN': 670, 'FCO': 700, 'DUB': 406, 'VIE': 519, 'ZRH': 326}, 'MAD': {'FRA': 768, 'LHR': 672, 'CDG': 574, 'AMS': 788, 'MAD': 0, 'BCN': 261, 'FCO': 720, 'DUB': 784, 'VIE': 977, 'ZRH': 670}, 'BCN': {'FRA': 591, 'LHR': 620, 'CDG': 463, 'AMS': 670, 'MAD': 261, 'BCN': 0, 'FCO': 459, 'DUB': 802, 'VIE': 741, 'ZRH': 463}, 'FCO': {'FRA': 517, 'LHR': 781, 'CDG': 595, 'AMS': 700, 'MAD': 720, 'BCN': 459, 'FCO': 0, 'DUB': 1020, 'VIE': 421, 'ZRH': 375}, 'DUB': {'FRA': 589, 'LHR': 243, 'CDG': 425, 'AMS': 406, 'MAD': 784, 'BCN': 802, 'FCO': 1020, 'DUB': 0, 'VIE': 922, 'ZRH': 670}, 'VIE': {'FRA': 336, 'LHR': 690, 'CDG': 561, 'AMS': 519, 'MAD': 977, 'BCN': 741, 'FCO': 421, 'DUB': 922, 'VIE': 0, 'ZRH': 327}, 'ZRH': {'FRA': 154, 'LHR': 427, 'CDG': 258, 'AMS': 326, 'MAD': 670, 'BCN': 463, 'FCO': 375, 'DUB': 670, 'VIE': 327, 'ZRH': 0}}
+
+    # if not fixed_aircraft:
+    #     for i in range(1,68):
+    #         with open('Database/Family_DD/161_to_220/all_dictionaries/'+str(i)+'.pkl', 'rb') as f:
+    #             acft1 = pickle.load(f)
+
+    #         family_network_optimization_check(computation_mode, list(airports.keys()),acft1,i)
+        # family_network_optimization(computation_mode, list(airports.keys()),acft1,acft2,acft3)
 
 if __name__ == "__main__":
     main(sys.argv[1:])

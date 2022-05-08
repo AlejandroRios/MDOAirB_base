@@ -1,37 +1,5 @@
-2022-05-07 22:58:28,145 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\family_network_optimization     - INFO - ==== Start network optimization module ====
-===
-2022-05-07 22:58:28,145 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - INFO - Aircraft passed sizing and checks status: 0
-2022-05-07 22:58:28,145 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - INFO - ---- Start DOC matrix calculation ----
-2022-05-07 22:58:28,145 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - INFO - ---- Start Network Optimization ----
-2022-05-07 22:58:28,177 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - ERROR - >>>>>>>>>> Error at <<<<<<<<<<<< network_optimization
-Traceback (most recent call last):
-  File "c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective.py", line 200, in objective_function0
-    computation_mode, list(airports.keys()), all_info_acft1, all_info_acft2, all_info_acft3)
-  File "c:\users\aarc8\documents\github\mdoairb_base\framework\Network\family_network_optimization.py", line 162, in family_network_optimization
-    _, _, _, docs_list2, _, _ = dict_to_list(computation_mode, airports_keys, acft2)
-  File "c:\users\aarc8\documents\github\mdoairb_base\framework\Network\family_network_optimization.py", line 109, in dict_to_list
-    if (doc0[airports_keys[i]][airports_keys[j]] > 10000000) or (demands[airports_keys[i]][airports_keys[j]]['demand']==0):
-KeyError: 'CDG'
-2022-05-07 22:58:28,181 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - INFO - Network profit [$USD]: 0
-2022-05-07 22:58:28,181 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - ERROR - >>>>>>>>>> Error at <<<<<<<<<<<< writting dataframes
-Traceback (most recent call last):
-  File "c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective.py", line 295, in objective_function0
-    mach_1, passenger_capacity_1, fuel_mass_1, total_mission_flight_time_1, DOC_nd_1, SAR_1, distances_1,kpi_df2_1)
-UnboundLocalError: local variable 'kpi_df2_1' referenced before assignment
-2022-05-07 22:58:28,181 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - ERROR - >>>>>>>>>> Error at <<<<<<<<<<<< write_optimal_results
-Traceback (most recent call last):
-  File "c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective.py", line 317, in objective_function0
-    )), distances, demands, profit, DOC_ik, vehicle, kpi_df2_1, airplanes_ik)
-UnboundLocalError: local variable 'kpi_df2_1' referenced before assignment
-2022-05-07 22:58:28,182 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - ERROR - >>>>>>>>>> Error at <<<<<<<<<<<< write_kml_results
-Traceback (most recent call last):
-  File "c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective.py", line 323, in objective_function0
-    write_kml_results(airports, profit, airplanes_ik)
-UnboundLocalError: local variable 'airplanes_ik' referenced before assignment
-2022-05-07 22:58:28,182 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - ERROR - >>>>>>>>>> Error at <<<<<<<<<<<< write_newtork_results
-Traceback (most recent call last):
-  File "c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective.py", line 329, in objective_function0
-    write_newtork_results(profit, kpi_df1_1, kpi_df2_1)
-UnboundLocalError: local variable 'kpi_df1_1' referenced before assignment
-2022-05-07 22:58:28,183 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - INFO - Network profit excecution time: 0:00:00.040859
-2022-05-07 22:58:28,183 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_DD_multiobjective     - INFO - ==== End network profit module ====
+2022-05-07 23:56:39,717 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\family_network_optimization     - INFO - ==== Start network optimization module ====
+2022-05-07 23:56:39,780 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\family_network_optimization     - INFO - ==== Start PuLP optimization ====
+ing and checks status: 0
+2022-05-07 23:56:39,716 - c:\users\aarc8\documents\github\mdoairb_base\framework\Optimization\aircraft_family_DD_multiobjective     - INFO - ---- Start DOC matrix calculation ----
+2022-05-07 23:56:39,716 - c:\users\aarc8\documents\github\mdoairb_base\framework\Optimization\aircraft_family_DD_multiobjective     - INFO - ---- Start Network Optimization ----

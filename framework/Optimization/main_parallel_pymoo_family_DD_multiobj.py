@@ -320,7 +320,7 @@ class MyProblem(ElementwiseProblem):
                         n_obj=2,
                         n_constr=0,
                         xl=np.array([1,1, 1]),
-                        xu=np.array([69,36, 74]),
+                        xu=np.array([37,29, 68]),
                         type_var=int, **kwargs)
 
     def _evaluate(self, x, out, *args, **kwargs):

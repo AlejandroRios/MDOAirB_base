@@ -101,8 +101,10 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         with open('Database/Family_DD/161_to_220/all_dictionaries/'+str(x[2])+'.pkl', 'rb') as f:
             all_info_acft3 = pickle.load(f)
 
+        # print(demands)
+        # import pprint
 
-        print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+        # pprint.pprint(doc0)
 
         # print(all_info_acft3['vehicle']['aircraft']['passenger_capacity'])
         # print(all_info_acft3['vehicle']['fuselage']['seat_abreast_number'])
@@ -350,6 +352,7 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
             write_bad_results(error, x)
         except:
             log.error(
+                
                 ">>>>>>>>>> Error at <<<<<<<<<<<< write_bad_results", exc_info=True)
 
     else:
@@ -639,7 +642,7 @@ def objective_function(vehicle, x=None):
     # x = [32, 11, 5] # opt
     # x = [52,32,56]
     # x = [38, 29, 60]
-    x = [15,21,60] # mono
+    # x = [15,21,60] # mono
 
     if not fixed_aircraft:
         res, res2 = objective_function0(x, fixed_parameters, computation_mode,
