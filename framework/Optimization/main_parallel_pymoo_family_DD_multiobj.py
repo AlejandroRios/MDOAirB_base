@@ -42,7 +42,7 @@ from bokeh.layouts import row
 from bokeh.plotting import figure
 
 from framework.Database.Aircrafts.baseline_aircraft_parameters import *
-from framework.Optimization.aircraft_family_multiobjective import objective_function
+from framework.Optimization.aircraft_family_DD_multiobjective import objective_function
 
 from jsonschema import validate
 

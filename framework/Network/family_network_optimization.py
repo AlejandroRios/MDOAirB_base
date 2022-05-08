@@ -96,10 +96,15 @@ def dict_to_list(computation_mode, airports_keys, info_acft):
                     demand_list.append(demands[airports_keys[i]][airports_keys[j]]['demand'])
 
     demand_sum = sum(demand_list)
+    
+    # print(demands)
+    # import pprint
 
+    # pprint.pprint(doc0)
     docs_list = []
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
+            print(i,j)
             if i != j and i < j:
                 if (doc0[airports_keys[i]][airports_keys[j]] > 10000000) or (demands[airports_keys[i]][airports_keys[j]]['demand']==0):
                     docs_list.append(100000000000000000000000000000)
@@ -107,6 +112,7 @@ def dict_to_list(computation_mode, airports_keys, info_acft):
                     docs_list.append(doc0[airports_keys[i]][airports_keys[j]])
     for i in range(len(airports_keys)):
         for j in range(len(airports_keys)):
+            print(i,j)
             if i != j and i > j:
                 if (doc0[airports_keys[i]][airports_keys[j]] > 10000000) or (demands[airports_keys[i]][airports_keys[j]]['demand']==0):
                     docs_list.append(100000000000000000000000000000)
