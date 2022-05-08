@@ -331,7 +331,7 @@ def objective_function(args):
             all_in_one = {'airports': airports, 'distances': distances, 'demands': demands, 'DOC_ik': DOC_ik, 'DOC_nd': DOC_nd,
                 'fuel_mass': fuel_mass, 'total_mission_flight_time': total_mission_flight_time , 'mach': mach, 'passenger_capacity':passenger_capacity, 'SAR':SAR,  'vehicle': vehicle}
 
-            with open('Database/Family_DD/40_to_100/all_dictionaries/'+str(index)+'.pkl', 'wb') as f:
+            with open('Database/Family_DD/161_to_220/all_dictionaries/'+str(index)+'.pkl', 'wb') as f:
                 pickle.dump(all_in_one, f)
 
         else:
@@ -563,14 +563,14 @@ def main(argv):
         # lb = [72,    75,   25,     0,      -5,       32,     40,       4,       1000,    0]
         # ub = [130,  120,  50,     30,       0 ,       45,     100,       6,       3500,    50]
 
-        lb = [40,    70,   20,     0,      -5,        30,     40,        3,       950,     0]
-        ub = [100,  120,   50,     25,       0 ,       45,     100,       6,       1955,    60]
+        # lb = [40,    70,   20,     0,      -5,        30,     40,        3,       950,     0]
+        # ub = [100,  120,   50,     25,       0 ,       45,     100,       6,       1955,    60]
 
         # lb = [70,    70,   20,     15,      -5,        30,     101,       4,       1300,     0]
         # ub = [130,  120,   50,     25,       0 ,       45,     160,       6,       3200,    44]
 
-        # lb = [90,    70,   20,     20,      -5,        30,     161,       4,       1500,     0]
-        # ub = [290,  120,   50,     35,       0 ,       45,     220,       6,       3200,    44]
+        lb = [90,    70,   20,     20,      -5,        30,     161,       4,       1500,     0]
+        ub = [290,  120,   50,     35,       0 ,       45,     220,       6,       3200,    44]
 
 
 
