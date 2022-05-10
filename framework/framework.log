@@ -1,1 +1,7 @@
-2022-05-10 11:42:09,558 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\utilities\print_results_family     - INFO - ==== Start network profit module ====
+2022-05-10 13:05:25,884 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== Start writing aircraft results ====
+2022-05-10 13:05:25,891 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== End writing aircraft results ====
+2022-05-10 13:05:25,891 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== Start writing klm results ====
+2022-05-10 13:05:25,892 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== End writing klm results ====
+ly_network_optimization     - INFO - Network optimization status2022-05-10 13:05:25,835 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\utilities\print_results_family     - INFO - Network profit [$USD]: 2300944
+2022-05-10 13:05:25,898 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\utilities\print_results_family     - INFO - Network profit excecution time: 0:05:01.562231
+2022-05-10 13:05:25,898 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\utilities\print_results_family     - INFO - ==== End network profit module ====
