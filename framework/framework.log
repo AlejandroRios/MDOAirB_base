@@ -1,5 +1,1 @@
-2022-05-07 23:56:39,717 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\family_network_optimization     - INFO - ==== Start network optimization module ====
-2022-05-07 23:56:39,780 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\family_network_optimization     - INFO - ==== Start PuLP optimization ====
-ing and checks status: 0
-2022-05-07 23:56:39,716 - c:\users\aarc8\documents\github\mdoairb_base\framework\Optimization\aircraft_family_DD_multiobjective     - INFO - ---- Start DOC matrix calculation ----
-2022-05-07 23:56:39,716 - c:\users\aarc8\documents\github\mdoairb_base\framework\Optimization\aircraft_family_DD_multiobjective     - INFO - ---- Start Network Optimization ----
+2022-05-10 11:42:09,558 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\utilities\print_results_family     - INFO - ==== Start network profit module ====
