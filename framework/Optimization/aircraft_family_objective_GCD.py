@@ -92,14 +92,15 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         # with open('Database/Family/40_to_100/vehicle/'+str(x[0])+'.pkl', 'rb') as f:
         #     vehicle = pickle.load(f)
 
-        with open('Database/Family_DD/40_to_100/all_dictionaries/'+str(x[0])+'.pkl', 'rb') as f:
+        with open('Database/Family/40_to_100/all_dictionaries/'+str(x[0])+'.pkl', 'rb') as f:
             all_info_acft1 = pickle.load(f)
-
-        with open('Database/Family_DD/101_to_160/all_dictionaries/'+str(x[1])+'.pkl', 'rb') as f:
+        
+        with open('Database/Family/101_to_160/all_dictionaries/'+str(x[1])+'.pkl', 'rb') as f:
             all_info_acft2 = pickle.load(f)
 
-        with open('Database/Family_DD/161_to_220/all_dictionaries/'+str(x[2])+'.pkl', 'rb') as f:
+        with open('Database/Family/161_to_220/all_dictionaries/'+str(x[2])+'.pkl', 'rb') as f:
             all_info_acft3 = pickle.load(f)
+
 
 
         airports = all_info_acft1['airports']
@@ -112,7 +113,7 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         mach = all_info_acft1['mach']
         passenger_capacity = all_info_acft1['passenger_capacity']
         SAR = all_info_acft1['SAR']
-        vehicle = all_info_acft1['vehicle']
+        vehicle= all_info_acft1['vehicle']
 
         def load_info_from_dicts(dictionary):
             airports = dictionary['airports']
@@ -135,7 +136,6 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         airports_3, distances_3, demands_3, DOC_ik_3, DOC_nd_3, fuel_mass_3, total_mission_flight_time_3, mach_3, passenger_capacity_3, SAR_3, vehicle_3 = load_info_from_dicts(
             all_info_acft3)
 
-        # SAR_all = float(all_info_acft1['SAR']) + float(all_info_acft2['SAR']) + float(all_info_acft3['SAR'])
 
         status = 0
         results_1 = vehicle_1['results']
@@ -157,8 +157,7 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         # If airplane pass checks, status = 0, else status = 1 and profit = 0
         if status == 0:
             log.info('Aircraft passed sizing and checks status: {}'.format(status))
-            market_share = operations_1['market_share']
-
+            market_share = operations['market_share']
             results_1['nodes_number'] = len(airports)
             results_2['nodes_number'] = len(airports)
             results_3['nodes_number'] = len(airports)
@@ -166,18 +165,18 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
             pax_capacity_1 = aircraft_1['passenger_capacity']  # Passenger capacity
             pax_capacity_1 = aircraft_2['passenger_capacity']  # Passenger capacity
             pax_capacity_1 = aircraft_2['passenger_capacity']  # Passenger capacity
-            #=============================================================================
+            # =============================================================================
             log.info('---- Start DOC matrix calculation ----')
             # The DOC is estimated for each city pair and stored in the DOC dictionary
             city_matrix_size = len(airports)*len(airports)
             airports_keys = list(airports.keys())
-
+            
             # log.info('Aircraft DOC matrix: {}'.format(DOC_ik))
             # =============================================================================
             log.info('---- Start Network Optimization ----')
             # Network optimization that maximizes the network profit
             try:
-                profit, vehicle01, vehicle02, vehicle03, kpi_df1_1, kpi_df2_1, kpi_df1_2, kpi_df2_2, kpi_df1_3, kpi_df2_3, airplanes_ik = family_network_optimization(
+                profit, vehicle, kpi_df1, kpi_df2, airplanes_ik = family_network_optimization(
                     computation_mode, list(airports.keys()), all_info_acft1, all_info_acft2, all_info_acft3)
             except:
                 log.error(
@@ -194,7 +193,6 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
                         } if isinstance(dd, dict) else {prefix: dd}
 
             try:
-
                 def flatten_update(vehicle, mach, passenger_capacity, fuel_mass, total_mission_flight_time, DOC_nd, SAR, distances,kpi_df2):
 
                     results = vehicle['results']
@@ -288,14 +286,13 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
 
                 print(total_pax)
                 print(CO2_efficiency)
-
             except:
                 log.error(
                     ">>>>>>>>>> Error at <<<<<<<<<<<< writting dataframes", exc_info=True)
 
             try:
                 write_optimal_results(x, list(airports.keys(
-                )), distances, demands, profit, DOC_ik, vehicle, kpi_df2_1, airplanes_ik)
+                )), distances, demands, profit, DOC_ik, vehicle, kpi_df2, airplanes_ik)
             except:
                 log.error(
                     ">>>>>>>>>> Error at <<<<<<<<<<<< write_optimal_results", exc_info=True)
@@ -307,7 +304,7 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
                     ">>>>>>>>>> Error at <<<<<<<<<<<< write_kml_results", exc_info=True)
 
             try:
-                write_newtork_results(profit, kpi_df1_1, kpi_df2_1)
+                write_newtork_results(profit, kpi_df1, kpi_df2)
             except:
                 log.error(
                     ">>>>>>>>>> Error at <<<<<<<<<<<< write_newtork_results", exc_info=True)
@@ -331,7 +328,6 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
             write_bad_results(error, x)
         except:
             log.error(
-                
                 ">>>>>>>>>> Error at <<<<<<<<<<<< write_bad_results", exc_info=True)
 
     else:
@@ -342,7 +338,7 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
     log.info('Network profit excecution time: {}'.format(end_time - start_time))
     log.info('==== End network profit module ====')
 
-    return profit, CO2_efficiency
+    return profit
 
 # def objective_function(x, original_vehicle, computation_mode, route_computation_mode, airports, distances, demands):
 # 	print("--------------------------------------------------------------------")
@@ -595,7 +591,7 @@ def readArgv(argv):
     return customInputsfile
 
 
-def objective_function(vehicle, x=None):
+def objective_function(vehicle,x=None):
 
     argv = ['--file', 'Database/JsonSchema/00_Demands_Only.json']
 
@@ -614,20 +610,21 @@ def objective_function(vehicle, x=None):
             f"Exception ocurred while playing custom inputs file {customInputsfile}")
         print(f"Error: {err}")
         sys.exit(1)
+    
 
     # x = [37, 7, 5]
     # x = [9, 7, 5]
     # x = [33, 7, 4]
     # x = [32, 11, 5] # opt
-    # x = [52,32,56]
-    # x = [38, 29, 60]
+    # x = [66, 13, 60]
     # x = [15,21,60] # mono
-
     if not fixed_aircraft:
-        res, res2 = objective_function0(x, fixed_parameters, computation_mode,
-                                        route_computation_mode, airports, distances, demands)
+        res = objective_function0(x, fixed_parameters, computation_mode,
+                           route_computation_mode, airports, distances, demands)
 
-    return res, res2
+
+    
+    return res
 
 
 if __name__ == "__main__":

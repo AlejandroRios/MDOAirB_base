@@ -103,25 +103,6 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
 
 
 
-        print(all_info_acft3['vehicle']['aircraft']['passenger_capacity'])
-        print(all_info_acft3['vehicle']['fuselage']['seat_abreast_number'])
-        print(all_info_acft3['vehicle']['wing']['area'])
-        print(all_info_acft3['vehicle']['wing']['aspect_ratio'])
-        print(all_info_acft3['vehicle']['wing']['semi_span_kink'])
-        print(all_info_acft3['vehicle']['wing']['sweep_c_4'])
-        
-        print(all_info_acft3['vehicle']['wing']['taper_ratio'])
-        print(all_info_acft3['vehicle']['wing']['twist'])
-
-        print(all_info_acft3['vehicle']['engine']['type'])
-        print(all_info_acft3['vehicle']['engine']['bypass'])
-        print(all_info_acft3['vehicle']['engine']['fan_diameter'])
-        print(all_info_acft3['vehicle']['engine']['maximum_thrust'])
-        print(all_info_acft3['vehicle']['engine']['turbine_inlet_temperature'])
-        print(all_info_acft3['vehicle']['performance']['range'])
-
-        print(all_info_acft3['vehicle']['performance']['range'])
-
         airports = all_info_acft1['airports']
         distances = all_info_acft1['distances']
         demands = all_info_acft1['demands']
@@ -134,20 +115,56 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         SAR = all_info_acft1['SAR']
         vehicle= all_info_acft1['vehicle']
 
+        def load_info_from_dicts(dictionary):
+            airports = dictionary['airports']
+            distances = dictionary['distances']
+            demands = dictionary['demands']
+            DOC_ik = dictionary['DOC_ik']
+            DOC_nd = dictionary['DOC_nd']
+            fuel_mass = dictionary['fuel_mass']
+            total_mission_flight_time = dictionary['total_mission_flight_time']
+            mach = dictionary['mach']
+            passenger_capacity = dictionary['passenger_capacity']
+            SAR = dictionary['SAR']
+            vehicle = dictionary['vehicle']
+            return airports, distances, demands, DOC_ik, DOC_nd, fuel_mass, total_mission_flight_time, mach, passenger_capacity, SAR, vehicle
+
+        airports_1, distances_1, demands_1, DOC_ik_1, DOC_nd_1, fuel_mass_1, total_mission_flight_time_1, mach_1, passenger_capacity_1, SAR_1, vehicle_1 = load_info_from_dicts(
+            all_info_acft1)
+        airports_2, distances_2, demands_2, DOC_ik_2, DOC_nd_2, fuel_mass_2, total_mission_flight_time_2, mach_2, passenger_capacity_2, SAR_2, vehicle_2 = load_info_from_dicts(
+            all_info_acft2)
+        airports_3, distances_3, demands_3, DOC_ik_3, DOC_nd_3, fuel_mass_3, total_mission_flight_time_3, mach_3, passenger_capacity_3, SAR_3, vehicle_3 = load_info_from_dicts(
+            all_info_acft3)
+
+
         status = 0
-        results = vehicle['results']
-        performance = vehicle['performance']
-        operations = vehicle['operations']
-        aircraft = vehicle['aircraft']
+        results_1 = vehicle_1['results']
+        performance_1 = vehicle_1['performance']
+        operations_1 = vehicle_1['operations']
+        aircraft_1 = vehicle_1['aircraft']
+
+        results_2 = vehicle_2['results']
+        performance_2 = vehicle_2['performance']
+        operations_2 = vehicle_2['operations']
+        aircraft_2 = vehicle_2['aircraft']
+
+        results_3 = vehicle_3['results']
+        performance_3 = vehicle_3['performance']
+        operations_3 = vehicle_3['operations']
+        aircraft_3 = vehicle_3['aircraft']
 
         # =============================================================================
         # If airplane pass checks, status = 0, else status = 1 and profit = 0
         if status == 0:
             log.info('Aircraft passed sizing and checks status: {}'.format(status))
             market_share = operations['market_share']
-            results['nodes_number'] = len(airports)
+            results_1['nodes_number'] = len(airports)
+            results_2['nodes_number'] = len(airports)
+            results_3['nodes_number'] = len(airports)
 
-            pax_capacity = aircraft['passenger_capacity']  # Passenger capacity
+            pax_capacity_1 = aircraft_1['passenger_capacity']  # Passenger capacity
+            pax_capacity_1 = aircraft_2['passenger_capacity']  # Passenger capacity
+            pax_capacity_1 = aircraft_2['passenger_capacity']  # Passenger capacity
             # =============================================================================
             log.info('---- Start DOC matrix calculation ----')
             # The DOC is estimated for each city pair and stored in the DOC dictionary
@@ -176,84 +193,99 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
                         } if isinstance(dd, dict) else {prefix: dd}
 
             try:
-                mach_flatt = flatten_dict(mach)
-                mach_df = pd.DataFrame.from_dict(
-                    mach_flatt, orient="index", columns=['mach'])
-                passenger_capacity_flatt = flatten_dict(passenger_capacity)
-                passenger_capacity_df = pd.DataFrame.from_dict(
-                    passenger_capacity_flatt, orient="index", columns=['pax_num'])
-                fuel_used_flatt = flatten_dict(fuel_mass)
-                fuel_used_df = pd.DataFrame.from_dict(
-                    fuel_used_flatt, orient="index", columns=['fuel'])
-                mission_time_flatt = flatten_dict(total_mission_flight_time)
-                mission_time_df = pd.DataFrame.from_dict(
-                    mission_time_flatt, orient="index", columns=['time'])
-                DOC_nd_flatt = flatten_dict(DOC_nd)
-                DOC_nd_df = pd.DataFrame.from_dict(
-                    DOC_nd_flatt, orient="index", columns=['DOC_nd'])
-                SAR_flatt = flatten_dict(SAR)
-                SAR_df = pd.DataFrame.from_dict(
-                    SAR_flatt, orient="index", columns=['SAR'])
+                def flatten_update(vehicle, mach, passenger_capacity, fuel_mass, total_mission_flight_time, DOC_nd, SAR, distances,kpi_df2):
 
-                distances_flatt = flatten_dict(distances)
-                kpi_df3 = pd.DataFrame.from_dict(
-                    distances_flatt, orient="index", columns=['distances01'])
+                    results = vehicle['results']
+                    aircraft = vehicle['aircraft']
 
-                # mach_flatt = flatten_dict(mach)
-                # mach_df =  pd.DataFrame.from_dict(mach_flatt,orient="index",columns=['mach'])
-                # passenger_capacity_flatt = flatten_dict(passenger_capacity)
-                # passenger_capacity_df =  pd.DataFrame.from_dict(passenger_capacity_flatt,orient="index",columns=['pax_num'])
-                # fuel_used_flatt = flatten_dict(fuel_mass)
-                # fuel_used_df =  pd.DataFrame.from_dict(fuel_used_flatt,orient="index",columns=['fuel'])
-                # mission_time_flatt = flatten_dict(total_mission_flight_time)
-                # mission_time_df =  pd.DataFrame.from_dict(mission_time_flatt,orient="index",columns=['time'])
-                # DOC_nd_flatt = flatten_dict(DOC_nd)
-                # DOC_nd_df =  pd.DataFrame.from_dict(DOC_nd_flatt,orient="index",columns=['DOC_nd'])
-                # SAR_flatt = flatten_dict(SAR)
-                # SAR_df =  pd.DataFrame.from_dict(SAR_flatt,orient="index",columns=['SAR'])
+                    mach_flatt = flatten_dict(mach)
+                    mach_df = pd.DataFrame.from_dict(
+                        mach_flatt, orient="index", columns=['mach'])
+                    passenger_capacity_flatt = flatten_dict(passenger_capacity)
+                    passenger_capacity_df = pd.DataFrame.from_dict(
+                        passenger_capacity_flatt, orient="index", columns=['pax_num'])
+                    fuel_used_flatt = flatten_dict(fuel_mass)
+                    fuel_used_df = pd.DataFrame.from_dict(
+                        fuel_used_flatt, orient="index", columns=['fuel'])
+                    mission_time_flatt = flatten_dict(
+                        total_mission_flight_time)
+                    mission_time_df = pd.DataFrame.from_dict(
+                        mission_time_flatt, orient="index", columns=['time'])
+                    DOC_nd_flatt = flatten_dict(DOC_nd)
+                    DOC_nd_df = pd.DataFrame.from_dict(
+                        DOC_nd_flatt, orient="index", columns=['DOC_nd'])
+                    SAR_flatt = flatten_dict(SAR)
+                    SAR_df = pd.DataFrame.from_dict(
+                        SAR_flatt, orient="index", columns=['SAR'])
+                    distances_flatt = flatten_dict(distances)
+                    kpi_df3 = pd.DataFrame.from_dict(
+                        distances_flatt, orient="index", columns=['distances01'])
 
-                kpi_df3['mach'] = mach_df['mach'].values
-                kpi_df3['pax_num'] = passenger_capacity_df['pax_num'].values
-                kpi_df3['fuel'] = fuel_used_df['fuel'].values
-                kpi_df3['time'] = mission_time_df['time'].values
-                kpi_df3['DOC_nd'] = DOC_nd_df['DOC_nd'].values
-                kpi_df3['SAR'] = SAR_df['SAR'].values
+                    kpi_df3['mach'] = mach_df['mach'].values
+                    kpi_df3['pax_num'] = passenger_capacity_df['pax_num'].values
+                    kpi_df3['fuel'] = fuel_used_df['fuel'].values
+                    kpi_df3['time'] = mission_time_df['time'].values
+                    kpi_df3['DOC_nd'] = DOC_nd_df['DOC_nd'].values
+                    kpi_df3['SAR'] = SAR_df['SAR'].values
+                    kpi_df3 = kpi_df3.drop(
+                        kpi_df3[kpi_df3.distances01 == 0].index)
+                    kpi_df3 = kpi_df3.reset_index(drop=True)
+                    kpi_df2 = pd.concat([kpi_df2, kpi_df3], axis=1)
+                    # Number of active nodes
+                    kpi_df2['active_arcs'] = np.where(
+                        kpi_df2["aircraft_number"] > 0, 1, 0)
+                    results['arcs_number'] = kpi_df2['active_arcs'].sum()
+                    # Number of aircraft
+                    kpi_df2['aircraft_number'] = kpi_df2['aircraft_number'].fillna(
+                        0)
+                    # Average cruise mach
+                    kpi_df2['mach_tot_aircraft'] = kpi_df2['aircraft_number'] * \
+                        kpi_df2['mach']
+                    # Total fuel
+                    kpi_df2['total_fuel'] = kpi_df2['aircraft_number'] * \
+                        kpi_df2['fuel']
+                    # total CEMV
+                    kpi_df2['total_CEMV'] = kpi_df2['aircraft_number'] * \
+                        ((1/kpi_df2['SAR']) *
+                         (1/(aircraft['wetted_area']**0.24)))
+                    # Total distance
+                    kpi_df2['total_distance'] = kpi_df2['aircraft_number'] * \
+                        kpi_df2['distances']
+                    print('=======================================================')
+                    print('total dist',kpi_df2['total_distance'].sum() )
+                    # Total pax
+                    kpi_df2['total_pax'] = kpi_df2['aircraft_number'] * \
+                        kpi_df2['pax_num']
+                    print('totalpax',kpi_df2['total_pax'].sum() )
+                    # Total cost
+                    kpi_df2['total_cost'] = kpi_df2['aircraft_number'] * \
+                        kpi_df2['doc']
+                    print('total cost',kpi_df2['total_cost'].sum() )
+                    print('aircraft num',kpi_df2['aircraft_number'].sum() )
+                    results['network_density'] = results['arcs_number'] / \
+                        (results['nodes_number'] *
+                         results['nodes_number']-results['nodes_number'])
+                    kpi_df2['total_time'] = kpi_df2['aircraft_number'] * \
+                        kpi_df2['time']
 
-                kpi_df3 = kpi_df3.drop(kpi_df3[kpi_df3.distances01 == 0].index)
-                kpi_df3 = kpi_df3.reset_index(drop=True)
+                    return kpi_df2, kpi_df3
 
-                kpi_df2 = pd.concat([kpi_df2, kpi_df3], axis=1)
+                kpi_df2_1, kpi_df3_1 = flatten_update(vehicle_1,
+                    mach_1, passenger_capacity_1, fuel_mass_1, total_mission_flight_time_1, DOC_nd_1, SAR_1, distances_1,kpi_df2_1)
+                kpi_df2_2, kpi_df3_2 = flatten_update(vehicle_2,
+                    mach_2, passenger_capacity_2, fuel_mass_2, total_mission_flight_time_2, DOC_nd_2, SAR_2, distances_2, kpi_df2_2)
+                kpi_df2_3, kpi_df3_3 = flatten_update(vehicle_3,
+                    mach_3, passenger_capacity_3, fuel_mass_3, total_mission_flight_time_3, DOC_nd_3, SAR_3, distances_3, kpi_df2_3)
 
-                # Number of active nodes
-                kpi_df2['active_arcs'] = np.where(
-                    kpi_df2["aircraft_number"] > 0, 1, 0)
-                results['arcs_number'] = kpi_df2['active_arcs'].sum()
-                # Number of aircraft
-                kpi_df2['aircraft_number'] = kpi_df2['aircraft_number'].fillna(
-                    0)
-                # Average cruise mach
-                kpi_df2['mach_tot_aircraft'] = kpi_df2['aircraft_number'] * \
-                    kpi_df2['mach']
-                # Total fuel
-                kpi_df2['total_fuel'] = kpi_df2['aircraft_number'] * \
-                    kpi_df2['fuel']
-                # total CEMV
-                kpi_df2['total_CEMV'] = kpi_df2['aircraft_number'] * \
-                    ((1/kpi_df2['SAR'])*(1/(aircraft['wetted_area']**0.24)))
-                # Total distance
-                kpi_df2['total_distance'] = kpi_df2['aircraft_number'] * \
-                    kpi_df2['distances']
-                # Total pax
-                kpi_df2['total_pax'] = kpi_df2['aircraft_number'] * \
-                    kpi_df2['pax_num']
-                # Total cost
-                kpi_df2['total_cost'] = kpi_df2['aircraft_number'] * \
-                    kpi_df2['doc']
-                results['network_density'] = results['arcs_number'] / \
-                    (results['nodes_number'] *
-                     results['nodes_number']-results['nodes_number'])
-                kpi_df2['total_time'] = kpi_df2['aircraft_number'] * \
-                    kpi_df2['time']
+                total_fuel = kpi_df2_1['total_fuel'].sum() + kpi_df2_2['total_fuel'].sum() + kpi_df2_3['total_fuel'].sum()
+                total_CO2 = total_fuel*3.15
+                total_distance = kpi_df2_1['total_distance'].sum() + kpi_df2_2['total_distance'].sum() +kpi_df2_3['total_distance'].sum()
+                total_pax = results_1['covered_demand']
+                CO2_efficiency =  total_CO2 / \
+                    (total_pax*total_distance*1.852)
+
+                print(total_pax)
+                print(CO2_efficiency)
             except:
                 log.error(
                     ">>>>>>>>>> Error at <<<<<<<<<<<< writting dataframes", exc_info=True)
