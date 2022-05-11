@@ -204,13 +204,13 @@ def plot3d_tigl(vehicle):
     return
 
 
-# import pickle
+import pickle
 
-# # with open('Database/Family/40_to_100/all_dictionaries/'+str(15)+'.pkl', 'rb') as f:
-# # with open('Database/Family/101_to_160/all_dictionaries/'+str(21)+'.pkl', 'rb') as f:
-# with open('Database/Family/161_to_220/all_dictionaries/'+str(60)+'.pkl', 'rb') as f:
+# with open('Database/Family/40_to_100/all_dictionaries/'+str(57)+'.pkl', 'rb') as f:
+# with open('Database/Family/101_to_160/all_dictionaries/'+str(4)+'.pkl', 'rb') as f:
+with open('Database/Family/161_to_220/all_dictionaries/'+str(5)+'.pkl', 'rb') as f:
+    all_info_acft1 = pickle.load(f)
 #     all_info_acft1 = pickle.load(f)
-# #     all_info_acft1 = pickle.load(f)
 
-# vehicle = all_info_acft1['vehicle']
-# plot3d_tigl(vehicle)
+vehicle = all_info_acft1['vehicle']
+plot3d_tigl(vehicle)
