@@ -181,6 +181,8 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
         CL_vec = []
         CD_vec = []
         LoD_vec = []
+        throttle_vec = []
+        vcas_vec = []
 
         while out == 0:
 
@@ -260,7 +262,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
 
             # Initial climb fuel estimation
             initial_altitude = initial_altitude + 1500
-            _, _, total_burned_fuel0, _, _, _, _, _, _, _, _, _, _, _ = climb_integration(
+            _, _, total_burned_fuel0, _, _, _, _, _, _, _, _, _, _, _, _, _ = climb_integration(
                 max_takeoff_mass,
                 mach_climb,
                 climb_V_cas,
@@ -282,7 +284,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
             mach_descent = operations['mach_cruise']
 
             # Recalculate climb with new mach
-            final_distance, total_climb_time, total_burned_fuel, final_altitude, distancev, altitudev, massv, timev, sfcv, thrustv, machv, CLv, CDv, LoDv = climb_integration(
+            final_distance, total_climb_time, total_burned_fuel, final_altitude, distancev, altitudev, massv, timev, sfcv, thrustv, machv, CLv, CDv, LoDv, throttlev, vcasv = climb_integration(
                 max_takeoff_mass,
                 mach_climb,
                 climb_V_cas,
@@ -307,6 +309,8 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
         CL_vec = np.append(CL_vec, CLv)
         CD_vec = np.append(CD_vec, CDv)
         LoD_vec = np.append(LoD_vec, LoDv)
+        throttle_vec = np.append(throttle_vec, throttlev)
+        vcas_vec = np.append(vcas_vec, vcasv)
         
         mass_at_top_of_climb = max_takeoff_mass - total_burned_fuel
 
@@ -359,7 +363,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
             if type_of_descent == 1:
 
                 # Recalculate climb with new mach
-                final_distance, total_descent_time, total_burned_fuel, final_altitude, distancev, altitudev, massv, timev, sfcv, thrustv, machv, CLv, CDv, LoDv = descent_integration(
+                final_distance, total_descent_time, total_burned_fuel, final_altitude, distancev, altitudev, massv, timev, sfcv, thrustv, machv, CLv, CDv, LoDv, throttlev, vcasv = descent_integration(
                     final_cruise_mass,
                     mach_descent,
                     descent_V_cas,
@@ -393,6 +397,8 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
         CL_vec = np.append(CL_vec, CLv)
         CD_vec = np.append(CD_vec, CDv)
         LoD_vec = np.append(LoD_vec, LoDv)
+        throttle_vec = np.append(throttle_vec, throttlev)
+        vcas_vec = np.append(vcas_vec, vcasv)
         
         if iteration >= 200:
             raise ValueError 
@@ -497,7 +503,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
     # end_time = datetime.now()
     # log.info('DOC mission execution time: {}'.format(end_time - start_time))
 
-    return float(fuel_mass), float(complete_mission_flight_time), float(DOC), float(mach), float(passenger_capacity), float(SAR), float(landing_field_length_computed), float(takeoff_field_length_computed), float(app_speed), distance_vec, altitude_vec, mass_vec, time_vec, sfc_vec, thrust_vec, mach_vec, CL_vec, CD_vec, LoD_vec
+    return float(fuel_mass), float(complete_mission_flight_time), float(DOC), float(mach), float(passenger_capacity), float(SAR), float(landing_field_length_computed), float(takeoff_field_length_computed), float(app_speed), distance_vec, altitude_vec, mass_vec, time_vec, sfc_vec, thrust_vec, mach_vec, CL_vec, CD_vec, LoD_vec, throttle_vec, vcas_vec
 
 
 # =============================================================================

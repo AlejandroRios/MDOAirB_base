@@ -602,6 +602,8 @@ def objective_function_FPO(x, original_vehicle, mission_range,
     CL = 0
     CD = 0
     LoD = 0
+    throttle = 0
+    vcas = 0
 
     # =============================================================================
     # If airplane pass checks, status = 0, else status = 1 and profit = 0
@@ -622,9 +624,9 @@ def objective_function_FPO(x, original_vehicle, mission_range,
                     airports_keys[0]]['latitude']
                 airport_departure['longitude'] = airports[
                     airports_keys[0]]['longitude']
-                airport_departure['elevation'] = 6000
-                # airport_departure['elevation'] = airports[
-                #     airports_keys[0]]['elevation']
+                #airport_departure['elevation'] = 6000
+                airport_departure['elevation'] = airports[
+                     airports_keys[0]]['elevation']
                 airport_departure['dmg'] = airports[airports_keys[0]]['dmg']
                 airport_departure['tref'] = airports[airports_keys[0]]['tref']
 
@@ -648,7 +650,7 @@ def objective_function_FPO(x, original_vehicle, mission_range,
                 # Calculate DOC and mission parameters for origin-destination airports pair:
                 mission_range = distances[airports_keys[0]][airports_keys[1]]
                 print('Mission range = ', mission_range)
-                fuel_mass, total_mission_flight_time, DOC, mach, passenger_capacity, SAR, landing_field_length_computed, takeoff_field_length_computed, app_speed, distance, altitude, mass, time, sfc, thrust, machv, CL, CD, LoD = mission(
+                fuel_mass, total_mission_flight_time, DOC, mach, passenger_capacity, SAR, landing_field_length_computed, takeoff_field_length_computed, app_speed, distance, altitude, mass, time, sfc, thrust, machv, CL, CD, LoD, throttle, vcas = mission(
                     vehicle, airport_departure, takeoff_runway,
                     airport_destination, landing_runway, mission_range)
                 DOC_nd = DOC
@@ -666,7 +668,7 @@ def objective_function_FPO(x, original_vehicle, mission_range,
                       exc_info=True)
         # =============================================================================
 
-    return aircraft['maximum_takeoff_weight'], DOC_ik, fuel_mass, total_mission_flight_time, mach, passenger_capacity, SAR, landing_field_length_computed, takeoff_field_length_computed, app_speed, status, flags[0], distance, altitude, mass, time, sfc, thrust, machv, CL, CD, LoD 
+    return aircraft['maximum_takeoff_weight'], DOC_ik, fuel_mass, total_mission_flight_time, mach, passenger_capacity, SAR, landing_field_length_computed, takeoff_field_length_computed, app_speed, status, flags[0], distance, altitude, mass, time, sfc, thrust, machv, CL, CD, LoD, throttle, vcas
 # =============================================================================
 # TEST
 # =============================================================================
