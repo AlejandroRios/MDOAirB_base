@@ -108,7 +108,7 @@ def landing_gear_layout(vehicle):
         # Define número de pneus requerido
         pneu_number_by_strut_req = math.ceil(LoadMax/59500)
         # Verifica se número requerido de pneus é multiplo de 4
-        nwtest = pneu_number_by_strut_req % ns
+        nwtest = pneu_number_by_strut_req # ns
         if nwtest != 0:
             #    disp('passei por aqui como?')
             # Define número de pneus como um número par

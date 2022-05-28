@@ -239,13 +239,13 @@ NH_percent = 1.2
 
 start_time = time.time()
 
-(F, P_TO, m0_dot, S, S_P_TO, f0, eta_P, eta_TH, eta_O, C_c, C_prop,
- V9_a0, Pt9_P9, P9_P0, T9_T0,
- pi_cL, pi_cH, pi_tH, pi_tL,
- tau_cL, tau_cH, tau_tH, tau_tL, tau_lambda,
- tau_m1, tau_m2, f, M8, M9,
- Tt4,
- T_vec_TO, P_vec_TO) = performance_analysis(h, fuel_flow, M0,
+(F, fuel_flow, P_TO, m0_dot, S_P_TO, S_P, f0, eta_P, eta_TH, eta_O, C_c, C_prop,
+            V9_a0, Pt9_P9, P9_P0, T9_T0,
+            pi_cL, pi_cH, pi_tH, pi_tL,
+            tau_cL, tau_cH, tau_tH, tau_tL, tau_lambda,
+            tau_m1, tau_m2, f, M8, M9,
+            Tt4,
+            T_vec, P_vec) = performance_analysis(h, M0,
                                             Tt4,
                                             pi_dmax, pi_b, pi_n,
                                             eta_cL, eta_cH, eta_tH, eta_tL, eta_tF, eta_b, eta_mL, eta_mH, eta_mPL, eta_mPH, eta_propmax, eta_g,
@@ -286,13 +286,13 @@ print('\n Error SFC', (ESFC_TO_error*100))
 h = 25000
 M0 = 0.7
 
-(F, P_TO, m0_dot, S, S_P_TO, f0, eta_P, eta_TH, eta_O, C_c, C_prop,
- V9_a0, Pt9_P9, P9_P0, T9_T0,
- pi_cL, pi_cH, pi_tH, pi_tL,
- tau_cL, tau_cH, tau_tH, tau_tL, tau_lambda,
- tau_m1, tau_m2, f, M8, M9,
- Tt4,
- T_vec_TO, P_vec_TO) = performance_analysis(h, M0,
+(F, fuel_flow, P_TO, m0_dot, S_P_TO, S_P, f0, eta_P, eta_TH, eta_O, C_c, C_prop,
+            V9_a0, Pt9_P9, P9_P0, T9_T0,
+            pi_cL, pi_cH, pi_tH, pi_tL,
+            tau_cL, tau_cH, tau_tH, tau_tL, tau_lambda,
+            tau_m1, tau_m2, f, M8, M9,
+            Tt4,
+            T_vec, P_vec) = performance_analysis(h, M0,
                                             Tt4,
                                             pi_dmax, pi_b, pi_n,
                                             eta_cL, eta_cH, eta_tH, eta_tL, eta_tF, eta_b, eta_mL, eta_mH, eta_mPL, eta_mPH, eta_propmax, eta_g,

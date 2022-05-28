@@ -169,8 +169,8 @@ def maximum_altitude(vehicle, initial_altitude, limit_altitude, mass,
         rate_of_climb, V_tas = rate_of_climb_calculation(
             thrust_to_weight, altitude, delta_ISA, mach, mass, vehicle)
 
-        delta_time - increase in time [s] = altitude_step/rate_of_climb
-        time = time + delta_time - increase in time [s]
+        delta_time = altitude_step/rate_of_climb
+        time = time + delta_time
         distance = distance + (V_tas/60)*delta_time
         delta_fuel = (fuel_flow/60)*delta_time
         fuel = fuel+delta_fuel
@@ -179,7 +179,7 @@ def maximum_altitude(vehicle, initial_altitude, limit_altitude, mass,
 
     final_altitude = altitude - altitude_step
 
-    if buffet_altitude_limit < final_altitude:
+    if final_altitude > buffet_altitude_limit:
         final_altitude = buffet_altitude_limit
 
     return final_altitude, rate_of_climb
@@ -192,14 +192,14 @@ def maximum_altitude(vehicle, initial_altitude, limit_altitude, mass,
 # =============================================================================
 # TEST
 # =============================================================================
-# initial_altitude = 0
-# limit_altitude = 41000
-# mass = 43112 # [kg]
-# climb_V_cas = 280
-# mach_climb = 0.78
-# delta_ISA = 0
+initial_altitude = 0
+limit_altitude = 41000
+mass = 43112 # [kg]
+climb_V_cas = 280
+mach_climb = 0.78
+delta_ISA = 0
 
-# altitude, roc =  maximum_altitude(initial_altitude, limit_altitude, mass,
-#     climb_V_cas, mach_climb, delta_ISA)
+altitude, roc =  maximum_altitude(initial_altitude, limit_altitude, mass,
+    climb_V_cas, mach_climb, delta_ISA)
 
-# print(altitude, roc)
+print(altitude, roc)

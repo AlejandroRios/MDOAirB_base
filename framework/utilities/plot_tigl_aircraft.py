@@ -1,11 +1,34 @@
 from framework.CPACS_update.cpacsfunctions import *
 import numpy as np
+from tigl3.configuration import CCPACSConfigurationManager_get_instance
+from tigl3.boolean_ops import CFuseShapes
+from tigl3.import_export_helper import export_shapes
+import os
 
-# import tixi3.tixi3wrapper as tixi3wrapper
-# import tigl3.tigl3wrapper as tigl3wrapper
-# from tixi3.tixi3wrapper import Tixi3Exception
-# from tigl3.tigl3wrapper import Tigl3Exception
+def get_fused_shape(tigl_handle):
+    """
+    This example uses the opencascade fusing algorithm to fuse wing
+    and fuselage and writes the resulting geometry to a step file
+    """
+    print ("Computing fused geometry...")
 
+    # get the configuration manager
+    mgr = CCPACSConfigurationManager_get_instance()
+
+    # get the CPACS configuration, defined by the tigl handle
+    # we need to access the underlying tigl handle (that is used in the C/C++ API)
+    config = mgr.get_configuration(tigl_handle._handle.value)
+
+    fuselage_shape = config.get_fuselage(1).get_loft()
+    wing_shape = config.get_wing(1).get_loft()
+    wing_m_shape = config.get_wing(1).get_mirrored_loft()
+
+    # fuse the shapes
+    fused_shape = CFuseShapes(fuselage_shape, [wing_shape, wing_m_shape]).named_shape()
+
+    print ("Done!")
+
+    return fused_shape
 
 def plot3d_tigl(vehicle):
 
@@ -23,8 +46,7 @@ def plot3d_tigl(vehicle):
     engine = vehicle['engine']
     nacelle = vehicle['nacelle']
     aircraft = vehicle['aircraft']
-    
-    print((wing['semi_span']-(wing['semi_span_kink']*wing['semi_span'])))
+
 
     delta_x_root = 0
     delta_x_kink =  ((wing['semi_span_kink']*wing['semi_span'])-wing['root_chord_yposition'])*np.tan((wing['sweep_leading_edge']*np.pi)/180)
@@ -192,25 +214,34 @@ def plot3d_tigl(vehicle):
 
     tixi_out = close_tixi(tixi_out, cpacs_out_path)
 
+    tixi = open_tixi(cpacs_out_path)
+    tigl = open_tigl(tixi)
+
         # Reference parameters
     Cref = tigl.wingGetMAC(tigl.wingGetUID(1))
     Sref = tigl.wingGetReferenceArea(1,1)
     b    = tigl.wingGetSpan(tigl.wingGetUID(1))
 
-    print(Cref)
-    print(2*Sref)
-    print(b)
+    wett    = tigl.wingGetWettedArea(tigl.wingGetUID(2))
+
+    print('Cref',Cref)
+    print('Sref',Sref)
+    print('b',b)
+    print('wetted',wett)
+
+    # fused_ac = get_fused_shape(tigl)
+    # export_shapes([fused_ac], "simpletest.stp")
 
     return
 
 
-import pickle
+# import pickle
 
 # with open('Database/Family/40_to_100/all_dictionaries/'+str(57)+'.pkl', 'rb') as f:
 # with open('Database/Family/101_to_160/all_dictionaries/'+str(4)+'.pkl', 'rb') as f:
-with open('Database/Family/161_to_220/all_dictionaries/'+str(5)+'.pkl', 'rb') as f:
-    all_info_acft1 = pickle.load(f)
+# with open('Database/Family/161_to_220/all_dictionaries/'+str(53)+'.pkl', 'rb') as f:
 #     all_info_acft1 = pickle.load(f)
+# #     all_info_acft1 = pickle.load(f)
 
-vehicle = all_info_acft1['vehicle']
-plot3d_tigl(vehicle)
+# vehicle = all_info_acft1['vehicle']
+# plot3d_tigl(vehicle)

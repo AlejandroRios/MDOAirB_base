@@ -105,8 +105,8 @@ def tire_selection(load, V_qualified, pneu_pressure, selection_criteria):
     V_qualified = float(V_qualified)
     speed = min(V_qualified, 235)
     df_tires = pd.DataFrame.from_dict(tire_database, orient='index')
-    df_tires_meet_condition = df_tires[(df_tires.load >= load*1.1) & (
-        df_tires.velocity >= speed) & (df_tires.pressure <= pneu_pressure)]
+    df_tires_meet_condition = df_tires[(df_tires.load >= load*1.1) and (
+        df_tires.velocity >= speed) and (df_tires.pressure <= pneu_pressure)]
 
     if selection_criteria == 'weight':
         tire_selected = df_tires_meet_condition.loc[df_tires_meet_condition['weight']

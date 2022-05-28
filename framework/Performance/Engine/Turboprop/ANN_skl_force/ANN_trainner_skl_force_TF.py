@@ -9,10 +9,10 @@ from sklearn.model_selection import train_test_split
 # -----------------------------------------------------------------------
 # Load data and
 x = np.load("Performance/Engine/Turboprop/X_data2.npy")
-y2 = np.load("Performance/Engine/Turboprop/y2_data2.npy")
+y1 = np.load("Performance/Engine/Turboprop/y1_data2.npy")
 
 
-x_train, x_test, y_train, y_test = train_test_split(x, y2, test_size=0.8, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(x, y1, test_size=0.2, random_state=42)
 
 scaler = StandardScaler()
 scaler.fit(x_train)
@@ -41,8 +41,8 @@ input_size=2
 output_size=1
 
 
-hidden1 = tf.keras.layers.Dense(units=30, input_shape=[3], activation = 'relu')
-hidden2 = tf.keras.layers.Dense(units=70, activation = 'relu')
+hidden1 = tf.keras.layers.Dense(units=90, input_shape=[3], activation = 'relu')
+hidden2 = tf.keras.layers.Dense(units=100, activation = 'relu')
 hidden3 = tf.keras.layers.Dense(units=50, activation = 'relu')
 hidden4 = tf.keras.layers.Dense(units=10, activation = 'relu')
 hidden5 = tf.keras.layers.Dense(units=10, activation = 'relu')

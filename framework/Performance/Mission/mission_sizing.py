@@ -415,7 +415,7 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
     Dmin = 10*operations['mach_cruise']*min_cruise_time
 
     K2 = (
-        performance['range']
+        operations['alternative_airport_distance']
         - Dmin
         + g_climb*(airport_departure['elevation'] + 1500)
         + g_descent*(airport_destination['elevation'] + 1500)
@@ -598,7 +598,11 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
 
         vehicle = aircraft_empty_weight(vehicle, max_takeoff_mass, total_mission_burned_fuel,
                                         engine_static_thrust, operations['mach_maximum_operating']-0.02, max_altitude)
-                                        
+        
+        # aircraft = vehicle['aircraft']
+        # horizontal_tail = vehicle['horizontal_tail']
+        # vertical_tail  = vehicle['vertical_tail']
+                                          
         MTOW_new = aircraft['payload_weight'] + aircraft['operational_empty_weight'] + \
             aircraft['crew_number']*100 + total_mission_burned_fuel_complete*1.0025
         MTOW_error = abs(MTOW_calculated - MTOW_new)
@@ -610,6 +614,9 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
         aircraft_wetted_area_old = aircraft['wetted_area']
 
         vehicle = sizing_tail(vehicle, mach, altitude)
+        # aircraft = vehicle['aircraft']
+        # horizontal_tail = vehicle['horizontal_tail']
+        # vertical_tail  = vehicle['vertical_tail']
 
         aircraft['wetted_area'] = aircraft_wetted_area_old + horizontal_tail['wetted_area'] + \
             vertical_tail['wetted_area'] - \
@@ -618,7 +625,7 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
     # log.info('---- End mission sizing function ----')
     # end_time = datetime.now()
     # log.info('Mission sizing execution time: {}'.format(end_time - start_time))
-
+    # print(MTOW_calculated)
     return vehicle, MTOW_calculated, total_mission_burned_fuel_complete, landing_weight
 
 
@@ -629,8 +636,12 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
 # =============================================================================
 # TEST
 # =============================================================================
+# import pickle
+# with open('Database/Family/161_to_220/all_dictionaries/'+str(53)+'.pkl', 'rb') as f:
+#     all_info_acft1 = pickle.load(f)
+# #     all_info_acft1 = pickle.load(f)
 
-# vehicle = np.load('vehicle_test.npy',allow_pickle='TRUE').item()
+# vehicle = all_info_acft1['vehicle']
 # # print(vehicle['wing']) # displays "world"
 # aircraft = vehicle['aircraft']
 # horizontal_tail = vehicle['horizontal_tail']
@@ -639,9 +650,13 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
 # fuselage = vehicle['fuselage']
 # # print(aircraft)
 # # print('---------------------------------------------------------')
+
+# airport_departure ='LHR'
+# airport_destination ='FRA'
+
 # mach = 0.8
 # altitude = 41000
-# vehicle = mission(vehicle)
+# vehicle = mission_sizing(vehicle, airport_departure, airport_destination)
 # # aircraft = vehicle['aircraft']
 # # horizontal_tail = vehicle['horizontal_tail']
 # # vertical_tail = vehicle['vertical_tail']

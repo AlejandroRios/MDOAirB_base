@@ -365,8 +365,17 @@ def optimum_altitude(vehicle, initial_altitude, limit_altitude, mass,
 # climb_V_cas = 280
 # mach_climb = 0.78
 # delta_ISA = 0
+# import pickle
 
-# altitude, roc =  maximum_altitude(initial_altitude, limit_altitude, mass,
+# # with open('Database/Family/40_to_100/all_dictionaries/'+str(57)+'.pkl', 'rb') as f:
+# # with open('Database/Family/101_to_160/all_dictionaries/'+str(4)+'.pkl', 'rb') as f:
+# with open('Database/Family/161_to_220/all_dictionaries/'+str(53)+'.pkl', 'rb') as f:
+#     all_info_acft1 = pickle.load(f)
+# #     all_info_acft1 = pickle.load(f)
+
+# vehicle = all_info_acft1['vehicle']
+
+# altitude, roc =  maximum_altitude(vehicle, initial_altitude, limit_altitude, mass,
 #     climb_V_cas, mach_climb, delta_ISA)
 
 # print(altitude, roc)

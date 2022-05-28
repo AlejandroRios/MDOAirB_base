@@ -38,7 +38,7 @@ def tailcone_sizing(NPax, PEng, fuse_height, fuse_width):
         - ltail - tail length [m]
     """
     #  Provide a sizing of the tailcone
-    fusext = 0
+    fusext = 1
     if NPax <= 50:
         # passenger baggage 200 kg/m3 e 20 kg por pax
         bagvol = NPax*20/200   # m3
