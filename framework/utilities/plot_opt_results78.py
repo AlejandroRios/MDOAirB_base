@@ -22,6 +22,8 @@ with open(r"Database/Results_Multi_Optim/variables/vars_multi_obj_DD_profit_cost
     df_vars = pickle.load(input_file)
 
 
+print(df_DD.head())
+
 print('min CO2',np.min(df_DD['X1']))
 print('max prof',np.min(df_DD['X2']))
 
@@ -58,13 +60,13 @@ ax.set_xlabel('Profit [US$]')
 ax.set_ylabel('CO2 efficiecy [kg/nm]')
 
 
-# ax.scatter(df_GCD['X1'], df_GCD['X2'],s=30, facecolors='none', edgecolors='grey',alpha = 0.5,label='GCD solutions')
-# ax.scatter(df_DD['X1'], df_DD['X2'],s=30, facecolors='none', edgecolors='skyblue',alpha = 0.5,label='DD solutions')
-# ax.scatter(F1_GCD, F2_GCD, s=50, facecolors='none',marker= '^',edgecolors='black')
-# ax.scatter(F1_DD, F2_DD, s=50, facecolors='none',marker= 's',edgecolors='black')
-# ax.set_title("Objective Space")
+ax.scatter(df_GCD['X1'], df_GCD['X2'],s=30, facecolors='none', edgecolors='grey',alpha = 0.5,label='GCD solutions')
+ax.scatter(df_DD['X1'], df_DD['X2'],s=30, facecolors='none', edgecolors='skyblue',alpha = 0.5,label='DD solutions')
+ax.scatter(F1_GCD, F2_GCD, s=50, facecolors='none',marker= '^',edgecolors='black')
+ax.scatter(F1_DD, F2_DD, s=50, facecolors='none',marker= 's',edgecolors='black')
+ax.set_title("Objective Space")
 
-ax.scatter(df_vars['X1'], df_vars['X3'],s=30, facecolors='none', edgecolors='grey',alpha = 0.5,label='GCD solutions')
+# ax.scatter(df_vars['X1'], df_vars['X3'],s=30, facecolors='none', edgecolors='grey',alpha = 0.5,label='GCD solutions')
 
 plt.legend(loc='upper left')
 
