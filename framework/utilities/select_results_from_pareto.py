@@ -10,6 +10,9 @@ with open(r"Database/Results_Multi_Optim/functions/case5_profit_pareto.pkl", "rb
 with open(r"Database/Results_Multi_Optim/functions/case5_C02_pareto.pkl", "rb") as input_file:
     F2_GCD = pickle.load(input_file)
 
+with open(r"Database/Results_Multi_Optim/functions/functions_multi_obj_GCD_profit_CO2.pkl", "rb") as input_file:
+    df_GCD_all = pickle.load(input_file)
+
 
 with open(r"Database/Results_Multi_Optim/variables/vars_multi_obj_GCD_profit_CO2.pkl", "rb") as input_file:
     df_vars = pickle.load(input_file)
@@ -20,7 +23,7 @@ df_GCD = pd.DataFrame(
     {'X1': F1_GCD,
      'X2': F2_GCD,})
 
-
+print(df_GCD_all.head())
 
 print('min CO2',np.min(df_GCD['X1']))
 print('max prof',np.min(df_GCD['X2']))
@@ -33,16 +36,17 @@ meanCO2 = np.mean(df_GCD['X1'])
 meanProf  = np.mean(df_GCD['X2'])
 
 input = meanCO2 
-print('meanCO2 ',df_GCD.iloc[(df_GCD['X1']-input).abs().argsort()[:1]])
+print('meanCO2 ',df_GCD_all.iloc[(df_GCD_all['X1']-input).abs().argsort()[:1]])
 input2 = meanProf
-print('meanProf',df_GCD.iloc[(df_GCD['X2']-input2).abs().argsort()[:1]])
+print('meanProf',df_GCD_all.iloc[(df_GCD_all['X2']-input2).abs().argsort()[:1]])
 
-point_meanCO2 = df_GCD.iloc[(df_GCD['X1']-input).abs().argsort()[:1]]
-point_meanProf = df_GCD.iloc[(df_GCD['X2']-input2).abs().argsort()[:1]]
+point_meanCO2 = df_GCD_all.iloc[(df_GCD_all['X1']-input).abs().argsort()[:1]]
+point_meanProf = df_GCD_all.iloc[(df_GCD_all['X2']-input2).abs().argsort()[:1]]
 
 print(point_meanCO2)
-
-print(df_vars.iloc[22])
+print(len(df_vars))
+print('vars mean cO2',df_vars.iloc[1533])
+print('vars mean Prof',df_vars.iloc[743])
 # F1_DD = pd.DataFrame(F1_DD, columns=['F1'])
 # F2_DD = pd.DataFrame(F2_DD, columns=['F2'])
 
