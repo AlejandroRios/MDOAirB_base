@@ -332,13 +332,13 @@ if __name__ == "__main__":
     mask = ["int", "int", "int"]
 
     sampling = MixedVariableSampling(mask, {
-        "real": get_sampling("real_random"),
-        "int": get_sampling("int_random")
+        "real": get_sampling("real_lhs"),
+        "int": get_sampling("int_lhs")
     })
 
     crossover = MixedVariableCrossover(mask, {
-        "real": get_crossover("real_sbx", prob=1.0, eta=3.0),
-        "int": get_crossover("int_sbx", prob=1.0, eta=3.0)
+        "real": get_crossover("real_sbx", prob=0.5, eta=3.0),
+        "int": get_crossover("int_sbx", prob=0.5, eta=3.0)
     })
 
     mutation = MixedVariableMutation(mask, {

@@ -237,13 +237,13 @@ def plot3d_tigl(vehicle):
 
 import pickle
 
-# with open('Database/Family/40_to_100/all_dictionaries/'+str(58)+'.pkl', 'rb') as f:
-# with open('Database/Family/101_to_160/all_dictionaries/'+str(7)+'.pkl', 'rb') as f:
-# with open('Database/Family/161_to_220/all_dictionaries/'+str(31)+'.pkl', 'rb') as f:
+# with open('Database/Family/40_to_100/all_dictionaries/'+str(36)+'.pkl', 'rb') as f:
+# with open('Database/Family/101_to_160/all_dictionaries/'+str(13)+'.pkl', 'rb') as f:
+# with open('Database/Family/161_to_220/all_dictionaries/'+str(8)+'.pkl', 'rb') as f:
 
-with open('Database/Family_DD/40_to_100/all_dictionaries/'+str(30)+'.pkl', 'rb') as f:
-# with open('Database/Family/101_to_160/all_dictionaries/'+str(25)+'.pkl', 'rb') as f:
-# with open('Database/Family/161_to_220/all_dictionaries/'+str(24)+'.pkl', 'rb') as f:
+# with open('Database/Family_DD/40_to_100/all_dictionaries/'+str(28)+'.pkl', 'rb') as f:
+# with open('Database/Family_DD/101_to_160/all_dictionaries/'+str(2)+'.pkl', 'rb') as f:
+with open('Database/Family_DD/161_to_220/all_dictionaries/'+str(24)+'.pkl', 'rb') as f:
 
 
     all_info_acft1 = pickle.load(f)

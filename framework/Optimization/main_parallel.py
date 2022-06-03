@@ -279,7 +279,7 @@ def process_optimized_aircraft(design_variables, original_vehicle, computation_m
 
 	# Genetic algoritgm configuration
 	toolbox.register("evaluate", objective_function, original_vehicle=original_vehicle, computation_mode=computation_mode, route_computation_mode=route_computation_mode, airports=airports, distances=distances, demands=demands)
-	toolbox.register('mate', tools.cxTwoPoint)
+	toolbox.register('mate', tools.cxTwocPoint)
 	toolbox.register("mutate", tools.mutUniformInt,low =lower_bounds,up=upper_bounds,indpb=0.2)
 	toolbox.register("select", tools.selNSGA2)
 	toolbox.register("population_guess", init_population, list, creator.Individual,original_population)

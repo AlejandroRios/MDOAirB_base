@@ -151,6 +151,9 @@ def objective_function0(x, original_vehicle, computation_mode, route_computation
         airports_3, distances_3, demands_3, DOC_ik_3, DOC_nd_3, fuel_mass_3, total_mission_flight_time_3, mach_3, passenger_capacity_3, SAR_3, vehicle_3 = load_info_from_dicts(
             all_info_acft3)
 
+
+        print(passenger_capacity_1)
+
         # SAR_all = float(all_info_acft1['SAR']) + float(all_info_acft2['SAR']) + float(all_info_acft3['SAR'])
 
         status = 0

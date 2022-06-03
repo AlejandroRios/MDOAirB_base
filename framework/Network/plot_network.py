@@ -63,10 +63,25 @@ arrivals = ['CD0', 'CD1', 'CD2', 'CD3',
 #         freq_2.append(dic[(i,j)])
 
 freq_2 = np.load('Database/Results_FamOpt/acft3.npy')
+# freq_2 = np.load('Network/acft2.npy')
+
+# print(freq_2)
 
 freq_matrix = freq_2
 
 freq_matrix = freq_matrix.astype(int)
+
+# freq_matrix = np.ones([15, 15])
+
+
+# # freq_matrix = freq_matrix.astype(int)
+
+# freq_matrix[np.diag_indices_from(freq_matrix)] = 0
+
+
+print(freq_matrix)
+
+
 
 data = pd.read_csv("Database/Airports/airports.csv")
 print(data.head())

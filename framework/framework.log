@@ -1,8 +1,5 @@
-2022-05-29 15:46:09,425 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== Start writing aircraft results ====
-2022-05-29 15:46:12,874 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== End writing aircraft results ====
-2022-05-29 15:46:12,874 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== Start writing klm results ====
-2022-05-29 15:46:12,875 - c:\users\aarc8\documents\github\mdoairb_base\framework\utilities\output     - INFO - ==== End writing klm results ====
-ly_network_optimization     - INFO - Network optimization status: Optimal
-2022-05-29 15:46:09,372 - c:\users\aarc8\2022-05-29 15:46:09,373 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_multiobjective     - INFO - Network profit [$USD]: 1403190
-2022-05-29 15:46:12,882 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_multiobjective     - INFO - Network profit excecution time: 0:05:05.390663
-2022-05-29 15:46:12,882 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_multiobjective     - INFO - ==== End network profit module ====
+2022-06-03 10:08:43,576 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\family_network_optimization     - INFO - ==== Start network optimization module ====
+2022-06-03 10:08:43,601 - c:\users\aarc8\documents\github\mdoairb_base\framework\Network\family_network_optimization     - INFO - ==== Start PuLP optimization ====
+d checks status: 0
+2022-06-03 10:08:43,576 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_multiobjective     - INFO - ---- Start DOC matrix calculation ----
+2022-06-03 10:08:43,576 - c:\Users\aarc8\Documents\github\MDOAirB_base\framework\Optimization\aircraft_family_multiobjective     - INFO - ---- Start Network Optimization ----
