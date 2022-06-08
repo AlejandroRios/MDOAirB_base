@@ -235,35 +235,35 @@ def plot3d_tigl(vehicle):
     return
 
 
-import pickle
+# import pickle
 
-# with open('Database/Family/40_to_100/all_dictionaries/'+str(36)+'.pkl', 'rb') as f:
-# with open('Database/Family/101_to_160/all_dictionaries/'+str(13)+'.pkl', 'rb') as f:
-# with open('Database/Family/161_to_220/all_dictionaries/'+str(8)+'.pkl', 'rb') as f:
+# # with open('Database/Family/40_to_100/all_dictionaries/'+str(36)+'.pkl', 'rb') as f:
+# # with open('Database/Family/101_to_160/all_dictionaries/'+str(13)+'.pkl', 'rb') as f:
+# # with open('Database/Family/161_to_220/all_dictionaries/'+str(8)+'.pkl', 'rb') as f:
 
-# with open('Database/Family_DD/40_to_100/all_dictionaries/'+str(28)+'.pkl', 'rb') as f:
-# with open('Database/Family_DD/101_to_160/all_dictionaries/'+str(2)+'.pkl', 'rb') as f:
-with open('Database/Family_DD/161_to_220/all_dictionaries/'+str(24)+'.pkl', 'rb') as f:
+# # with open('Database/Family_DD/40_to_100/all_dictionaries/'+str(28)+'.pkl', 'rb') as f:
+# # with open('Database/Family_DD/101_to_160/all_dictionaries/'+str(2)+'.pkl', 'rb') as f:
+# with open('Database/Family_DD/161_to_220/all_dictionaries/'+str(24)+'.pkl', 'rb') as f:
 
 
-    all_info_acft1 = pickle.load(f)
 #     all_info_acft1 = pickle.load(f)
+# #     all_info_acft1 = pickle.load(f)
 
-vehicle = all_info_acft1['vehicle']
-plot3d_tigl(vehicle)
+# vehicle = all_info_acft1['vehicle']
+# plot3d_tigl(vehicle)
 
 
-print(all_info_acft1['vehicle']['aircraft']['passenger_capacity'])
-print(all_info_acft1['vehicle']['fuselage']['seat_abreast_number'])
-print(all_info_acft1['vehicle']['wing']['area'])
-print(all_info_acft1['vehicle']['wing']['aspect_ratio'])
-print(all_info_acft1['vehicle']['wing']['semi_span_kink'])
-print(all_info_acft1['vehicle']['wing']['sweep_c_4'])
-print(all_info_acft1['vehicle']['wing']['taper_ratio'])
-print(all_info_acft1['vehicle']['wing']['twist'])
-print(all_info_acft1['vehicle']['engine']['type'])
-print(all_info_acft1['vehicle']['engine']['bypass'])
-print(all_info_acft1['vehicle']['engine']['fan_diameter'])
-print(all_info_acft1['vehicle']['engine']['maximum_thrust'])
-print(all_info_acft1['vehicle']['engine']['turbine_inlet_temperature'])
-print(all_info_acft1['vehicle']['performance']['range'])
+# print(all_info_acft1['vehicle']['aircraft']['passenger_capacity'])
+# print(all_info_acft1['vehicle']['fuselage']['seat_abreast_number'])
+# print(all_info_acft1['vehicle']['wing']['area'])
+# print(all_info_acft1['vehicle']['wing']['aspect_ratio'])
+# print(all_info_acft1['vehicle']['wing']['semi_span_kink'])
+# print(all_info_acft1['vehicle']['wing']['sweep_c_4'])
+# print(all_info_acft1['vehicle']['wing']['taper_ratio'])
+# print(all_info_acft1['vehicle']['wing']['twist'])
+# print(all_info_acft1['vehicle']['engine']['type'])
+# print(all_info_acft1['vehicle']['engine']['bypass'])
+# print(all_info_acft1['vehicle']['engine']['fan_diameter'])
+# print(all_info_acft1['vehicle']['engine']['maximum_thrust'])
+# print(all_info_acft1['vehicle']['engine']['turbine_inlet_temperature'])
+# print(all_info_acft1['vehicle']['performance']['range'])
