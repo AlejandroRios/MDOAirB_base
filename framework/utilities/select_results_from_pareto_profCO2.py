@@ -5,25 +5,28 @@ import numpy as np
 from sklearn.datasets import make_friedman1
 
 
-with open(r"Database/Results_Multi_Optim/functions/case5_C02_pareto.pkl", "rb") as input_file:
-    F1_GCD = pickle.load(input_file)
+
 with open(r"Database/Results_Multi_Optim/functions/case5_profit_pareto.pkl", "rb") as input_file:
+    F1_GCD = pickle.load(input_file)
+
+with open(r"Database/Results_Multi_Optim/functions/case5_C02_pareto.pkl", "rb") as input_file:
     F2_GCD = pickle.load(input_file)
 
 with open(r"Database/Results_Multi_Optim/functions/functions_multi_obj_GCD_profit_CO2.pkl", "rb") as input_file:
     df_GCD_all = pickle.load(input_file)
 
-
 with open(r"Database/Results_Multi_Optim/variables/vars_multi_obj_GCD_profit_CO2.pkl", "rb") as input_file:
     df_vars = pickle.load(input_file)
 
-
+print(F1_GCD)
 
 df_GCD = pd.DataFrame(
     {'X1': F1_GCD,
      'X2': F2_GCD,})
 
-print(df_GCD_all.head())
+
+print(df_GCD_all)
+# print(df_GCD_all.head())
 
 # print('max prof',np.min(df_GCD['X1']))
 # print('min cost',np.min(df_GCD['X2']))
@@ -33,12 +36,14 @@ print(df_GCD_all.head())
 
 
 
-maxprof = np.min(df_GCD['X1'])
-mincost = np.min(df_GCD['X2'])
+maxprofit= np.min(df_GCD['X1'])
+mainC02 = np.min(df_GCD['X2'])
 
-input =maxprof
-input2 = mincost
-print('minCO2',df_GCD_all.iloc[(df_GCD_all['X1']-input).abs().argsort()[:3]])
+# print(mainC02 ,maxprofit)
+
+input =mainC02 
+input2 = maxprofit
+print('minCO2',df_GCD_all.iloc[(df_GCD_all['X2']-input).abs().argsort()[:3]])
 # print('maxProf ',df_GCD_all.iloc[(df_GCD_all['X2']-input2).abs().argsort()[:1]])
 
 point_meanProf = df_GCD_all.iloc[(df_GCD_all['X1']-input).abs().argsort()[:3]]
@@ -46,7 +51,7 @@ point_meanCO2 = df_GCD_all.iloc[(df_GCD_all['X2']-input2).abs().argsort()[:3]]
 
 # print(point_meanCO2)
 # print(len(df_vars))
-print('vars mean cO2',df_vars.iloc[1546])
+print('vars mean cO2',df_vars.iloc[986])
 # print('vars mean Prof',df_vars.iloc[743])
 
 # print('vars min cO2',df_vars.iloc[1078])
@@ -89,4 +94,4 @@ ax.set_title("Objective Space")
 
 plt.legend(loc='upper left')
 
-plt.show()
+# plt.show()
