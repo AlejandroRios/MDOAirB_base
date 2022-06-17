@@ -2,16 +2,16 @@ import pickle
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-with open(r"Database/Results_Multi_Optim/functions/case5_profit_pareto.pkl", "rb") as input_file:
+with open(r"Database/Results_Multi_Optim/functions/case6_profit_pareto.pkl", "rb") as input_file:
     F1_GCD = pickle.load(input_file)
 
-with open(r"Database/Results_Multi_Optim/functions/case5_C02_pareto.pkl", "rb") as input_file:
+with open(r"Database/Results_Multi_Optim/functions/case6_C02_pareto.pkl", "rb") as input_file:
     F2_GCD = pickle.load(input_file)
 
-with open(r"Database/Results_Multi_Optim/functions/functions_multi_obj_GCD_profit_CO2.pkl", "rb") as input_file:
+with open(r"Database/Results_Multi_Optim/functions/functions_multi_obj_DD_profit_CO2.pkl", "rb") as input_file:
     df_GCD_all = pickle.load(input_file)
 
-with open(r"Database/Results_Multi_Optim/variables/vars_multi_obj_GCD_profit_CO2.pkl", "rb") as input_file:
+with open(r"Database/Results_Multi_Optim/variables/vars_multi_obj_DD_profit_CO2.pkl", "rb") as input_file:
     df_vars = pickle.load(input_file)
 
 print(F1_GCD)
@@ -56,8 +56,6 @@ point_meanProf = df_GCD.iloc[(df_GCD['X1']-input3).abs().argsort()[:1]]
 point_meanCO2 = df_GCD.iloc[(df_GCD['X2']-input4).abs().argsort()[:1]]
 
 
-
-point_meanProf = df_GCD_all.iloc[(df_GCD_all['X1']-(-1758594)).abs().argsort()[:10]]
 
 print('meanProfit',point_meanProf)
 
