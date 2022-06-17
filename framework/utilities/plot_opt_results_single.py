@@ -46,6 +46,8 @@ point_minCO2 = df_GCD_all.iloc[(df_GCD_all['X2']-input2).abs().argsort()[:1]]
 print('minCO2',df_GCD_all.iloc[(df_GCD_all['X2']-input2).abs().argsort()[:3]])
 # print('maxProf ',df_GCD_all.iloc[(df_GCD_all['X2']-input2).abs().argsort()[:1]])
 
+print('max profit',point_maxProf)
+
 print('aquiii',)
 input3 = np.mean(df_GCD['X1'])
 input4 = np.mean(df_GCD['X2'])
@@ -54,7 +56,7 @@ point_meanCO2 = df_GCD.iloc[(df_GCD['X2']-input4).abs().argsort()[:1]]
 
 # print(point_meanCO2)
 # print(len(df_vars))
-print('vars mean cO2',df_vars.iloc[986])
+print('vars mean cO2',df_vars.iloc[1334])
 # print('vars mean Prof',df_vars.iloc[743])
 
 # print('vars min cO2',df_vars.iloc[1078])
