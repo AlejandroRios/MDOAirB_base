@@ -333,7 +333,7 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
         - final_block_mass
         - final_block_time
     """
-    Tsim = initial_block_time + 40
+    Tsim = initial_block_time + 5
     stop_condition.terminal = True
 
     stop_criteria = final_block_altitude

@@ -101,7 +101,7 @@ def cruise_performance_simple(altitude, delta_ISA, mach, mass, distance_cruise, 
         - time_cruise - time spent during cruise phase [min]
         - final_mass - aircraft mass at the end of cruise [kg]
     """
-    n = 4
+    n = 10
     step_cruise = distance_cruise/n
     distance = 0
     time_cruise = []
