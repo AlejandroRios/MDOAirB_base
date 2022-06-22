@@ -299,7 +299,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
             if delta < tolerance:
                 out = 1
         
-        distance_vec = np.append(distance_vec, distancev)
+        distance_vec = np.append(distance_vec, distancev*feet_to_nautical_miles)
         altitude_vec = np.append(altitude_vec, altitudev)
         mass_vec = np.append(mass_vec, massv)
         time_vec = np.append(time_vec, timev)
@@ -317,6 +317,10 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
         initial_cruise_altitude = final_altitude
 
         distance_climb = final_distance*feet_to_nautical_miles
+
+        # print('distance traveled over climb',distance_climb)
+        # print('initial altitude climb',initial_altitude)
+        # print('final altitude climb',final_altitude)
 
         distance_cruise = mission_range  - distance_climb
 
@@ -354,6 +358,8 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
                 distance_cruise,
                 vehicle
             )
+            # print('distance traveled over cruise',distance_cruise)
+            
             
             final_cruise_altitude = altitude
 
@@ -372,7 +378,12 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
                     final_cruise_altitude,
                     vehicle
                 )
+
+                
                 distance_descent = final_distance*feet_to_nautical_miles
+                # print('distance traveled over descent',distance_descent)
+                # print('initial altitude descent',final_cruise_altitude)
+                # print('final altitude descent',final_altitude)
                 distance_mission = distance_climb + distance_cruise + distance_descent
                 distance_error = np.abs(mission_range -distance_mission)
 
@@ -386,7 +397,7 @@ def mission(vehicle, airport_departure, takeoff_runway, airport_destination, lan
                     else:
                         distance_cruise = distance_cruise + distance_error*0.95
                         
-        distance_vec = np.append(distance_vec, final_distance + distancev)
+        distance_vec = np.append(distance_vec, distance_cruise + distancev*feet_to_nautical_miles)
         altitude_vec = np.append(altitude_vec, altitudev)
         mass_vec = np.append(mass_vec, massv)
         time_vec = np.append(time_vec, total_climb_time +
