@@ -1,14 +1,14 @@
 
 import pickle
 
-with open('Database/Family/40_to_100/all_dictionaries/'+str(57)+'.pkl', 'rb') as f:
-    all_info_acft1 = pickle.load(f)
+# with open('Database/Family/40_to_100/all_dictionaries/'+str(57)+'.pkl', 'rb') as f:
+#     all_info_acft1 = pickle.load(f)
 
 # # with open('Database/Family/101_to_160/all_dictionaries/'+str(13)+'.pkl', 'rb') as f:
 # #     all_info_acft1 = pickle.load(f)
 
-# with open('Database/Family/161_to_220/all_dictionaries/'+str(0)+'.pkl', 'rb') as f:
-#     all_info_acft1 = pickle.load(f)
+with open('Database/Family/161_to_220/all_dictionaries/'+str(60)+'.pkl', 'rb') as f:
+    all_info_acft1 = pickle.load(f)
 
 # with open('Database/Family_DD/40_to_100/all_dictionaries/'+str(18)+'.pkl', 'rb') as f:
 #     all_info_acft1 = pickle.load(f)
