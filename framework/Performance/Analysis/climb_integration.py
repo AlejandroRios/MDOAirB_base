@@ -28,7 +28,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 
-from framework.Attributes.Airspeed.airspeed import V_cas_to_mach, mach_to_V_cas, crossover_altitude
+from framework.Attributes.Airspeed.airspeed import V_cas_to_mach, V_tas_to_V_cas, mach_to_V_cas, crossover_altitude
 from framework.Attributes.Atmosphere.atmosphere_ISA_deviation import atmosphere_ISA_deviation
 from framework.Performance.Analysis.climb_acceleration import acceleration_to_250
 from framework.Performance.Engine.engine_performance import turbofan
@@ -359,7 +359,7 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
     vcas_vec = [] 
     
     for i in range(len(altitude)):
-        sfc, thrust_force, mach, CL, CD, LoD, throttle = compute_flight_data(
+        sfc, thrust_force, mach, CL, CD, LoD, throttle, vcas = compute_flight_data(
             altitude[i], mass[i], climb_V_cas, mach_climb, delta_ISA, vehicle)
         sfc_vec = np.append(sfc_vec, sfc)
         thrust_vec = np.append(thrust_vec, thrust_force)
@@ -368,7 +368,7 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
         CD_vec = np.append(CD_vec, CD)
         LoD_vec = np.append(LoD_vec, LoD)
         throttle_vec = np.append(throttle_vec, throttle)
-        vcas_vec = np.append(vcas_vec, climb_V_cas)
+        vcas_vec = np.append(vcas_vec, vcas)
     
     return final_block_distance, final_block_altitude, final_block_mass, final_block_time, distance, altitude, mass, time, sfc_vec, thrust_vec, mach_vec, CL_vec, CD_vec, LoD_vec, throttle_vec, vcas_vec
 
@@ -463,6 +463,7 @@ def compute_flight_data(altitude, mass, climb_V_cas, mach_climb, delta_ISA, vehi
     # if rate_of_climb < 300:
     #     print('rate of climb violated!')
     # time_dot = h_dot
+    vcas = V_tas_to_V_cas(V_tas, altitude, delta_ISA)
     sfc = fuel_flow/(thrust_force/10) # sfc in kg/h/daN
     if sfc < 0:
         print('Climb phase')
@@ -470,7 +471,7 @@ def compute_flight_data(altitude, mass, climb_V_cas, mach_climb, delta_ISA, vehi
         print('Fuel Flow = {}'.format(fuel_flow))
         print('Thrust = {}'.format(thrust_force))
         print('Altitude = {}, Mach = {}, Throttle position = {}'.format(altitude, mach, throttle_position))
-    return sfc, thrust_force, mach, CL, CD, LoD, throttle_position
+    return sfc, thrust_force, mach, CL, CD, LoD, throttle_position, vcas
 # =============================================================================
 # MAIN
 # =============================================================================
