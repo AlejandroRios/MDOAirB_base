@@ -46,7 +46,7 @@ from framework.Sizing.Geometry.sizing_landing_gear import sizing_landing_gear
 from framework.Sizing.performance_constraints import *
 from framework.Noise.Noise_Smith.noise_calculation import noise_calculation
 from framework.utilities.plot_simple_aircraft import plot3d
-from framework.utilities.plot_tigl_aircraft import plot3d_tigl
+#from framework.utilities.plot_tigl_aircraft import plot3d_tigl
 from framework.utilities.logger import get_logger
 
 from datetime import datetime

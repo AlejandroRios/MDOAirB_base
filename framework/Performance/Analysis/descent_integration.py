@@ -509,7 +509,7 @@ def compute_flight_data(altitude, mass, climb_V_cas, mach_climb, delta_ISA, vehi
         total_fuel_flow = aircraft['number_of_engines'] * fuel_flow
         throttle_position = throttle_position+step_throttle
     
-    if sfc < 0:
+    if sfc > 1:
         print('Descent phase')
         print('SFC = {}'.format(sfc))
         print('Fuel Flow = {}'.format(fuel_flow))

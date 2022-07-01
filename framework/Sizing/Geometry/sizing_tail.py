@@ -27,7 +27,7 @@ import numpy as np
 from framework.Sizing.Geometry.sizing_vertical_tail import sizing_vertical_tail
 from framework.Sizing.Geometry.sizing_horizontal_tail import sizing_horizontal_tail
 from framework.Weights.center_of_gravity_position import center_of_gravity
-from framework.CPACS_update.cpacsfunctions import *
+#from framework.CPACS_update.cpacsfunctions import *
 import os
 # =============================================================================
 # CLASSES
@@ -55,10 +55,10 @@ def sizing_tail(vehicle, mach, altitude):
 
     path = os.getcwd()
     MODULE_DIR = path + '/CPACS_update'
-    cpacs_path = os.path.join(MODULE_DIR, 'ToolInput', 'Aircraft_In.xml')
-    cpacs_out_path = os.path.join(MODULE_DIR, 'ToolOutput', 'Aircraft_Out.xml')
-    tixi = open_tixi(cpacs_out_path)
-    tigl = open_tigl(tixi)
+    #cpacs_path = os.path.join(MODULE_DIR, 'ToolInput', 'Aircraft_In.xml')
+    #cpacs_out_path = os.path.join(MODULE_DIR, 'ToolOutput', 'Aircraft_Out.xml')
+    #tixi = open_tixi(cpacs_out_path)
+    #tigl = open_tigl(tixi)
 
     # np.save('vehicle_test.npy', vehicle)
     wing = vehicle['wing']
@@ -149,50 +149,50 @@ def sizing_tail(vehicle, mach, altitude):
 
         horizontal_tail['leading_edge_xposition'] = horizontal_tail['aerodynamic_center'] - horizontal_tail['center_chord']*0.25
 
-        tixi_out = open_tixi(cpacs_out_path)
+        #tixi_out = open_tixi(cpacs_out_path)
 
         horizontal_thail_xpath = '/cpacs/vehicles/aircraft/model/wings/wing[2]/'
         
 
         # Update leading edge position
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'transformation/translation/x', horizontal_tail['leading_edge_xposition'], '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'transformation/translation/x', horizontal_tail['leading_edge_xposition'], '%g')
         # Update center chord 
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[1]/elements/element/transformation/scaling/x', horizontal_tail['center_chord'], '%g')
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[1]/elements/element/transformation/scaling/y', horizontal_tail['center_chord'], '%g')
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[1]/elements/element/transformation/scaling/z', horizontal_tail['center_chord'], '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[1]/elements/element/transformation/scaling/x', horizontal_tail['center_chord'], '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[1]/elements/element/transformation/scaling/y', horizontal_tail['center_chord'], '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[1]/elements/element/transformation/scaling/z', horizontal_tail['center_chord'], '%g')
 
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[2]/elements/element/transformation/scaling/x', horizontal_tail['tip_chord'], '%g')
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[2]/elements/element/transformation/scaling/y', horizontal_tail['tip_chord'], '%g')
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[2]/elements/element/transformation/scaling/z', horizontal_tail['tip_chord'], '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[2]/elements/element/transformation/scaling/x', horizontal_tail['tip_chord'], '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[2]/elements/element/transformation/scaling/y', horizontal_tail['tip_chord'], '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'sections/section[2]/elements/element/transformation/scaling/z', horizontal_tail['tip_chord'], '%g')
         # Update root chord 
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'positionings/positioning[2]/length',horizontal_tail['span']/2, '%g')
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'positionings/positioning[2]/sweepAngle',horizontal_tail['sweep_leading_edge'], '%g')
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'positionings/positioning[1]/dihedralAngle',horizontal_tail['dihedral'], '%g')
-        tixi_out.updateDoubleElement(horizontal_thail_xpath+'positionings/positioning[2]/dihedralAngle',horizontal_tail['dihedral'], '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'positionings/positioning[2]/length',horizontal_tail['span']/2, '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'positionings/positioning[2]/sweepAngle',horizontal_tail['sweep_leading_edge'], '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'positionings/positioning[1]/dihedralAngle',horizontal_tail['dihedral'], '%g')
+        #tixi_out.updateDoubleElement(horizontal_thail_xpath+'positionings/positioning[2]/dihedralAngle',horizontal_tail['dihedral'], '%g')
 
-        tixi_out = close_tixi(tixi_out, cpacs_out_path)
+        #tixi_out = close_tixi(tixi_out, cpacs_out_path)
 
-        tixi_out = open_tixi(cpacs_out_path)
+        #tixi_out = open_tixi(cpacs_out_path)
 
         vertical_tail_xpath = '/cpacs/vehicles/aircraft/model/wings/wing[3]/'
         vertical_tail['leading_edge_xposition'] = vertical_tail['aerodynamic_center_xposition'] - vertical_tail['center_chord']*0.25
         
 
         # Update leading edge position
-        tixi_out.updateDoubleElement(vertical_tail_xpath+'transformation/translation/x', vertical_tail['leading_edge_xposition'], '%g')
+        #tixi_out.updateDoubleElement(vertical_tail_xpath+'transformation/translation/x', vertical_tail['leading_edge_xposition'], '%g')
         # Update center chord 
-        tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/x', vertical_tail['center_chord'], '%g')
-        tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/y', vertical_tail['center_chord'], '%g')
-        tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/z', vertical_tail['center_chord'], '%g')
+        #tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/x', vertical_tail['center_chord'], '%g')
+        #tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/y', vertical_tail['center_chord'], '%g')
+        #tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[1]/elements/element/transformation/scaling/z', vertical_tail['center_chord'], '%g')
 
-        tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/x', vertical_tail['tip_chord'], '%g')
-        tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/y', vertical_tail['tip_chord'], '%g')
-        tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/z', vertical_tail['tip_chord'], '%g')
+        #tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/x', vertical_tail['tip_chord'], '%g')
+        #tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/y', vertical_tail['tip_chord'], '%g')
+        #tixi_out.updateDoubleElement(vertical_tail_xpath+'sections/section[2]/elements/element/transformation/scaling/z', vertical_tail['tip_chord'], '%g')
         # Update root chord 
-        tixi_out.updateDoubleElement(vertical_tail_xpath+'positionings/positioning[2]/length',vertical_tail['span'], '%g')
-        tixi_out.updateDoubleElement(vertical_tail_xpath+'positionings/positioning[2]/sweepAngle',vertical_tail['sweep_leading_edge'], '%g')
+        #tixi_out.updateDoubleElement(vertical_tail_xpath+'positionings/positioning[2]/length',vertical_tail['span'], '%g')
+        #tixi_out.updateDoubleElement(vertical_tail_xpath+'positionings/positioning[2]/sweepAngle',vertical_tail['sweep_leading_edge'], '%g')
 
-        tixi_out = close_tixi(tixi_out, cpacs_out_path)
+        #tixi_out = close_tixi(tixi_out, cpacs_out_path)
 
         
 

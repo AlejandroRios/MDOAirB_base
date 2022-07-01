@@ -63,9 +63,9 @@ print('Thrust = {}'.format(engine_thrust))
 """Plot Thrust force [N] vs fuel flow [kg/hr] as 
 function of altitude and mach number"""
 
-altitude = 30000
-mach = np.linspace(0.3, 0.82,3)
-throttle = np.linspace(0.42,0.95,100)
+altitude = np.linspace(1500,35000,100)
+mach = np.linspace(0.78, 0.82,3)
+throttle = 0.43
 
 step = 1
 plt.rc('font', family='serif')
@@ -73,22 +73,22 @@ plt.rc('xtick', labelsize=16)
 plt.rc('ytick', labelsize=16)
 
 fig = plt.figure(figsize=(10, 9))
-plt.suptitle('Altitude = {} ft'.format(altitude), fontsize=20)
+plt.suptitle('Throttle = {}'.format(throttle), fontsize=20)
 
 for j in mach:
     sfc_vec = []
-    throttle_vec = []
+    altitude_vec = []
     
-    for i in throttle:
-        engine_thrust, ff , vehicle = turbofan(altitude, j, i, vehicle)
+    for i in altitude:
+        engine_thrust, ff , vehicle = turbofan(i, j, throttle, vehicle)
         sfc = ff/(engine_thrust/10) #kg/(h*daN)
         #sfc_vec.append(ff/engine_thrust)
         sfc_vec.append(sfc)
-        throttle_vec.append(i)
+        altitude_vec.append(i)
         
     ax = fig.add_subplot(1, 3, step)
-    ax.plot(throttle_vec,sfc_vec, color='k')
-    ax.set_xlabel('Thrust Throttle', fontsize=20)
+    ax.plot(altitude_vec,sfc_vec, color='k')
+    ax.set_xlabel('Altitude (ft)', fontsize=20)
     ax.set_ylabel('SFC (kg/(h.daN))', fontsize=20)
     ax.set_title('Mach = {}'.format(j), fontsize=20)
     # add title with mach number and altitude ax.set
