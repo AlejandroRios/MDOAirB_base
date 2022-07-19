@@ -343,8 +343,8 @@ def main(argv):
 
     distances = {'FAD': {'FAD': 0, 'FAA': 800}, 'FAA': {'FAA': 0, 'FAD': 800}}
 
-    WingArea = np.linspace(135, 165, 5)
-    FanDiameter = np.linspace(17, 25, 5)
+    WingArea = np.linspace(135, 150, 4)
+    FanDiameter = np.linspace(18, 22, 4)
     status = []
 
     X = []
@@ -361,12 +361,12 @@ def main(argv):
                 250,  # PAX number - x6
                 6,  # seat abreast - x7
                 3000,  # range - x8
-                50,  # BPR - x9
+                80,  # BPR - x9
                 fd,  # FanDiameter - x10
                 27,  # Compressor pressure ratio - x11
                 1350,  # turbine inlet temperature - x12
                 15,  # FPR - x13
-                37000,  # design point pressure - x14
+                38000,  # design point pressure - x14
                 78  # design point mach x 10 - x15
             ]
             X.append(x)
@@ -375,9 +375,9 @@ def main(argv):
                 x, fixed_parameters, computation_mode, route_computation_mode,
                 airports, distances, demands)
             Y.append(list(y1))
-            print("==============================================")
-            print("Results = ", y1[0:8])
-            print("==============================================")
+            #print("==============================================")
+            #print("Results = ", y1[0:23])
+            #print("==============================================")
 
     # Create a pandas dataframe with all the information
     X = np.array(X)
@@ -413,13 +413,22 @@ def main(argv):
                               'distance': Y[:,12], 
                               'altitude': Y[:,13], 
                               'mass': Y[:, 14],
-                              'time': Y[:,15]
+                              'time': Y[:,15],
+                              'sfc':  Y[:,16],
+                              'thrust': Y[:,17], 
+                              'mach': Y[:,18], 
+                              'CL': Y[:,19], 
+                              'CD': Y[:,20], 
+                              'LoD': Y[:,21], 
+                              'throttle': Y[:,22], 
+                              'vcas': Y[:,23],
+                              'OWE': Y[:,24],
                               })
 
     df_input.to_csv(
-        "Results/analysis_input_bprhigh2.csv", index=False)
+        "Results/analysis_input_bpr8.csv", index=False)
     df_output.to_csv(
-        "Results/analysis_output_bprhigh2.csv", index=False)
+        "Results/analysis_output_bpr8.csv", index=False)
 
     df_input.to_csv("Results/analysis_input"+datetime.now().strftime("%d_%m_%Y-%H_%M_%S")+".csv", index=False)
     df_output.to_csv(

@@ -342,7 +342,7 @@ def main(argv):
 
     X = [
         142.5,  #WingArea - x0
-        10 * (42**2) / 130,  #AspectRatio x 10 - x1
+        10 * (42**2) / 142.5,  #AspectRatio x 10 - x1
         30,  #TaperRatio - x2
         25,  #sweep_c4 - x3
         -2.25,  #twist - x4
@@ -350,7 +350,7 @@ def main(argv):
         250,  #PAX number - x6 // should be 250
         6,  #seat abreast - x7
         3000,  #range - x8
- 		50,  #BPR*10 - x9 // should be 100
+ 		80,  #BPR*10 - x9 // should be 100
         25,  #FanDiameter*10 - x10
         27,  #Compressor pressure ratio - x11
         1350,  #turbine inlet temperature - x12
@@ -370,14 +370,14 @@ def main(argv):
     Y = np.array(Y)
     df_input = pd.DataFrame([X], columns = ['WingArea','x1','x2','x3', 'x4','x5','x6','x7','x8','x9','FanDiameter','x11','x12','x13','x14','x15'])
     df_output = pd.DataFrame([Y], columns=['MTOW', 'DOC', 'fuel_mass', 'total_mission_flight_time', 'mach', 'passenger_capacity',
-                             'SAR', 'landing_field_length_computed', 'takeoff_field_length_computed', 'app_speed', 'status', 'design_status', 'distance', 'altitude', 'mass', 'time', 'sfc', 'thrust', 'mach', 'CL', 'CD', 'LoD', 'throttle', 'vcas'])
+                             'SAR', 'landing_field_length_computed', 'takeoff_field_length_computed', 'app_speed', 'status', 'design_status', 'distance', 'altitude', 'mass', 'time', 'sfc', 'thrust', 'mach', 'CL', 'CD', 'LoD', 'throttle', 'vcas','OWE'])
 
     df_input.to_csv(
-        "Results/analysis_single_input_1-new.csv", index=False)
+        "Results/analysis_single_input_1-woalternate.csv", index=False)
     df_output.to_csv(
-        "Results/analysis_single_output_1-new.csv", index=False)
+        "Results/analysis_single_output_1-woalternate.csv", index=False)
 
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main(sys.argv[1:]) 

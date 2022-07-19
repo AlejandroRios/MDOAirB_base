@@ -40,7 +40,7 @@ engine = vehicle['engine']
 
 engine['fan_pressure_ratio'] = 1.5
 engine['compressor_pressure_ratio'] = 27
-engine['bypass'] = 5
+engine['bypass'] = 8
 engine['fan_diameter'] = 2.5
 engine['turbine_inlet_temperature'] = 1350
 altitude = 29564.737478520674
