@@ -7,9 +7,8 @@ package to find trends and plots with the matplotlib package
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 from matplotlib.offsetbox import AnchoredText
-
+import pickle as pkl
 
 # 'De (m)' 'BPR' 'FPR' 'OPR' 'TIT (K)' 'T (N)' 'FC (kg/hr)'
 df = pd.read_pickle("engines.pkl")

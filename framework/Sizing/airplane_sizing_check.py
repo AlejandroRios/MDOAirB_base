@@ -42,6 +42,9 @@ from framework.Performance.Analysis.residual_rate_of_climb import \
     (residual_rate_of_climb,residual_rate_of_climb2)
 from framework.Performance.Analysis.second_segment_climb import \
     second_segment_climb
+
+from framework.Performance.Constraints.check_constraints import all_checks
+
 from framework.Performance.Engine.engine_performance import turbofan
 from framework.Performance.Mission.mission_sizing import mission_sizing
 from framework.Sizing.Geometry.fuel_capacity_zero_fidelity import \
@@ -486,12 +489,14 @@ def airplane_sizing(vehicle,x=None):
 
     # Simple plot check
     # plot3d(vehicle)
-    plot3d_tigl(vehicle)
+    # plot3d_tigl(vehicle)
 
     # Regulated takeoff and landing checks
     maximum_takeoff_weight = aircraft['maximum_takeoff_weight']
     maximum_landing_weight = landing_weight
     aircraft['maximum_zero_fuel_weight'] = maximum_landing_weight*0.98
+
+    weight_ratio_landing_takeoff = maximum_landing_weight/maximum_takeoff_weight
 
     # engine['maximum_thrust'] = (
     #     aircraft['number_of_engines']*engine['maximum_thrust']*lb_to_kg)*GRAVITY  # Test this
@@ -505,8 +510,6 @@ def airplane_sizing(vehicle,x=None):
 
 
     # Landing field length check
-    landing_field_length_required = airport_destination['lda']
-
     k_L = 0.107
 
     WtoS_landing = (k_L*airport_destination['lda']*aircraft['CL_maximum_landing'])
@@ -575,8 +578,6 @@ def airplane_sizing(vehicle,x=None):
         flag_cruise = 0
 
 
-
-
     # Noise check
     delta_CD_flap = drag_coefficient_flap(vehicle)
     CD_ubrige = friction_coefficient * (aircraft['wetted_area'] - wing['wetted_area'])/wing['area']
@@ -585,6 +586,12 @@ def airplane_sizing(vehicle,x=None):
     CD0_landing = wing_CD0 + CD_ubrige + delta_CD_flap + delta_CD_landing_gear
 
     aircraft['CD0_landing'] = CD0_landing
+
+    CD0 = wing_CD0 + CD_ubrige
+
+
+    all_checks(airport_destination['lda'],airport_departure['tora'],aircraft['CL_maximum_landing'],weight_ratio_landing_takeoff,vehicle,CD0,ToW,WoS )
+
 
 # try:
     takeoff_noise, sideline_noise, landing_noise = noise_calculation(vehicle, airport_departure)
