@@ -405,7 +405,7 @@ def calculation_alfa(alfa, input_nn, NN, CLinput):
     # Gathering outputs
     input_nn = alfa
     output, doutput_dinput = ANN_internal_use(input_nn, NN)
-    CL = output_nn
+    CL = output
     delta_alfa = CL-CLinput
     return delta_alfa
 

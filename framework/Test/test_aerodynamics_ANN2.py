@@ -51,12 +51,14 @@ def calculate_coefficients_mach(vehicle,switch_neural_network,alpha_deg,CL,h,mac
 
     for i in mach_vec:
 
-        CD_wing, CL_wing, CDfp, CDwave, CDind = aerodynamic_coefficients_ANN(
+        # CD_wing, CL_wing, CDfp, CDwave, CDind = aerodynamic_coefficients_ANN(
+        #     vehicle, h*ft_to_m, i, CL, alpha_deg, switch_neural_network)
+        CD_wing, CL_wing= aerodynamic_coefficients_ANN(
             vehicle, h*ft_to_m, i, CL, alpha_deg, switch_neural_network)
         CD_vec.append(CD_wing)
-        CDfp_vec.append(CDfp)
-        CDwave_vec.append(CDwave)
-        CDind_vec.append(CDind)
+        CDfp_vec.append(1)
+        CDwave_vec.append(1)
+        CDind_vec.append(1)
         CL_vec.append(CL_wing)
         friction_coefficient = wing['friction_coefficient']
         CD_ubrige = friction_coefficient * \
@@ -75,15 +77,15 @@ def calculate_coefficients_mach(vehicle,switch_neural_network,alpha_deg,CL,h,mac
 # with open('Database/Family/101_to_160/all_dictionaries/'+str(20)+'.pkl', 'rb') as f:
 #     all_info_acft1 = pickle.load(f)
 
-with open('Database/Family/161_to_220/all_dictionaries/'+str(51)+'.pkl', 'rb') as f:
+with open('Database/Family/161_to_220/all_dictionaries/'+str(999)+'.pkl', 'rb') as f:
     all_info_acft1 = pickle.load(f)
 vehicle = all_info_acft1['vehicle']
 wing = vehicle['wing']
 aircraft = vehicle['aircraft']
 
-switch_neural_network = 0
-alpha_deg = 5
-CL = 0.2
+switch_neural_network = 1
+alpha_deg = 0
+CL = 0.1
 h = 35000
 mach_i = 0.1
 mach_f = 0.8
@@ -94,13 +96,13 @@ wing['sweep_leading_edge'] = 10
 
 CDfp_vec1, CDwave_vec1, CDind_vec1, CD_vec1, CDtot_vec1,CL_vec1 = calculate_coefficients_mach(vehicle,switch_neural_network,alpha_deg,CL,h,mach_i,mach_f,n)
 
-switch_neural_network = 0
-alpha_deg = 5
-CL = 0.2
-h = 0
+switch_neural_network = 1
+alpha_deg = 0
+CL = 0.1
+h = 35000
 mach_i = 0.1
 mach_f = 0.8
-
+n = 30
 wing['sweep_leading_edge']= 25
 
 CDfp_vec2, CDwave_vec2, CDind_vec2, CD_vec2, CDtot_vec2,CL_vec2= calculate_coefficients_mach(vehicle,switch_neural_network,alpha_deg,CL,h,mach_i,mach_f,n)
@@ -117,14 +119,14 @@ ax.set_xlabel('CD')
 ax.set_ylabel('CL')
 # ax.set_title('Activation function: ReLU')
 
-ax.plot(mach_vec, CD_vec1,linewidth=2, label='Sweep c/4 = 10$^\circ$')
-ax.plot(mach_vec, CD_vec2,linewidth=2, label='Sweep c/4 = 25$^\circ$')
+ax.plot(mach_vec, CDtot_vec1,linewidth=2, label='Sweep c/4 = 10$^\circ$')
+ax.plot(mach_vec, CDtot_vec2,linewidth=2, label='Sweep c/4 = 25$^\circ$')
 # ax.plot(CDfp_vec, CL_vec, label='CD parasite')
 # ax.plot(CDwave_vec, CL_vec, label='CD wave')
 # ax.plot(CDind_vec, CL_vec, label='CD ind')
 # ax.plot(CDtot_vec, CL_vec, label='CD tot')
 ax.legend()
-# ax.set_xlim([0.2,0.8])
-# ax.set_ylim([0.01,None])
+ax.set_xlim([0.2,0.8])
+# ax.set_ylim([None,0.03])
 ax.grid('True')
 plt.show()

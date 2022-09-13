@@ -27,6 +27,7 @@ from framework.Performance.Engine.engine_performance import turbofan
 
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 # =============================================================================
 # FUNCTIONS
@@ -45,72 +46,9 @@ engine['fan_diameter'] = 2
 engine['turbine_inlet_temperature'] = 1500
 
 # Single ponint run
-engine_thrust, ff , vehicle = turbofan(0, 0.01, 1, vehicle)
+start_time = time.time()
+engine_thrust, ff , vehicle = turbofan(10000, 0.5, 0.8, vehicle)
 
-# =============================================================================
-# parametric analysis 
-"""Plot Thrust force [N] vs fuel flow [kg/hr] as 
-function of altitude and mach number"""
-
-altitude = np.linspace(0, 40000,10)
-mach = np.linspace(0, 0.8,10)
-
-thrust_vec = []
-ff_vec = []
-altitude_vec = []
-mach_vec = []
-for i in altitude:
-    for j in mach:
-        engine_thrust, ff , vehicle = turbofan(i, j, 1, vehicle)
-
-        thrust_vec.append(engine_thrust)
-        ff_vec.append(ff)
-        altitude_vec.append(i)
-        mach_vec.append(j)
-        
-
-plt.rc('font', family='serif')
-plt.rc('xtick', labelsize='x-small')
-plt.rc('ytick', labelsize='x-small')
-
-fig = plt.figure(figsize=(10, 9))
-ax = fig.add_subplot(1, 1, 1)
-
-x = np.linspace(1., 8., 30)
-ax.plot(thrust_vec,ff_vec, 'o', color='k',)
-# ax.plot(x, y, color='0.50', ls='dashed')
-ax.set_xlabel('Thrust (N)')
-ax.set_ylabel('Fuel flow (kg/hr)')
-
-# =============================================================================
-# parametric analysis 
-"""Plot fuel flow [kg/hr] vs Turbine inlet temperature"""
-
-TiT = np.linspace(1000, 2000,10)
-
-thrust_vec = []
-ff_vec = []
-TiT_vec = []
-for i in TiT:
-
-    engine['turbine_inlet_temperature'] = i
-    engine_thrust, ff , vehicle = turbofan(0, 0.8, 1, vehicle)
-
-    thrust_vec.append(engine_thrust)
-    ff_vec.append(ff)
-    TiT_vec.append(i)
-
-plt.rc('font', family='serif')
-plt.rc('xtick', labelsize='x-small')
-plt.rc('ytick', labelsize='x-small')
-
-fig = plt.figure(figsize=(10, 9))
-ax = fig.add_subplot(1, 1, 1)
-
-ax.plot(TiT_vec,ff_vec, 'o', color='k',)
-# ax.plot(x, y, color='0.50', ls='dashed')
-ax.set_xlabel('TiT (K)')
-ax.set_ylabel('Fuel flow (kg/hr)')
-# =============================================================================
-
-plt.show()
+time_exe = (time.time() - start_time)
+print(time_exe)
+# ========

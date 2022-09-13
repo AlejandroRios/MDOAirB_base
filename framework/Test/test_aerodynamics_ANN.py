@@ -51,12 +51,12 @@ def generate_polar(vehicle,switch_neural_network,alpha_deg,mach,h,CLi,CLf,n):
 
     for i in CL_vec:
 
-        CD_wing, CL_wing, CDfp, CDwave, CDind = aerodynamic_coefficients_ANN(
+        CD_wing, CL_wing = aerodynamic_coefficients_ANN(
             vehicle, h*ft_to_m, mach, i, alpha_deg, switch_neural_network)
         CD_vec.append(CD_wing)
-        CDfp_vec.append(CDfp)
-        CDwave_vec.append(CDwave)
-        CDind_vec.append(CDind)
+        CDfp_vec.append(1)
+        CDwave_vec.append(1)
+        CDind_vec.append(1)
         # CL_vec.append(i)
         friction_coefficient = wing['friction_coefficient']
         CD_ubrige = friction_coefficient * \
@@ -70,7 +70,7 @@ def generate_polar(vehicle,switch_neural_network,alpha_deg,mach,h,CLi,CLf,n):
     return  CDfp_vec, CDwave_vec, CDind_vec, CD_vec, CDtot_vec,CL_vec
 
 
-with open('Database/Family/161_to_220/all_dictionaries/'+str(51)+'.pkl', 'rb') as f:
+with open('Database/Family/161_to_220/all_dictionaries/'+str(999)+'.pkl', 'rb') as f:
     all_info_acft1 = pickle.load(f)
 vehicle = all_info_acft1['vehicle']
 wing = vehicle['wing']
@@ -80,25 +80,25 @@ switch_neural_network = 0
 alpha_deg = 1
 CL = 0.5
 h = 35000
-CLi = 0
-CLf= 0.8
+CLi = -0.5
+CLf=  1.8
 mach = 0.2
-n = 30
+n = 20
 
 CL_vec = np.linspace(CLi,CLf, n)
-wing['sweep_leading_edge'] = 10
+wing['sweep_leading_edge'] = 25
 
 CDfp_vec1, CDwave_vec1, CDind_vec1, CD_vec1, CDtot_vec1,CL_vec1= generate_polar(vehicle,switch_neural_network,alpha_deg,mach,h,CLi,CLf,n)
 switch_neural_network = 0
 alpha_deg = 1
 CL = 0.5
 h = 35000
-CLi = 0.0
-CLf= 0.8
-mach = 0.8
-n = 30
+CLi = -0.5
+CLf= 1
+mach = 0.7
+n = 20
 
-
+wing['sweep_leading_edge'] = 25
 
 CDfp_vec2, CDwave_vec2, CDind_vec2, CD_vec2, CDtot_vec2,CL_vec2= generate_polar(vehicle,switch_neural_network,alpha_deg,mach,h,CLi,CLf,n)
 
@@ -115,7 +115,7 @@ ax.set_xlabel('CD')
 ax.set_ylabel('CL')
 # ax.set_title('Activation function: ReLU')
 
-ax.plot(CD_vec1, CL_vec1,linewidth=2, label='CD wing - Mach = 0.2')
+ax.plot(CD_vec1, CL_vec1,'-',linewidth=2, label='CD wing - Mach = 0.2')
 # ax.plot(CDfp_vec, CL_vec, label='CD parasite')
 # ax.plot(CDwave_vec, CL_vec, label='CD wave')
 # ax.plot(CDind_vec, CL_vec, label='CD ind')
@@ -128,15 +128,15 @@ ax.set_xlabel('Drag coefficient')
 ax.set_ylabel('Lift coefficient')
 # ax.set_title('Activation function: ReLU')
 
-ax.plot(CD_vec2, CL_vec2,'-' ,linewidth=2,label='CD wing - Mach = 0.8')
+ax.plot(CD_vec2, CL_vec2,'-' ,linewidth=2,label='CD wing - Mach = 0.7')
 # ax.plot(CDfp_vec, CL_vec, '+--' ,label='CD parasite - Mach = 0.8')
 # ax.plot(CDwave_vec, CL_vec, '+--' ,label='CD wave - Mach = 0.8')
 # ax.plot(CDind_vec, CL_vec, '+--' ,label='CD ind - Mach = 0.8')
 # ax.plot(CDtot_vec, CL_vec,'--'  ,label='CD tot - Mach = 0.8')
 ax.grid(True)
 ax.legend()
-ax.set_xlim([0,None])
-ax.set_ylim([0,None])
+# ax.set_xlim([0,None])
+# ax.set_ylim([0,None])
 
 
 plt.show()

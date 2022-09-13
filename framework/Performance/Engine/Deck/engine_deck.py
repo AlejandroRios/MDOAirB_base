@@ -11,18 +11,19 @@ from matplotlib.offsetbox import AnchoredText
 import pickle as pkl
 
 # 'De (m)' 'BPR' 'FPR' 'OPR' 'TIT (K)' 'T (N)' 'FC (kg/hr)'
-df = pd.read_pickle("engines.pkl")
+df = pd.read_pickle("Performance/Engine/Deck/engines.pkl")
 # df =df.reset_index(drop=True)
 # df = df.drop('index', 1)
 
 # df = df.reset_index(level=0)
 
-print(df)
-print(df.shape[0])
+input_D = 2.24
+input_BPR =7.98
+input_T = 120540
 
-
-
-
+print('engine',df.iloc[(df['De (m)']-input_D).abs().argsort()[:3]])
+print('engine2',df.iloc[(df['BPR']-input_BPR).abs().argsort()[:3]])
+print('engine3',df.iloc[(df['T (N)']-input_T).abs().argsort()[:3]])
 x = 44
 
 # print(df.iloc[[2],['De (m)']])
