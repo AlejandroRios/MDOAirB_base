@@ -113,4 +113,33 @@ ax.set_xlabel('TiT (K)')
 ax.set_ylabel('Fuel flow (kg/hr)')
 # =============================================================================
 
+# =============================================================================
+# parametric analysis 
+"""Plot Fan Diameter [m] vs Thrust (N)"""
+
+FD = np.linspace(1, 3,10)
+engine['turbine_inlet_temperature'] = 1500
+thrust_vec = []
+ff_vec = []
+TiT_vec = []
+for i in FD:
+
+    engine['fan_diameter'] = i
+    engine_thrust, ff , vehicle = turbofan(0, 0.8, 1, vehicle)
+
+    thrust_vec.append(engine_thrust)
+
+plt.rc('font', family='serif')
+plt.rc('xtick', labelsize='x-small')
+plt.rc('ytick', labelsize='x-small')
+
+fig = plt.figure(figsize=(10, 9))
+ax = fig.add_subplot(1, 1, 1)
+
+ax.plot(FD, thrust_vec, 'o', color='k',)
+# ax.plot(x, y, color='0.50', ls='dashed')
+ax.set_xlabel('Fan Diameter (m)')
+ax.set_ylabel('Thrust (N)')
+# =============================================================================
+
 plt.show()

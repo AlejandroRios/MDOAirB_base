@@ -114,8 +114,6 @@ def descent_integration(mass, mach_descent, descent_V_cas, delta_ISA, final_alti
     throttle_vec = []
     vcas_vec = []
 
-    throttle_position = 0.3
-
     if flag1 == 1:
 
         final_block_altitude = transition_altitude

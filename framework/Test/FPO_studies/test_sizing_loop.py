@@ -343,8 +343,9 @@ def main(argv):
 
     distances = {'FAD': {'FAD': 0, 'FAA': 800}, 'FAA': {'FAA': 0, 'FAD': 800}}
 
-    WingArea = np.linspace(135, 150, 4)
-    FanDiameter = np.linspace(18, 22, 4)
+    WingArea = np.array([150, 155, 160])# np.linspace(135, 150, 4)
+    DiamRef = 2.2*10 # x % of thrust is equivalent to x^2% of fan diameter (prop to surface)
+    FanDiameter = np.array([DiamRef*(1-np.sqrt(0.067)), DiamRef, DiamRef*(1+np.sqrt(0.067))])
     status = []
 
     X = []
@@ -426,9 +427,9 @@ def main(argv):
                               })
 
     df_input.to_csv(
-        "Results/analysis_input_bpr8.csv", index=False)
+        "Results/analysis_input_refstudy.csv", index=False)
     df_output.to_csv(
-        "Results/analysis_output_bpr8.csv", index=False)
+        "Results/analysis_output_refstudy.csv", index=False)
 
     df_input.to_csv("Results/analysis_input"+datetime.now().strftime("%d_%m_%Y-%H_%M_%S")+".csv", index=False)
     df_output.to_csv(

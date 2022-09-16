@@ -1,0 +1,173 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"$id": "http://airbus.com/schemas/mdo_custom_inputs.schema.json",
+    "type": "object",
+    "properties": {
+		"computation_mode": {"type": "integer", "enum": [0,1]},
+		"route_computation_mode": {"type": "integer", "enum": [0,1]},
+		"design_variables": {"type": "object", "properties": {
+				"wing_surface": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 72, "maximum": 130},
+						"upper_band": {"type": "integer", "minimum": 72, "maximum": 130}
+					}
+				},
+				"engine_fan_diameter": {"type": "object", "required": ["lower_band", "upper_band"], "properties": {
+						"lower_band": {"type": "integer", "minimum": 10, "maximum": 25},
+						"upper_band": {"type": "integer", "minimum": 10, "maximum": 25}
+					}
+				}
+			}
+		},
+	"demands": {
+		"FAD": {
+			"FAA": {
+				"demand": 0,
+				"takeoff_runway": "07L",
+				"landing_runway": "27R"
+			}
+		}
+	},
+	"fixed_parameters": {
+		"aircraft": {
+			"number_of_engines": 2
+		},
+		"cabine": {
+			"armrest_bottom": 7,
+			"armrest_top": 32,
+			"armrest_width": 2,
+			"backrest_height": 0.59,
+			"delta_z_symmetry_inferior": -1,
+			"delta_z_symmetry_superior": 2,
+			"floor_thickness": 0.117,
+			"galley_prof": 1.1,
+			"pax_distance_head_wall": 0.06,
+			"pax_distance_shoulder_wall": 0.04,
+			"pax_eye_height": 0.87,
+			"pax_midshoulder_height": 0.70,
+			"pax_shoulder_breadth": 0.53,
+			"seat_cushion_thickness_YC": 0.14,
+			"seat_delta_width_floor": 0.025,
+			"seat_prof": 0.48,
+			"seat_width": 0.46,
+			"toillet_prof": 1.5
+		},
+		"fuselage": {
+			"aisle_width": 0.5,
+			"aisles_number": 1,
+			"cabine_height": 2,
+			"cockpit_length": 3.7,
+			"container_type": "LD3-45"
+		},
+		"horizontal_tail": {
+			"thickness_root_chord": 0.1,
+			"thickness_tip_chord": 0.1
+		},
+		"noise": {
+			"aircraft_geometry_altitude_retracted": 0,
+			"aircraft_geometry_delta_ISA_retracted": 0,
+			"aircraft_geometry_fuselage_length": 22.28,
+			"aircraft_geometry_fuselage_surface": 21.1,
+			"aircraft_geometry_main_landing_gear_length": 1.88,
+			"aircraft_geometry_main_landing_gear_number": 2,
+			"aircraft_geometry_main_landing_gear_position": 1,
+			"aircraft_geometry_main_landing_gear_wheels": 2,
+			"aircraft_geometry_nose_landing_gear_length": 1.21,
+			"aircraft_geometry_nose_landing_gear_number": 1,
+			"aircraft_geometry_nose_landing_gear_position": 1,
+			"aircraft_geometry_nose_landing_gear_wheels": 2,
+			"aircraft_geometry_slats_position": 1,
+			"aircraft_geometry_slots_number": 2,
+			"aircraft_geometry_wing_flap_type1_position": 1,
+			"aircraft_geometry_wing_flap_type2_position": 0,
+			"aircraft_parameters_CD_3P": 0.08,
+			"aircraft_parameters_CD_air_LG_down": 0.11,
+			"aircraft_parameters_CD_air_LG_up": 0.081,
+			"aircraft_parameters_CL_3P": 0.3,
+			"aircraft_parameters_CL_air": 1.65,
+			"engine_parameters_compressor_rotation": 14950,
+			"engine_parameters_fan_rotation": 4952,
+			"engine_parameters_throttle_position": 1,
+			"landing_CD_3P": 0.08,
+			"landing_CL_3P": 0.3,
+			"landing_gamma": -3,
+			"landing_lateral_distance_mic": 1,
+			"landing_load_factor_flare": 1.1,
+			"landing_longitudinal_distance_mic": 2000,
+			"landing_mu_brake": 0.3,
+			"landing_mu_roll": 0.03,
+			"landing_transition_time": 1.0,
+			"relative_humidity": 70,
+			"runaway_parameters_mu_brake": 0.3,
+			"runaway_parameters_mu_roll": 0.03,
+			"sideline_lateral_distance_mic": 450,
+			"sideline_longitudinal_distance_mic": 0,
+			"takeoff_k1": 1.1,
+			"takeoff_k2": 1.2,
+			"takeoff_lambda": 0,
+			"takeoff_lateral_distance_mic": 1,
+			"takeoff_longitudinal_distance_mic": 6500,
+			"takeoff_obstacle_altitude": 35,
+			"takeoff_time_1": 3.0,
+			"takeoff_time_2": 3.0,
+			"takeoff_time_step": 0.5,
+			"takeoff_trajectory_max_distance": 10000
+		},
+		"nose_landing_gear": {
+			"trunnion_length": 1.3,
+			"tyre_diameter": 0.80,
+			"tyre_height": 0.25
+		},
+		"operations": {
+			"alternative_airport_distance": 100,
+			"approach_allowance_mass": 150,
+			"average_taxi_in_time": 5,
+			"average_taxi_out_time": 10,
+			"average_ticket_price": 120,
+			"buffet_margin": 1.3,
+			"climb_V_cas": 280,
+			"contingency_fuel_percent": 0.1,
+			"cruise_V_cas": 310,
+			"descent_altitude": 1500,
+			"descent_V_cas": 310,
+			"flight_planning_delta_ISA": 0,
+			"fuel_density": 0.81,
+			"fuel_price_per_kg": 1.0,
+			"go_around_allowance": 300,
+			"holding_time": 30,
+			"landing_time_allowance": 3,
+			"mach_climb": 0.78,
+			"mach_descent": 0.78,
+			"mach_maximum_operating": 0.82,
+			"market_share": 0.1,
+			"max_ceiling": 41000,
+			"max_operating_speed": 340,
+			"min_cruise_time": 3,
+			"passenger_mass": 110,
+			"reference_load_factor": 0.85,
+			"takeoff_allowance": 300,
+			"takeoff_time_allowance": 2,
+			"taxi_fuel_flow_reference": 5,
+			"time_between_overhaul": 2500,
+			"turn_around_time": 45
+		},
+		"performance": {
+			"residual_rate_of_climb": 300
+		},
+		"wing": {
+			"flap_deflection_approach": 15,
+			"flap_deflection_landing": 45,
+			"flap_deflection_takeoff": 35,
+			"friction_coefficient": 0.003,
+			"max_2D_lift_coefficient": 1.9,
+			"ribs_spacing": 22,
+			"trunnion_xposition": 0.75
+		},
+		"airport_departure": {
+			"tora": 4000
+		},
+		"airport_destination": {
+			"lda": 4000
+		}
+	}
+}
+}
