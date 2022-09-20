@@ -517,7 +517,7 @@ def airplane_sizing(vehicle,x=None):
 
 
 
-    if  WoS > WtoS_landing:
+    if  WoS > WtoS_takeoff:
         flag_landing = 1
     else:
         flag_landing = 0

@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 kt_to_ms = 1.944
 
 def approach(S_LFL=None, V_APP=None):
@@ -115,7 +116,10 @@ def max_glide_ratio_cruise(oswald_eff,Cf_eqv,Swet_Sw,AR):
     return E_max
 
     
-
+def find_nearest(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return array[idx]
 
 
 
@@ -133,12 +137,12 @@ def matching_chart(BPR,oswald_eff,M_CR,V_Vmd,E_max,AR,T_to_W_secseg,T_to_W_missa
     p0 = 101325
     euler = 2.718282
 
-    altitude = np.linspace(0,15,16)
+    altitude = np.linspace(0,15,501)
     altitude_ft = altitude*1000*3.281 
 
     T_CR_T_TO = [(0.0013*BPR-0.0397)*x-0.0248*BPR+0.7125 for x in altitude]
     T_TO_m_MTOg = [1/(x*E) for x in T_CR_T_TO]
-
+    
 
     p_h = [p0*np.power(1-0.02256*x,5.256) if x < 12 else p0*0.2232*np.power(euler,-0.1577*(x-11)) for x in altitude]
 
@@ -154,6 +158,8 @@ def matching_chart(BPR,oswald_eff,M_CR,V_Vmd,E_max,AR,T_to_W_secseg,T_to_W_missa
     T_to_W_L = [0,0.5]
 
     mMTOW_Sw = [mMTOW_Sw]*len(T_to_W_L)
+
+    df = pd.DataFrame(list(zip(altitude, mMTO_Sw, T_to_W_secseg, T_to_W_missapp, T_to_W_TO, T_TO_m_MTOg)), columns =['altitude', 'MTO_Sw','T_to_W_secseg','T_to_W_missapp','T_to_W_TO','T_TO_m_MTOg']) 
 
 
     plt.rc('font', family='serif')
@@ -186,7 +192,7 @@ def matching_chart(BPR,oswald_eff,M_CR,V_Vmd,E_max,AR,T_to_W_secseg,T_to_W_missa
 
 
 
-    return
+    return df
 
 
 def all_checks(S_LFL,S_TOFL,CL_max_L,mML_mTO,vehicle,CD0,T_to_W,W_to_S):
@@ -229,8 +235,45 @@ def all_checks(S_LFL,S_TOFL,CL_max_L,mML_mTO,vehicle,CD0,T_to_W,W_to_S):
     V_Vmd = np.sqrt(np.sqrt(3))
 
 
-    matching_chart(BPR,oswald_eff,M_CR,V_Vmd,E_max,AR,T_to_W_secseg,T_to_W_missapp,slope,mMTOW_Sw,T_to_W,W_to_S)
+    df = matching_chart(BPR,oswald_eff,M_CR,V_Vmd,E_max,AR,T_to_W_secseg,T_to_W_missapp,slope,mMTOW_Sw,T_to_W,W_to_S)
 
+    point_WtoS = df.iloc[(df['MTO_Sw']-W_to_S).abs().argsort()[:1]]
+    print(point_WtoS) 
+
+    T_to_W_cruise = float(point_WtoS['T_TO_m_MTOg'])
+
+    # Wing loading at max. take-off mass
+    if  W_to_S > mMTOW_Sw:
+        flag_landing = 1
+    else:
+        flag_landing = 0
+
+    # Take-off T/W
+    if  T_to_W < T_to_W_L:
+        flag_takeoff = 1
+    else:
+        flag_takeoff = 0
+
+    # Second segment T/W
+    if  T_to_W < T_to_W_secseg:
+        flag_climb_second_segment = 1
+    else:
+        flag_climb_second_segment = 0
+
+    # Missed approach T/W
+    if  T_to_W < T_to_W_missapp:
+        flag_missed_approach = 1
+    else:
+        flag_missed_approach = 0
+
+    # Cruise T/W
+    if  T_to_W <  T_to_W_cruise:
+        flag_cruise = 1
+    else:
+        flag_cruise = 0
+
+    flags = [flag_landing, flag_takeoff, flag_climb_second_segment, flag_missed_approach, flag_cruise]
+    print('flags:',flags )
 
     print('Landing field:', S_LFL)
 
