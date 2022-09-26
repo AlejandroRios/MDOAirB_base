@@ -345,7 +345,7 @@ def main(argv):
 
     WingArea = np.array([150, 155, 160])# np.linspace(135, 150, 4)
     DiamRef = 2.2*10 # x % of thrust is equivalent to x^2% of fan diameter (prop to surface)
-    FanDiameter = np.array([DiamRef*(1-np.sqrt(0.067)), DiamRef, DiamRef*(1+np.sqrt(0.067))])
+    FanDiameter = np.array([DiamRef*1.033, DiamRef, DiamRef*0.966])
     status = []
 
     X = []
