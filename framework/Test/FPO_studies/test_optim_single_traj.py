@@ -339,19 +339,27 @@ def process_optimized_aircraft(design_variables, original_vehicle, computation_m
             38000,  #design point pressure - x14 // should be 37000
             78  #design point mach x 10 - x15
             ]
-        (Y) = objective_function_FPO(
+        try:
+            (Y) = objective_function_FPO(
                 X, fixed_parameters, computation_mode, route_computation_mode,
                 airports, distances, demands)
-        obj = Y[0]
-        C_1 = Y[8] - 2500.
-        C_2 = Y[9] - 130./2
+            obj = Y[2]
+            C_1 = Y[8] - 2500.        
+            C_2 = Y[9] - 130./2
+        except:
+            obj = 100000
+            C_1 = 100000
+            C_2 = 100000
+        
+        print("C_1 = ", C_1)
+        print("C_2 = ", C_2)
         return obj, C_1, C_2
      
     disc_optim = create_discipline("AutoPyDiscipline", py_func=obj_func)
     print(disc_optim.execute())
 
     Xini = array([155., 20.])
-    Xmin = array([140., 15.])
+    Xmin = array([125., 15.])
     Xmax = array([170., 35.])
 
     design_space = create_design_space()
@@ -378,7 +386,7 @@ def process_optimized_aircraft(design_variables, original_vehicle, computation_m
     print("Cons2 (Appspeed) Function value = ", cons2_opt)
 
 
-def usage():
+def usage(): 
     print("This is the usage function")
     print(f"Usage: {sys.argv[0]} -f <custom inputs file>")
 

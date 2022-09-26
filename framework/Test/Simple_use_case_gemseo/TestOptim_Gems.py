@@ -22,7 +22,7 @@ def Rosen_Obj_Gems(x_local=np.zeros(2)):
     print("x0=",x_local[0])
     print("x1=",x_local[1])
     ## Rosenbrock function with constraint
-    obj = (1-x_local[0]) ** 2 + 100 * (x_local[1] - x_local[0] ** 2) ** 2
+    obj = ((1-x_local[0]) ** 2 + 100 * (x_local[1] - x_local[0] ** 2) ** 2)
     C_1 = (x_local[0] + 1) ** 2 + (x_local[1] + 0.3) ** 2 - 1
     C_2 = -0.05-2*x_local[0]-0.8*x_local[1]- 0.01 * ((1-x_local[0]) ** 2 + 100 * (x_local[1] - x_local[0] ** 2) ** 2)
 
