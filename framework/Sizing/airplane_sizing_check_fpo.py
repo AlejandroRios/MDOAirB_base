@@ -42,13 +42,13 @@ from framework.Performance.Engine.engine_performance import turbofan
 from framework.Performance.Analysis.second_segment_climb import second_segment_climb
 from framework.Performance.Analysis.missed_approach_climb import missed_approach_climb_AEO, missed_approach_climb_OEI
 from framework.Performance.Analysis.residual_rate_of_climb import residual_rate_of_climb
+from framework.Performance.Constraints.check_constraints import all_checks
 from framework.Sizing.Geometry.sizing_landing_gear import sizing_landing_gear
 from framework.Sizing.performance_constraints import *
 from framework.Noise.Noise_Smith.noise_calculation import noise_calculation
 from framework.utilities.plot_simple_aircraft import plot3d
 #from framework.utilities.plot_tigl_aircraft import plot3d_tigl
 from framework.utilities.logger import get_logger
-
 from datetime import datetime
 # =============================================================================
 # CLASSES
@@ -449,6 +449,8 @@ def airplane_sizing(vehicle,x=None):
     maximum_landing_weight = landing_weight
     aircraft['maximum_zero_fuel_weight'] = maximum_landing_weight*0.98
 
+    weight_ratio_landing_takeoff = maximum_landing_weight/maximum_takeoff_weight
+
     # engine['maximum_thrust'] = (
     #     aircraft['number_of_engines']*engine['maximum_thrust']*lb_to_kg)*GRAVITY  # Test this
 
@@ -507,7 +509,7 @@ def airplane_sizing(vehicle,x=None):
     # Cruise check
 
     engine_cruise_thrust, _ , vehicle = turbofan(
-        ceiling,operations['mach_cruise'], 0.98, vehicle)
+            operations['cruise_altitude'] ,operations['mach_cruise'], 0.98, vehicle)
 
     ToW_cruise = residual_rate_of_climb(vehicle, airport_departure, aircraft['maximum_takeoff_weight']*GRAVITY,engine_cruise_thrust)
 
@@ -527,12 +529,18 @@ def airplane_sizing(vehicle,x=None):
 
     aircraft['CD0_landing'] = CD0_landing
 
-# try:
-#    takeoff_noise, sideline_noise, landing_noise = noise_calculation(vehicle, airport_departure)
-# except:
-#         log.error("Error at noise_calculation", exc_info = True)
+    CD0 = wing_CD0 + CD_ubrige
 
- #   total_noise = takeoff_noise + sideline_noise + landing_noise
+
+    all_checks(airport_destination['lda'],airport_departure['tora'],aircraft['CL_maximum_landing'],weight_ratio_landing_takeoff,vehicle,CD0,ToW,WoS )
+
+
+    # try:
+    #    takeoff_noise, sideline_noise, landing_noise = noise_calculation(vehicle, airport_departure)
+    # except:
+    #         log.error("Error at noise_calculation", exc_info = True)
+
+    #   total_noise = takeoff_noise + sideline_noise + landing_noise
 
     #if total_noise > 280:
     #    flag_noise = 1
