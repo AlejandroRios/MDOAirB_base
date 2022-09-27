@@ -532,7 +532,7 @@ def airplane_sizing(vehicle,x=None):
     CD0 = wing_CD0 + CD_ubrige
 
 
-    all_checks(airport_destination['lda'],airport_departure['tora'],aircraft['CL_maximum_landing'],weight_ratio_landing_takeoff,vehicle,CD0,ToW,WoS )
+    flags = all_checks(airport_destination['lda'],airport_departure['tora'],aircraft['CL_maximum_landing'],weight_ratio_landing_takeoff,vehicle,CD0,ToW,WoS )
 
 
     # try:
@@ -548,7 +548,10 @@ def airplane_sizing(vehicle,x=None):
     #    flag_noise = 0
 
     flag_noise = 0
-    flags = [flag_requirements, flag_landing, flag_takeoff, flag_climb_second_segment, flag_missed_approach, flag_cruise, flag_fuel, flag_noise]
+    flags_misc = [flag_requirements, flag_fuel, flag_noise]
+
+    flags.extend(flags_misc)
+
 
     # flags = [flag_takeoff, flag_landing, flag_fuel]
 
@@ -576,8 +579,6 @@ def objective_function_FPO(x, original_vehicle, mission_range,
     vehicle = copy.deepcopy(original_vehicle)
     # with open('Database/DOC/Vehicle.pkl', 'rb') as f:
     #     vehicle = pickle.load(f)
-
-    print(x)
 
     DOC_ik = 0
     status = 0

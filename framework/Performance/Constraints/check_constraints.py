@@ -159,7 +159,7 @@ def matching_chart(BPR,oswald_eff,M_CR,V_Vmd,E_max,AR,T_to_W_secseg,T_to_W_missa
 
     mMTOW_Sw = [mMTOW_Sw]*len(T_to_W_L)
 
-    df = pd.DataFrame(list(zip(altitude, mMTO_Sw, T_to_W_secseg, T_to_W_missapp, T_to_W_TO, T_TO_m_MTOg)), columns =['altitude', 'MTO_Sw','T_to_W_secseg','T_to_W_missapp','T_to_W_TO','T_TO_m_MTOg']) 
+    df = pd.DataFrame(list(zip(altitude, mMTO_Sw, T_to_W_secseg, T_to_W_missapp, T_to_W_TO, T_TO_m_MTOg)), columns =['altitude', 'MTO_Sw','T_to_W_secseg','T_to_W_missapp','T_to_W_TO','T_to_W_cruise']) 
 
 
     plt.rc('font', family='serif')
@@ -188,7 +188,9 @@ def matching_chart(BPR,oswald_eff,M_CR,V_Vmd,E_max,AR,T_to_W_secseg,T_to_W_missa
     ax.legend()
 
     plt.grid(True)
-    plt.show()
+    plt.show(block=False)
+    plt.pause(3)
+    plt.close()
 
 
 
@@ -222,7 +224,7 @@ def all_checks(S_LFL,S_TOFL,CL_max_L,mML_mTO,vehicle,CD0,T_to_W,W_to_S):
     V_APP, S_LFL = approach(S_LFL)
     mMTOW_Sw = landing(S_LFL,delta_ISA,CL_max_L,mML_mTO)
 
-    T_to_W_L,slope = takeoff(S_TOFL,delta_ISA,CL_max_L, mMTOW_Sw)
+    T_to_W_L,slope = takeoff(S_TOFL,delta_ISA,CL_max_L,W_to_S)
 
     T_to_W_secseg = second_segment(AR,CD0,CL_max_L,n_eng,oswald_eff)
 
@@ -237,10 +239,10 @@ def all_checks(S_LFL,S_TOFL,CL_max_L,mML_mTO,vehicle,CD0,T_to_W,W_to_S):
 
     df = matching_chart(BPR,oswald_eff,M_CR,V_Vmd,E_max,AR,T_to_W_secseg,T_to_W_missapp,slope,mMTOW_Sw,T_to_W,W_to_S)
 
+    print(df.head())
+
     point_WtoS = df.iloc[(df['MTO_Sw']-W_to_S).abs().argsort()[:1]]
     print(point_WtoS) 
-
-    T_to_W_cruise = float(point_WtoS['T_TO_m_MTOg'])
 
     # Wing loading at max. take-off mass
     if  W_to_S > mMTOW_Sw:
@@ -249,25 +251,25 @@ def all_checks(S_LFL,S_TOFL,CL_max_L,mML_mTO,vehicle,CD0,T_to_W,W_to_S):
         flag_landing = 0
 
     # Take-off T/W
-    if  T_to_W < T_to_W_L:
+    if  T_to_W < float(point_WtoS['T_to_W_TO']):
         flag_takeoff = 1
     else:
         flag_takeoff = 0
 
     # Second segment T/W
-    if  T_to_W < T_to_W_secseg:
+    if  T_to_W < float(point_WtoS['T_to_W_secseg']):
         flag_climb_second_segment = 1
     else:
         flag_climb_second_segment = 0
 
     # Missed approach T/W
-    if  T_to_W < T_to_W_missapp:
+    if  T_to_W < float(point_WtoS['T_to_W_missapp']):
         flag_missed_approach = 1
     else:
         flag_missed_approach = 0
 
     # Cruise T/W
-    if  T_to_W <  T_to_W_cruise:
+    if  T_to_W <  float(point_WtoS['T_to_W_cruise']):
         flag_cruise = 1
     else:
         flag_cruise = 0

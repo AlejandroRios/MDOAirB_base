@@ -228,6 +228,8 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
             even_flight_level, key=lambda x: abs(x-flight_level)
         )
         final_altitude = flight_level*100
+
+    operations['cruise_altitude'] = final_altitude
     
     # start_time = datetime.now()
     # Initial climb fuel estimation
