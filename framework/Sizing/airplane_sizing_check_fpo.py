@@ -126,7 +126,7 @@ def airplane_sizing(vehicle,x=None):
         horizontal_tail['position'] = 1
 
         engine['bypass'] = x[9]/10
-        engine['diameter'] = x[10]/10
+        engine['fan_diameter'] = x[10]/10
         engine['compressor_pressure_ratio'] = x[11]
         engine['turbine_inlet_temperature'] = x[12]
         engine['fan_pressure_ratio'] = x[13]/10
@@ -163,7 +163,7 @@ def airplane_sizing(vehicle,x=None):
 
 
     operations['mach_cruise'] = operations['mach_maximum_operating'] - 0.02
-    engine['fan_diameter'] = engine['diameter']*0.98  # [m]
+    engine['diameter'] = engine['diameter']*1.02  # [m]
 
 
 
@@ -569,6 +569,8 @@ def objective_function_FPO(x, original_vehicle, mission_range,
     # with open('Database/DOC/Vehicle.pkl', 'rb') as f:
     #     vehicle = pickle.load(f)
 
+    print(x)
+
     DOC_ik = 0
     status = 0
     flags = 2*np.ones(8)
@@ -672,33 +674,4 @@ def objective_function_FPO(x, original_vehicle, mission_range,
 # =============================================================================
 # TEST
 # =============================================================================
-# x = [100, 12, 0.38, 22.6, -2.5, 0.34, 5.0, 1.36, 28.5,
-#      1450, 1.46, 78, 2, 1600, 33000, 0.82, 1, 0, 1, 1]
-
-# x = [85, 8.3, 0.32, 21.9, -3.1, 0.35, 5.5, 1.35, 26.2,
-#      1444, 1.46, 100, 6, 1600, 41000, 0.78, 1, 1, 1, 1]
-# from framework.Database.Aircrafts.baseline_aircraft_parameters import *
-# x = [70, 80, 50, 20, -1.1232, 25, 45, 13, 28,
-#      1400, 13, 44, 4, 1500, 41000, 0.78, 1, 1, 1, 1]
-
-
-# 
-
-# from framework.Database.Aircrafts.baseline_aircraft_parameters import initialize_aircraft_parameters
-# vehicle = initialize_aircraft_parameters()
-# # x =  [72, 86, 28, 26, -5, 34, 50, 13, 28, 1450, 14, 70, 4, 1600, 41000, 78, 1, 1, 1, 1]
-# x =  [130, 91, 38, 29, -4.5, 33, 62, 17, 30, 1480, 18, 144, 6, 1900, 41000, 78, 1, 1, 1, 1] # 144 seat
-
-# # x = [ 1.04013290e+02,  8.71272735e+01,  3.42639119e+01,  2.12550036e+01,
-# #        -3.42824373e+00,  4.12149389e+01,  4.98606638e+01,  1.47169661e+01,
-# #         2.87241618e+01,  1.36584947e+03,  2.09763441e+01,  1.61607474e+02,
-# #         5.55661531e+00,  1.27054142e+03,  4.10000000e+04,  7.80000000e+01,
-# #                    1,             1,             1,             1]
-
-# # x = [ 1.12263381e+02,  8.61725966e+01,  2.93528075e+01,  2.46586854e+01,
-# #        -4.93747382e+00,  3.25432550e+01,  5.01969998e+01,  1.37762699e+01,  
-# #         2.82079270e+01,  1.38790020e+03,  1.66990988e+01,  1.51508520e+02,  
-# #         5.54040212e+00,  1.11221036e+03,  4.10000000e+04,  7.80000000e+01,  
-# #                    1,             1,             1,             1]
-# status = airplane_sizing(vehicle,x)
 

@@ -86,18 +86,18 @@ def airplane_sizing(vehicle,x=None):
     """
     log.info('---- Start aircraft sizing module ----')
 
-    if int(x[9]) <= 44:
-        df = pd.read_pickle("engines.pkl")
-        index = int(x[9] )
+    # if int(x[9]) <= 44:
+    #     df = pd.read_pickle("engines.pkl")
+    #     index = int(x[9] )
 
-        de = df.loc[index, 'De (m)']
-        bpr = df.loc[index, 'BPR']
-        fpr = df.loc[index, 'FPR']
-        opr = df.loc[index, 'OPR']
-        tit = df.loc[index, 'TIT (K)']
+    #     de = df.loc[index, 'De (m)']
+    #     bpr = df.loc[index, 'BPR']
+    #     fpr = df.loc[index, 'FPR']
+    #     opr = df.loc[index, 'OPR']
+    #     tit = df.loc[index, 'TIT (K)']
     
-    else:
-        a =1 
+    # else:
+    #     a =1 
 
 
 
@@ -132,9 +132,9 @@ def airplane_sizing(vehicle,x=None):
         wing['sweep_c_4'] = x[3]
         wing['twist'] = x[4]
         wing['semi_span_kink'] = x[5]/100
-        aircraft['passenger_capacity'] = x[6]
-        fuselage['seat_abreast_number'] = x[7]
-        performance['range'] = x[8]
+        aircraft['passenger_capacity'] = x[11]
+        fuselage['seat_abreast_number'] = x[12]
+        performance['range'] = x[13]
         # aircraft['winglet_presence'] = x[17]
         aircraft['winglet_presence'] = 1
         # aircraft['slat_presence'] = x[18]
@@ -142,11 +142,11 @@ def airplane_sizing(vehicle,x=None):
         # horizontal_tail['position'] = x[19]
         horizontal_tail['position'] = 1
 
-        engine['bypass'] = bpr
-        engine['diameter'] = de
-        engine['compressor_pressure_ratio'] = opr
-        engine['turbine_inlet_temperature'] = tit
-        engine['fan_pressure_ratio'] = fpr
+        engine['bypass'] = x[6]/10
+        engine['diameter'] = x[7]/10
+        engine['compressor_pressure_ratio'] = x[8]
+        engine['turbine_inlet_temperature'] = x[9]
+        engine['fan_pressure_ratio'] = x[10]/10
 
         # engine['position'] = x[16]
         engine['position'] = 1
