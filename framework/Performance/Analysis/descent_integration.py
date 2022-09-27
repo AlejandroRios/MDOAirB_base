@@ -44,7 +44,7 @@ import matplotlib.pyplot as plt
 global GRAVITY
 GRAVITY = 9.8067
 kghr_to_kgmin = 0.01667
-
+feet_to_nautical_miles = 0.000164579
 
 def descent_integration(mass, mach_descent, descent_V_cas, delta_ISA, final_altitude, initial_altitude, vehicle):
     """
@@ -199,10 +199,10 @@ def descent_integration(mass, mach_descent, descent_V_cas, delta_ISA, final_alti
             initial_block_time = 0
 
         else:
-            initial_block_distance = final_block_distance
-            initial_block_altitude = final_block_altitude
-            initial_block_mass = final_block_mass
-            initial_block_time = final_block_time
+            initial_block_distance = final_block_distance + delta_distance
+            initial_block_altitude = final_block_altitude + delta_altitude
+            initial_block_mass = final_block_mass - delta_fuel
+            initial_block_time = final_block_time + delta_time
 
         final_block_altitude = 1500
 
@@ -286,6 +286,8 @@ def descent_integration_datadriven(mass, mach_descent, descent_V_cas, delta_ISA,
         mach_descent = (mach_vec[i+1] + mach_vec[i])/2
         if mach_descent <= 0.3:
             mach_descent = 0.78
+        elif mach_descent > 0.85:
+            mach_descent = 0.85
 
 
         initial_block_altitude = altitude_vec[i]
@@ -337,13 +339,13 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
         - final_block_mass
         - final_block_time
     """
-    Tsim = initial_block_time + 40
+    Tsim = initial_block_time + 100000
     stop_condition.terminal = True
-
     stop_criteria = final_block_altitude
-
-    sol = solve_ivp(climb, [initial_block_time, Tsim], [initial_block_distance, initial_block_altitude, initial_block_mass],
-            events = stop_condition,method='LSODA',args = (climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria),dense_output=True, rtol=1e-5,atol=1e-8)
+    t_span = [initial_block_time, Tsim]
+    t = np.arange(initial_block_time, Tsim, 0.1)
+    sol = solve_ivp(climb, t_span, [initial_block_distance, initial_block_altitude, initial_block_mass],
+            events = stop_condition, method='LSODA',args = (climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria), rtol=1e-5,atol=1e-8,t_eval=t)
 
     distance0 = sol.y[0]
     altitude0= sol.y[1]
@@ -361,7 +363,6 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
     final_block_altitude = altitude[-1]
     final_block_mass = mass[-1]
     final_block_time = time[-1]
-
     
     sfc_vec = []
     thrust_vec = []
@@ -371,9 +372,11 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
     LoD_vec = []
     throttle_vec = []
     vcas_vec = []
+    RoC_vec = []
     
     for i in range(len(altitude)):
-        sfc, thrust_force, mach, CL, CD, LoD, throttle, vcas = compute_flight_data(altitude[i], mass[i], climb_V_cas, mach_climb, delta_ISA, vehicle)
+        sfc, thrust_force, mach, CL, CD, LoD, throttle, vcas, RoC = compute_flight_data(
+            altitude[i], mass[i], climb_V_cas, mach_climb, delta_ISA, vehicle)     
         sfc_vec = np.append(sfc_vec, sfc)
         thrust_vec = np.append(thrust_vec, thrust_force)
         mach_vec = np.append(mach_vec, mach)
@@ -382,6 +385,14 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
         LoD_vec = np.append(LoD_vec, LoD)
         throttle_vec = np.append(throttle_vec, throttle)
         vcas_vec = np.append(vcas_vec, vcas)
+        RoC_vec = np.append(RoC_vec,RoC)
+
+
+    step_size =np.diff(altitude)
+
+    time_step = np.zeros(len(altitude))
+    time_step[1:] = np.cumsum(step_size/RoC_vec[1:]) + initial_block_time
+    time_step[0] = initial_block_time
         
     return final_block_distance, final_block_altitude, final_block_mass, final_block_time, distance, altitude, mass, time, sfc_vec, thrust_vec, mach_vec, CL_vec, CD_vec, LoD_vec, throttle_vec, vcas_vec
 
@@ -522,7 +533,7 @@ def compute_flight_data(altitude, mass, climb_V_cas, mach_climb, delta_ISA, vehi
     
     vcas = V_tas_to_V_cas(V_tas, altitude, delta_ISA)
     
-    return sfc, thrust_force, mach, CL, CD, LoD, throttle_position, vcas
+    return sfc, thrust_force, mach, CL, CD, LoD, throttle_position, vcas, rate_of_climb
 
 # =============================================================================
 # TEST

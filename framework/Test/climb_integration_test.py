@@ -33,7 +33,7 @@ from framework.Attributes.Atmosphere.atmosphere_ISA_deviation import atmosphere_
 from framework.Performance.Analysis.climb_acceleration import acceleration_to_250
 from framework.Performance.Engine.engine_performance import turbofan
 from framework.Performance.Analysis.climb_to_altitude import rate_of_climb_calculation
-
+from datetime import datetime
 # =============================================================================
 # CLASSES
 # =============================================================================
@@ -66,6 +66,8 @@ def climb_integration(mass, mach_climb, climb_V_cas, delta_ISA, final_altitude, 
         - total_burned_fuel [kg]
         - final_altitude [ft]
     """
+
+    start_time = datetime.now()
     rate_of_climb = 500
 
     time_climb1 = 0
@@ -246,12 +248,12 @@ def climb_integration(mass, mach_climb, climb_V_cas, delta_ISA, final_altitude, 
     
     fig.tight_layout()
     fig1.tight_layout()
-    plt.show()
 
     plt.show()
 
     
-
+    end_time = datetime.now()
+    print('Noise check execution time: {}'.format(end_time - start_time))
     
 
     return final_distance, total_climb_time, total_burned_fuel, final_altitude, distance_vec, altitude_vec, mass_vec, time_vec, sfc_vec, thrust_vec, mach_vec, CL_vec, CD_vec, LoD_vec, throttle_vec, vcas_vec
@@ -295,10 +297,16 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
     stop_condition.terminal = True
     stop_criteria = final_block_altitude
     t_span = [initial_block_time, Tsim]
-    t = np.arange(initial_block_time, Tsim, 0.01)
+    t = np.arange(initial_block_time, Tsim, 0.1)
     sol = solve_ivp(climb, t_span, [initial_block_distance, initial_block_altitude, initial_block_mass],
-            events = stop_condition, method='LSODA',args = (climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria),dense_output=True, rtol=1e-12,atol=1e-8,t_eval=t)
+            events = stop_condition, method='LSODA',args = (climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria), rtol=1e-5,atol=1e-8,t_eval=t)
 
+    # Tsim = initial_block_time + 100000
+    # stop_condition.terminal = True
+
+    # stop_criteria = final_block_altitude
+    # sol = solve_ivp(climb, [initial_block_time, Tsim], [initial_block_distance, initial_block_altitude, initial_block_mass],
+    #         events = stop_condition, method='LSODA',args = (climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria),dense_output=True, rtol=1e-5,atol=1e-8)
 
     distance0 = sol.y[0]
     altitude0= sol.y[1]

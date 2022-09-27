@@ -295,6 +295,7 @@ def initialize_aircraft_parameters():
     engine['T0'] = 0
     engine['T1'] = 0
     engine['T2'] = 0
+    engine['type'] = 0 # 0 turbofan | 1 Turboprop
 
     engine['performance_parameters'] = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0,0])
     engine['total_pressures'] = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -378,6 +379,7 @@ def initialize_aircraft_parameters():
     operations['descent_altitude'] = 1500
     operations['time_between_overhaul'] = 2500
     operations['taxi_fuel_flow_reference'] = 5
+    operations['cruise_altitude'] = 30000
 
     operations['climb_V_cas'] = 280
     operations['mach_climb'] = 0.78

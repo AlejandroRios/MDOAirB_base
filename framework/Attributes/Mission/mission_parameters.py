@@ -36,7 +36,7 @@ import haversine
 from haversine import haversine, Unit
 import matplotlib.pyplot as plt
 
-from framework.Attributes.Airspeed.airspeed import mach_to_V_cas
+from framework.Attributes.Airspeed.airspeed import mach_to_V_cas,V_tas_to_mach
 # =============================================================================
 # CLASSES
 # =============================================================================
@@ -162,11 +162,18 @@ def climb_altitudes_vector(departure,arrival,max_altitude):
     mach_rz = sp.interpolate.interp1d(xmachs, machs, kind='linear')(new_xmachs)
     
     cas_spds_rz = []
-
+    mach_new_rz = []
     for i in range(len(tas_spds_rz)):
         aux1 = mach_to_V_cas(mach_rz[i], alt_rz[i], 0)
+
+        aux2 = V_tas_to_mach(spds_rz[i],alt_rz[i], 0)
+        mach_new_rz.append(aux2)
+
+        aux1 = mach_to_V_cas(aux2, alt_rz[i], 0)
         cas_spds_rz.append(aux1)
-    
+        cas_spds_rz.append(aux1)
+
+
     x = alt_rz
     y = cas_spds_rz
     f = interpolate.interp1d(x, y)
@@ -183,7 +190,7 @@ def climb_altitudes_vector(departure,arrival,max_altitude):
 
 
 
-    return alt_rz,cas_spds_rz,mach_rz,time_rz
+    return alt_rz,cas_spds_rz,mach_new_rz,time_rz
 
 def descent_altitudes_vector(departure,arrival,max_altitude):
     """
@@ -250,9 +257,14 @@ def descent_altitudes_vector(departure,arrival,max_altitude):
     mach_rz = sp.interpolate.interp1d(xmachs, machs, kind='linear')(new_xmachs)
     
     cas_spds_rz = []
-
+    mach_new_rz = []
     for i in range(len(tas_spds_rz)):
-        aux1 = mach_to_V_cas(mach_rz[i], alt_rz[i], 0)
+
+
+        aux2 = V_tas_to_mach(spds_rz[i],alt_rz[i], 0)
+        mach_new_rz.append(aux2)
+
+        aux1 = mach_to_V_cas(aux2, alt_rz[i], 0)
         cas_spds_rz.append(aux1)
 
     # fig1, ax1 = plt.subplots()
@@ -273,7 +285,7 @@ def descent_altitudes_vector(departure,arrival,max_altitude):
     ynew = f(xnew)
     mach_rz = ynew
 
-    return alt_rz,cas_spds_rz,mach_rz,time_rz
+    return alt_rz,cas_spds_rz,mach_new_rz,time_rz
 
 # =============================================================================
 # MAIN

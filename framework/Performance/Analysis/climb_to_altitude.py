@@ -95,9 +95,14 @@ def rate_of_climb_calculation(thrust_to_weight, h, delta_ISA, mach, mass, vehicl
 
     L_to_D = CL/CD
 
+    D = 0.5*rho_ISA*(V_tas*knots_to_meters_second)**2 * wing_surface *CD
+
     if mach > 0:
         acceleration_factor, _ = acceleration_factor_calculation(
             h, delta_ISA, mach)
+        # print('alt:',h)
+        # print('LtoD:',L_to_D)
+        # print('acelfac:',acceleration_factor)
         climb_path_angle = np.arcsin(
             (thrust_to_weight - 1/(L_to_D))/(1 + acceleration_factor))
     else:
@@ -105,7 +110,13 @@ def rate_of_climb_calculation(thrust_to_weight, h, delta_ISA, mach, mass, vehicl
             h, delta_ISA, mach)
         climb_path_angle = np.arcsin(
             (thrust_to_weight - 1/(L_to_D))/(1 + acceleration_factor))
+
     rate_of_climb = knots_to_feet_minute * V_tas * np.sin(climb_path_angle)
+
+    T = thrust_to_weight*mass*GRAVITY
+    climb_path_angle2 = (T - D)/(mass*GRAVITY)
+    rate_of_climb2 = knots_to_feet_minute * V_tas * np.sin(climb_path_angle2)
+    
     return rate_of_climb, V_tas, climb_path_angle, CL, CD, L_to_D
 
 

@@ -408,7 +408,7 @@ def mission_sizing(vehicle, airport_departure, airport_destination):
     Dmin = 10*operations['mach_cruise']*min_cruise_time
 
     K2 = (
-        performance['range']
+        operations['alternative_airport_distance']
         - Dmin
         + g_climb*(airport_departure['elevation'] + 1500)
         + g_descent*(airport_destination['elevation'] + 1500)

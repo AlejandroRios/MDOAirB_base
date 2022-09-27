@@ -45,6 +45,7 @@ global GRAVITY
 GRAVITY = 9.8067
 kghr_to_kgmin = 0.01667
 kghr_to_kgsec = 0.000277778
+feet_to_nautical_miles = 0.000164579
 
 def climb_integration(mass, mach_climb, climb_V_cas, delta_ISA, final_altitude, initial_altitude, vehicle):
     """
@@ -143,9 +144,9 @@ def climb_integration(mass, mach_climb, climb_V_cas, delta_ISA, final_altitude, 
         throttle_vec = np.append(throttle_vec, throttlev)
         vcas_vec = np.append(vcas_vec, vcasv)
 
-        _, _, delta_altitude, _ = acceleration_to_250(
-            rate_of_climb, climb_V_cas, delta_ISA, vehicle)
-        final_block_altitude = final_block_altitude + delta_altitude
+        # _, _, delta_altitude, _ = acceleration_to_250(
+        #     rate_of_climb, climb_V_cas, delta_ISA, vehicle)
+        # final_block_altitude = final_block_altitude + delta_altitude
 
         burned_fuel = initial_block_mass - final_block_mass
         climb_time = final_block_time - initial_block_time
@@ -284,6 +285,8 @@ def climb_integration_datadriven(mass, mach_climb, climb_V_cas, delta_ISA, altit
 
         if mach_climb <= 0.3:
             mach_climb = 0.78
+        elif mach_climb > 0.85:
+            mach_climb = 0.85
 
 
         if initial_block_altitude <= transition_altitude:
@@ -325,12 +328,13 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
         - final_block_mass
         - final_block_time
     """
-    Tsim = initial_block_time + 40
+    Tsim = initial_block_time + 100000
     stop_condition.terminal = True
-
     stop_criteria = final_block_altitude
-    sol = solve_ivp(climb, [initial_block_time, Tsim], [initial_block_distance, initial_block_altitude, initial_block_mass],
-            events = stop_condition, method='LSODA',args = (climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria),dense_output=True, rtol=1e-5,atol=1e-8)
+    t_span = [initial_block_time, Tsim]
+    t = np.arange(initial_block_time, Tsim, 0.1)
+    sol = solve_ivp(climb, t_span, [initial_block_distance, initial_block_altitude, initial_block_mass],
+            events = stop_condition, method='LSODA',args = (climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria), rtol=1e-5,atol=1e-8,t_eval=t)
 
     distance0 = sol.y[0]
     altitude0= sol.y[1]
@@ -356,10 +360,11 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
     CD_vec = []
     LoD_vec = []
     throttle_vec = [] 
-    vcas_vec = [] 
+    vcas_vec = []
+    RoC_vec = []
     
     for i in range(len(altitude)):
-        sfc, thrust_force, mach, CL, CD, LoD, throttle, vcas = compute_flight_data(
+        sfc, thrust_force, mach, CL, CD, LoD, throttle, vcas, RoC = compute_flight_data(
             altitude[i], mass[i], climb_V_cas, mach_climb, delta_ISA, vehicle)
         sfc_vec = np.append(sfc_vec, sfc)
         thrust_vec = np.append(thrust_vec, thrust_force)
@@ -369,7 +374,17 @@ def climb_integrator(initial_block_distance, initial_block_altitude, initial_blo
         LoD_vec = np.append(LoD_vec, LoD)
         throttle_vec = np.append(throttle_vec, throttle)
         vcas_vec = np.append(vcas_vec, vcas)
+        RoC_vec = np.append(RoC_vec,RoC)
     
+    step_size =np.diff(altitude)
+
+    time_step = np.zeros(len(altitude))
+    time_step[1:] = np.cumsum(step_size/RoC_vec[1:]) + initial_block_time
+    time_step[0] = initial_block_time
+
+
+
+
     return final_block_distance, final_block_altitude, final_block_mass, final_block_time, distance, altitude, mass, time, sfc_vec, thrust_vec, mach_vec, CL_vec, CD_vec, LoD_vec, throttle_vec, vcas_vec
 
 def stop_condition(time, state, climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria):
@@ -409,6 +424,7 @@ def climb(time, state, climb_V_cas, mach_climb, delta_ISA, vehicle,stop_criteria
 
     thrust_force, fuel_flow, vehicle = turbofan(
         altitude, mach, throttle_position, vehicle)  # force [N], fuel flow [kg/hr]
+        
     thrust_to_weight = aircraft['number_of_engines'] * \
         thrust_force/(mass*GRAVITY)
     rate_of_climb, V_tas, climb_path_angle, _, _, _ = rate_of_climb_calculation(
@@ -471,7 +487,7 @@ def compute_flight_data(altitude, mass, climb_V_cas, mach_climb, delta_ISA, vehi
         print('Fuel Flow = {}'.format(fuel_flow))
         print('Thrust = {}'.format(thrust_force))
         print('Altitude = {}, Mach = {}, Throttle position = {}'.format(altitude, mach, throttle_position))
-    return sfc, thrust_force, mach, CL, CD, LoD, throttle_position, vcas
+    return sfc, thrust_force, mach, CL, CD, LoD, throttle_position, vcas, rate_of_climb
 # =============================================================================
 # MAIN
 # =============================================================================

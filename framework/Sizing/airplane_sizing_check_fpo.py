@@ -457,68 +457,6 @@ def airplane_sizing(vehicle,x=None):
     ToW = (aircraft['number_of_engines']*engine['maximum_thrust'])/(aircraft['maximum_takeoff_weight']*GRAVITY)
     WoS = aircraft['maximum_takeoff_weight']/wing['area']
 
-    # regulated_takeoff_weight_required = regulated_takeoff_weight(vehicle)
-    # regulated_landing_weight_required = regulated_landing_weight(vehicle)
-
-
-    # Landing field length check
-    landing_field_length_required = airport_destination['lda']
-
-    k_L = 0.107
-
-    WtoS_landing = (k_L*airport_destination['lda']*aircraft['CL_maximum_landing'])/(aircraft['maximum_landing_weight']/aircraft['maximum_takeoff_weight'])
-    #WtoS_landing = (k_L*airport_destination['lda']*aircraft['CL_maximum_landing'])
-    #WtoS_takeoff= WtoS_landing/(maximum_landing_weight/maximum_takeoff_weight)     
-
-    if  WoS > WtoS_landing:
-        flag_landing = 1
-    else:
-        flag_landing = 0
-
-    
-    # Takeoff field length check
-    k_TO = 2.34
-
-    ToW_takeoff = (k_TO/(airport_departure['tora']*aircraft['CL_maximum_takeoff']))*WoS
-
-    if ToW < ToW_takeoff :
-        flag_takeoff = 1
-    else:
-        flag_takeoff = 0
-    
-        
-    # Climb gradient in the Second segment check
-    ToW_second_segment = second_segment_climb(vehicle, airport_departure, aircraft['maximum_takeoff_weight']*GRAVITY)
-
-
-    if ToW < ToW_second_segment: 
-        flag_climb_second_segment = 1
-    else:
-        flag_climb_second_segment = 0
-
-    
-    # Climb gradient during missed approach check
-    ToW_missed_approach = missed_approach_climb_OEI(vehicle, airport_destination, aircraft['maximum_takeoff_weight']*GRAVITY,aircraft['maximum_takeoff_weight']*GRAVITY)
-
-    if ToW < ToW_missed_approach:
-        flag_missed_approach = 1
-    else:
-        flag_missed_approach = 0
-
-    
-    # Cruise check
-
-    engine_cruise_thrust, _ , vehicle = turbofan(
-            operations['cruise_altitude'] ,operations['mach_cruise'], 0.98, vehicle)
-
-    ToW_cruise = residual_rate_of_climb(vehicle, airport_departure, aircraft['maximum_takeoff_weight']*GRAVITY,engine_cruise_thrust)
-
-    if ToW < ToW_cruise:
-        flag_cruise = 1
-    else:
-        flag_cruise = 0
-
-
 
     # Noise check
     delta_CD_flap = drag_coefficient_flap(vehicle)
@@ -531,7 +469,7 @@ def airplane_sizing(vehicle,x=None):
 
     CD0 = wing_CD0 + CD_ubrige
 
-
+    # Performance and certification requirements:
     flags = all_checks(airport_destination['lda'],airport_departure['tora'],aircraft['CL_maximum_landing'],weight_ratio_landing_takeoff,vehicle,CD0,ToW,WoS )
 
 

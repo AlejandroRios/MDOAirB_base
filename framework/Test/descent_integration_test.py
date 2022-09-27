@@ -546,7 +546,7 @@ def compute_flight_data(altitude, mass, climb_V_cas, mach_climb, delta_ISA, vehi
     
     vcas = V_tas_to_V_cas(V_tas, altitude, delta_ISA)
     
-    return sfc, thrust_force, mach, CL, CD, LoD, throttle_position, vcas,rate_of_climb
+    return sfc, thrust_force, mach, CL, CD, LoD, throttle_position, vcas, rate_of_climb
 
 # =============================================================================
 # TEST
