@@ -680,7 +680,7 @@ def aircraft_empty_weight(vehicle, maximum_takeoff_weight, fuel_mass, engine_sta
 # =============================================================================
 # TEST
 # =============================================================================
-vehicle = initialize_aircraft_parameters()
+# vehicle = initialize_aircraft_parameters()
 # maximum_takeoff_weight = 43718
 # mach = 0.8
 # altitude = 41000
@@ -698,39 +698,39 @@ vehicle = initialize_aircraft_parameters()
 # print(horizontal_tail_mass(V_dive, vehicle))
 
 # print(vertical_tail_mass(V_dive, vehicle))
-engine_static_thrust = 191798
-engine = vehicle['engine']
-engine['length'] = 2.995
+# engine_static_thrust = 191798
+# engine = vehicle['engine']
+# engine['length'] = 2.995
 
 
-engine['fan_pressure_ratio'] = 1.5
-engine['compressor_pressure_ratio'] = 25.8
-engine['bypass'] = 4.3
-engine['fan_diameter'] = 1.882
-engine['turbine_inlet_temperature'] = 1115
+# engine['fan_pressure_ratio'] = 1.5
+# engine['compressor_pressure_ratio'] = 25.8
+# engine['bypass'] = 4.3
+# engine['fan_diameter'] = 1.882
+# engine['turbine_inlet_temperature'] = 1115
 
 
-print(engine_mass_bento(engine_static_thrust, vehicle))
+# print(engine_mass_bento(engine_static_thrust, vehicle))
 
-print(engine_mass(engine_static_thrust, vehicle))
+# print(engine_mass(engine_static_thrust, vehicle))
 
-a,b,c =turbofan(0, 0.01, 1, vehicle)
-print(a,b)
+# a,b,c =turbofan(0, 0.01, 1, vehicle)
+# print(a,b)
 
-engine_static_thrust = 104533
-engine = vehicle['engine']
-engine['length'] = 2.362
+# engine_static_thrust = 104533
+# engine = vehicle['engine']
+# engine['length'] = 2.362
 
-engine['fan_pressure_ratio'] = 1.1
-engine['compressor_pressure_ratio'] = 30.6
-engine['bypass'] = 4.8
-engine['fan_diameter'] = 1.524
-engine['turbine_inlet_temperature'] = 1706
+# engine['fan_pressure_ratio'] = 1.1
+# engine['compressor_pressure_ratio'] = 30.6
+# engine['bypass'] = 4.8
+# engine['fan_diameter'] = 1.524
+# engine['turbine_inlet_temperature'] = 1706
 
-print(engine_mass_bento(engine_static_thrust, vehicle))
+# print(engine_mass_bento(engine_static_thrust, vehicle))
 
-print(engine_mass(engine_static_thrust, vehicle))
+# print(engine_mass(engine_static_thrust, vehicle))
 
 
-a,b,c =turbofan(0, 0.01, 1, vehicle)
-print(a,b)
+# a,b,c =turbofan(0, 0.01, 1, vehicle)
+# print(a,b)
