@@ -273,7 +273,7 @@ def family_network_optimization(computation_mode, airports_keys, acft1, acft2, a
 
         # prob += lpSum([aircrafts01[i]*docs_list1[i] for i in range(len(arcs))])
         # prob += lpSum([aircrafts02[i]*docs_list2[i] for i in range(len(arcs))])
-        # prob += lpSum([aircrafts03[i]*docs_list3[i] for i in range(len(arcs))])
+        # prob += lpSum ([aircrafts03[i]*docs_list3[i] for i in range(len(arcs))])
 
         prob += lpSum([aircrafts01[i]*docs_list1[i] + aircrafts02[i]*docs_list2[i] + aircrafts03[i]*docs_list3[i] for i in range(len(arcs))])
 
