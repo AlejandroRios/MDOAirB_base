@@ -23,7 +23,7 @@ import numpy as np
 import array
 import scipy.io as spio
 from sklearn.preprocessing import normalize
-np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
+# np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
 # =============================================================================
 # CLASSES
 # =============================================================================
